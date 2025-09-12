@@ -1,0 +1,202 @@
+"use client"
+
+import { motion, AnimatePresence } from "framer-motion"
+import { PanelLeftClose, PanelLeftOpen, Settings } from "lucide-react"
+import { cls } from "@/lib/utils"
+import ThemeToggle from "../ui/ThemeToggle"
+
+export default function Sidebar({
+  open,
+  onClose,
+  theme,
+  setTheme,
+  navigationItems,
+  activeView,
+  onViewChange,
+  sources,
+  topics,
+  searchRef,
+  sidebarCollapsed = false,
+  setSidebarCollapsed = () => {},
+}) {
+  if (sidebarCollapsed) {
+    return (
+      <motion.aside
+        initial={{ width: 320 }}
+        animate={{ width: 64 }}
+        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+        className="z-50 flex h-full shrink-0 flex-col border-r border-border bg-sidebar-background"
+      >
+        <div className="flex items-center justify-center border-b border-sidebar-border px-3 py-3">
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+            aria-label="Open sidebar"
+            title="Open sidebar"
+          >
+            <PanelLeftOpen className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="flex flex-col items-center gap-4 pt-4">
+          {navigationItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => onViewChange(item.id)}
+              className={cls(
+                "rounded-xl p-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
+                activeView === item.id
+                  ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                  : "hover:bg-sidebar-accent/50",
+              )}
+              title={item.label}
+            >
+              <item.icon className="h-5 w-5" />
+            </button>
+          ))}
+        </div>
+      </motion.aside>
+    )
+  }
+
+  return (
+    <>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.5 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/60 md:hidden"
+            onClick={onClose}
+          />
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {(open || typeof window !== "undefined") && (
+          <motion.aside
+            key="sidebar"
+            initial={{ x: -340 }}
+            animate={{ x: open ? 0 : 0 }}
+            exit={{ x: -340 }}
+            transition={{ type: "spring", stiffness: 260, damping: 28 }}
+            className={cls(
+              "z-50 flex h-full w-80 shrink-0 flex-col border-r border-sidebar-border bg-sidebar-background",
+              "fixed inset-y-0 left-0 md:static md:translate-x-0",
+            )}
+          >
+            <div className="flex items-center gap-2 border-b border-sidebar-border px-3 py-3">
+              <div className="flex items-center gap-2">
+                <div className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
+                  <span className="text-sm font-bold">⚖</span>
+                </div>
+                <div className="text-sm font-semibold tracking-tight">MinLaw 2</div>
+              </div>
+              <div className="ml-auto flex items-center gap-1">
+                <button
+                  onClick={() => setSidebarCollapsed(true)}
+                  className="hidden md:block rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                  aria-label="Close sidebar"
+                  title="Close sidebar"
+                >
+                  <PanelLeftClose className="h-5 w-5" />
+                </button>
+
+                <button
+                  onClick={onClose}
+                  className="md:hidden rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                  aria-label="Close sidebar"
+                >
+                  <PanelLeftClose className="h-5 w-5" />
+                </button>
+              </div>
+            </div>
+
+            <nav className="flex-1 overflow-y-auto p-3">
+              <div className="space-y-2">
+                {navigationItems.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => onViewChange(item.id)}
+                    className={cls(
+                      "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                      activeView === item.id
+                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                        : "text-sidebar-foreground hover:bg-sidebar-accent/50",
+                    )}
+                  >
+                    <item.icon className="h-4 w-4" />
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-6">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Data Sources
+                </h3>
+                <div className="space-y-1">
+                  {sources.slice(0, 4).map((source) => (
+                    <div key={source.id} className="flex items-center justify-between px-3 py-2 text-sm">
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={cls(
+                            "h-2 w-2 rounded-full",
+                            source.status === "active" ? "bg-green-500" : "bg-gray-400",
+                          )}
+                        />
+                        <span className="truncate">{source.name}</span>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{source.documentsCount}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                  Trending Topics
+                </h3>
+                <div className="space-y-1">
+                  {topics
+                    .filter((t) => t.trending)
+                    .slice(0, 3)
+                    .map((topic) => (
+                      <div key={topic.id} className="px-3 py-2 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="truncate">{topic.name}</span>
+                          <span className="text-xs text-muted-foreground">{topic.documentCount}</span>
+                        </div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </nav>
+
+            <div className="mt-auto border-t border-sidebar-border px-3 py-3">
+              <div className="flex items-center gap-2">
+                <button className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
+                  <Settings className="h-4 w-4" /> Settings
+                </button>
+                <div className="ml-auto">
+                  <ThemeToggle theme={theme} setTheme={setTheme} />
+                </div>
+              </div>
+              <div className="mt-2 flex items-center gap-2 rounded-xl bg-sidebar-accent/30 p-2">
+                <div className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                  SG
+                </div>
+                <div className="min-w-0">
+                  <div className="truncate text-sm font-medium">Singapore Government</div>
+                  <div className="truncate text-xs text-muted-foreground">Parliamentary Platform</div>
+                </div>
+              </div>
+            </div>
+          </motion.aside>
+        )}
+      </AnimatePresence>
+    </>
+  )
+}
