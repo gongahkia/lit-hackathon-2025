@@ -127,8 +127,8 @@ export default function SearchPane({
             </form>
             {/* Quick Examples */}
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-muted-foreground">Try:</span>
-              {["housing policy 2024", "climate change initiatives", "GST increase"].map((example) => (
+              <span className="text-sm text-muted-foreground">Trending:</span>
+              {["housing policy", "covid-19", "tracetogether", "straitstimes", "cna", "hansard", "climate change", "GST increase"].map((example) => (
                 <Button
                   key={example}
                   variant="outline"
@@ -141,7 +141,7 @@ export default function SearchPane({
                   }}
                   className="text-xs"
                 >
-                  {example}
+                  <i>{example}</i>
                 </Button>
               ))}
             </div>
