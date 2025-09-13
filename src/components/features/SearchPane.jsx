@@ -6,6 +6,7 @@ import { Input } from "../ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import TimelineView from "./TimelineView"
 
 // Build search string for backend (now always indiscriminate q)
 function buildSearchParams(query) {
@@ -15,7 +16,9 @@ function buildSearchParams(query) {
   return params
 }
 
-export default function SearchPane() {
+export default function SearchPane({
+  onViewTimeline
+}) {
   const searchRef = useRef()
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState([])
@@ -195,7 +198,7 @@ export default function SearchPane() {
                           ))}
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => window.alert("Timeline not implemented")}>
+                          <Button variant="outline" size="sm" onClick={onViewTimeline}>
                             View Timeline
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => window.open(result.url, "_blank")}>
