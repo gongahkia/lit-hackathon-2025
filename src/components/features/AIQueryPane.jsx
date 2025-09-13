@@ -336,9 +336,9 @@ export default function AIAssistantSearch() {
         {!isSearching && !error && !query && searchResults.length === 0 && (
           <div className="text-center py-8">
             <Search className="h-14 w-14 text-zinc-200 mx-auto mb-4" />
-            <div className="text-2xl font-bold mb-1">Welcome to POFMan AI Deep Search</div>
+            <div className="text-2xl font-bold mb-1">Welcome to POFMan's Deep Search</div>
             <div className="text-zinc-500 max-w-md mx-auto">
-              Search in-depth through parliamentary debates, press, or personal files using natural language.
+              Search in-depth through parliamentary debates, press, or personal files using natural language embeddings.
             </div>
           </div>
         )}
