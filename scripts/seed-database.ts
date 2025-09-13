@@ -35,18 +35,34 @@ const INITIAL_SOURCES = [
     status: "active"
   },
   {
-    id: "moh-gov",
-    name: "Ministry of Health",
-    url: "https://www.moh.gov.sg",
-    type: "ministry",
+    id: "cna",
+    name: "Channel News Asia",
+    url: "https://www.channelnewsasia.com",
+    type: "news",
     lastUpdated: "2024-01-15T10:00:00.000Z",
     status: "active"
-  },
+  }, 
+  { 
+    id: "straitstimes",
+    name: "The Straits Times",
+    url: "https://www.straitstimes.com",
+    type: "news",
+    lastUpdated: "2024-01-15T10:00:00.000Z",
+    status: "active"
+  }, 
+  { 
+    id: "hansard",
+    name: "Hansard",
+    url: "https://hansard.parliament.sg",
+    type: "news",
+    lastUpdated: "2024-01-15T10:00:00.000Z",
+    status: "active"
+  }, 
   {
-    id: "mti-gov",
-    name: "Ministry of Trade and Industry",
-    url: "https://www.mti.gov.sg",
-    type: "ministry",
+    id: "lawgazette",
+    name: "Singapore Law Gazette",
+    url: "https://www.lawgazette.gov.sg",
+    type: "news",
     lastUpdated: "2024-01-15T10:00:00.000Z",
     status: "active"
   }

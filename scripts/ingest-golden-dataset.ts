@@ -220,28 +220,44 @@ async function createSources(): Promise<Map<string, string>> {
   
   const sources: SourceData[] = [
     {
-      id: 'cna-news',
-      name: 'Channel NewsAsia',
-      url: 'https://www.channelnewsasia.com',
-      type: 'news',
-      last_updated: new Date().toISOString(),
-      status: 'active'
+      id: "parliament-gov",
+      name: "Parliament of Singapore",
+      url: "https://www.parliament.gov.sg",
+      type: "official",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active"
     },
     {
-      id: 'straits-times',
-      name: 'The Straits Times',
-      url: 'https://www.straitstimes.com',
-      type: 'news',
-      last_updated: new Date().toISOString(),
-      status: 'active'
-    },
+      id: "cna",
+      name: "Channel News Asia",
+      url: "https://www.channelnewsasia.com",
+      type: "news",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active"
+    }, 
+    { 
+      id: "straitstimes",
+      name: "The Straits Times",
+      url: "https://www.straitstimes.com",
+      type: "news",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active"
+    }, 
+    { 
+      id: "hansard",
+      name: "Hansard",
+      url: "https://hansard.parliament.sg",
+      type: "news",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active"
+    }, 
     {
-      id: 'parliament-gov',
-      name: 'Parliament of Singapore',
-      url: 'https://www.parliament.gov.sg',
-      type: 'official',
-      last_updated: new Date().toISOString(),
-      status: 'active'
+      id: "lawgazette",
+      name: "Singapore Law Gazette",
+      url: "https://www.lawgazette.gov.sg",
+      type: "news",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active"
     }
   ]
   
