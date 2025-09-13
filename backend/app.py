@@ -3,10 +3,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
-from validation import validate_document  # Import your validation method
+from validation import validate_document
+from query_engine_service import process_query  # Import your engine logic
 
 load_dotenv()
-
 app = Flask(__name__)
 CORS(app)
 
@@ -21,6 +21,22 @@ def validate():
             "success": False,
             "error": str(e),
             "provenance": None
+        }), 500
+
+@app.route('/query', methods=['POST', 'GET'])
+def query_engine():
+    try:
+        if request.method == 'POST':
+            data = request.get_json(force=True)
+        else:  # GET
+            # For GET query API (e.g., ?query=q&filter=..)
+            data = request.args.to_dict()
+        result, status = process_query(data)
+        return jsonify(result), status
+    except Exception as e:
+        return jsonify({
+            "success": False,
+            "error": str(e)
         }), 500
 
 @app.route('/')
