@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-from query_engine_service import process_query
 from scraped_policies_search_service import policy_search_service
 from scraped_policies_timeline_service import get_policy_timeline
 
