@@ -23,11 +23,11 @@ for h4 in soup.find_all("h4", class_="font-header-sm-semibold"):
     })
 
 # Write results to a CSV file
-with open("parliament_articles.csv", "w", newline='', encoding='utf-8') as csvfile:
+with open("straits_times_parliament_articles.csv", "w", newline='', encoding='utf-8') as csvfile:
     fieldnames = ["headline", "url", "date"]
     writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
     writer.writeheader()
     for item in results:
         writer.writerow(item)
 
-print(f"Wrote {len(results)} results to parliament_articles.csv")
+print(f"Wrote {len(results)} results to straits_times_parliament_articles.csv")
