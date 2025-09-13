@@ -1,0 +1,6 @@
+flask
+flask_cors
+dotenv
+requests
+bs4
+spacy
