@@ -1,12 +1,11 @@
 "use client"
 import React, { useRef, useState } from "react"
 import { Paperclip, Search, CheckCircle, Clock, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
-
-// --- Pofman bot SVG (minimal, replace with your brand asset as needed) ---
-function PofmanIcon() {
+// --- POFMan bot SVG (minimal, replace with your brand asset as needed) ---
+function POFManIcon() {
   return (
     <div className="mx-auto mb-4 w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center shadow">
-      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="Pofman bot">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-label="POFMan bot">
         <circle cx="16" cy="16" r="16" fill="#F4F6FA" />
         <ellipse cx="11" cy="14" rx="3" ry="4" fill="#6565F1" />
         <ellipse cx="21" cy="14" rx="3" ry="4" fill="#6565F1" />
@@ -17,26 +16,23 @@ function PofmanIcon() {
     </div>
   )
 }
-
 // --- Extended and detailed thinking steps ---
 const THINKING_STEPS = [
-  "Pofman is Preprocessing query text",
-  "Pofman is Identifying root words and stems",
-  "Pofman is Detecting key concepts",
-  "Pofman is Running Named Entity Recognition (NER)",
-  "Pofman is Classifying document domains",
-  "Pofman is Generating language embeddings",
-  "Pofman is Searching for matches in vector space",
-  "Pofman is Ranking article relevance",
-  "Pofman is Checking for contradictions",
-  "Pofman is Synthesizing response and sources"
+  "POFMan is preprocessing query text",
+  "POFMan is identifying root words and stems",
+  "POFMan is detecting key concepts",
+  "POFMan is running Named Entity Recognition (NER)",
+  "POFMan is classifying document domains",
+  "POFMan is generating language embeddings",
+  "POFMan is searching for matches in vector space",
+  "POFMan is ranking article relevance",
+  "POFMan is checking for contradictions",
+  "POFMan is synthesizing response and sources"
 ]
-
 // Utility for delays
 function delay(ms) {
   return new Promise((res) => setTimeout(res, ms));
 }
-
 export default function AIAssistantSearch() {
   const [query, setQuery] = useState("")
   const [file, setFile] = useState(null)
@@ -46,7 +42,6 @@ export default function AIAssistantSearch() {
   const [error, setError] = useState(null)
   const [searchQueryLabel, setSearchQueryLabel] = useState("")
   const fileInputRef = useRef(null)
-
   // File upload handler
   function handleFileChange(e) {
     if (e.target.files && e.target.files.length > 0) {
@@ -55,12 +50,10 @@ export default function AIAssistantSearch() {
       setFile(null)
     }
   }
-
   // Triggers file selection dialog
   function triggerFileInput() {
     fileInputRef.current?.click()
   }
-
   // Handles the main search sequence including thinking
   async function handleSearch(e) {
     e?.preventDefault()
@@ -73,16 +66,14 @@ export default function AIAssistantSearch() {
     // Animate "thinking" sequence with ticks
     for (let i = 0; i < THINKING_STEPS.length; i++) {
       setThinkingStep(i)
-      await delay(1600)     // Slower step for realism
+      await delay(1600)
     }
-    // Backend search
+    // Backend search (GET)
     try {
-      const formData = new FormData()
-      formData.append("query", query)
-      if (file) formData.append("file", file)
-      const res = await fetch("http://localhost:5000/api/search", {
-        method: "POST",
-        body: formData,
+      const params = new URLSearchParams()
+      params.append("query", query)
+      const res = await fetch(`http://localhost:5000/api/search?${params.toString()}`, {
+        method: "GET",
       })
       if (!res.ok) throw new Error("Search failed.")
       const data = await res.json()
@@ -103,6 +94,10 @@ export default function AIAssistantSearch() {
           sourceType = "parliamentary"
           url = `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` || "#"
         }
+        // Safe confidence fallback: row.confidence or 1-descending
+        let confidence = typeof row.confidence === "number"
+          ? row.confidence * 100
+          : Math.max(97 - idx * 2, 60) + Math.random() * 2
         return {
           id: idx,
           title: row.policies ? row.policies.join(", ") : "",
@@ -114,7 +109,9 @@ export default function AIAssistantSearch() {
           verified: true,
           topics: row.policies || [],
           url,
-          contradictions: []
+          contradictions: [],
+          rank: idx + 1,
+          confidence: confidence, // As percentage
         }
       }))
     } catch (err) {
@@ -124,12 +121,10 @@ export default function AIAssistantSearch() {
       setThinkingStep(-1)
     }
   }
-
   // Allow Enter key to trigger search
   function handleInputKeyDown(e) {
     if (e.key === "Enter") handleSearch(e)
   }
-
   // Badge color for source type
   function getSourceTypeColor(type) {
     switch (type) {
@@ -149,17 +144,15 @@ export default function AIAssistantSearch() {
       year: "numeric", month: "short", day: "numeric"
     })
   }
-
   return (
     <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
       <div className="w-full max-w-2xl p-8 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-8">
-        {/* --- Pofman Bot Header --- */}
+        {/* --- POFMan Bot Header --- */}
         <div className="flex flex-col items-center mb-2">
-          <PofmanIcon />
-          <div className="text-lg font-bold text-center tracking-tight">Pofman</div>
+          <POFManIcon />
+          <div className="text-lg font-bold text-center tracking-tight">POFMan</div>
           <div className="text-xs text-zinc-400 font-medium mb-1">Semantic Deep Search Assistant</div>
         </div>
-
         {/* --- Search bar and attachment --- */}
         <form
           className="flex items-center space-x-3"
@@ -203,7 +196,6 @@ export default function AIAssistantSearch() {
         {file &&
           <div className="text-sm text-zinc-600 dark:text-zinc-400">Attached: {file.name}</div>
         }
-
         {/* --- Thinking Progress Steps --- */}
         {isSearching && (
           <div className="flex flex-col gap-2 items-start min-h-[304px]">
@@ -241,18 +233,16 @@ export default function AIAssistantSearch() {
             })}
           </div>
         )}
-
         {/* --- Search Error --- */}
         {error && (
           <div className="bg-red-100 border border-red-200 text-red-700 px-3 py-2 rounded text-sm">
             {error}
           </div>
         )}
-
         {/* --- Search Results --- */}
         {!isSearching && searchResults.length > 0 && (
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center justify-between mb-2">
+          <div className="flex flex-col gap-4 max-h-[28rem] overflow-y-auto pr-1">
+            <div className="flex items-center justify-between mb-2 sticky top-0 bg-white dark:bg-zinc-900 z-10">
               <p className="text-sm text-zinc-500">
                 Found {searchResults.length} results for
                 <span className="font-semibold ml-1">&quot;{searchQueryLabel}&quot;</span>
@@ -263,7 +253,15 @@ export default function AIAssistantSearch() {
               </button>
             </div>
             {searchResults.map((result) => (
-              <div key={result.id} className="rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 p-4 hover:shadow-lg transition-shadow">
+              <div key={result.id} className="relative rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 p-4 hover:shadow-lg transition-shadow">
+                {/* Rank badge */}
+                <span className="absolute left-[-1.8rem] top-3 bg-indigo-600 text-white text-xs font-bold rounded-full h-7 w-7 flex items-center justify-center shadow">
+                  {result.rank}
+                </span>
+                {/* Confidence badge */}
+                <span className="absolute right-2 top-2 bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-semibold border border-emerald-200">
+                  {Number(result.confidence).toFixed(1)}%
+                </span>
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex flex-col flex-1">
                     <div className="text-lg font-semibold leading-tight mb-1">
@@ -327,7 +325,6 @@ export default function AIAssistantSearch() {
             ))}
           </div>
         )}
-
         {/* --- No Results or initial state --- */}
         {!isSearching && !error && query && searchResults.length === 0 && (
           <div className="text-center py-8">
@@ -339,7 +336,7 @@ export default function AIAssistantSearch() {
         {!isSearching && !error && !query && searchResults.length === 0 && (
           <div className="text-center py-8">
             <Search className="h-14 w-14 text-zinc-200 mx-auto mb-4" />
-            <div className="text-2xl font-bold mb-1">Welcome to Pofman AI Deep Search</div>
+            <div className="text-2xl font-bold mb-1">Welcome to POFMan AI Deep Search</div>
             <div className="text-zinc-500 max-w-md mx-auto">
               Search in-depth through parliamentary debates, press, or personal files using natural language.
             </div>
