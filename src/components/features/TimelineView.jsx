@@ -8,12 +8,9 @@ import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Separator } from "../ui/separator"
 
-export default function TimelineView({ topic, documents, onViewDocument }) {
-  const [timeRange, setTimeRange] = useState("all")
-  const [sourceFilter, setSourceFilter] = useState("all")
-  const [selectedEvent, setSelectedEvent] = useState(null)
+export default function TimelineView({ topic, documents, onViewDocument}) {
 
-  // Filter and sort documents for timeline
+  const [searchTerm, setSearchTerm] = useState("")
   const timelineEvents = useMemo(() => {
     if (!documents || !topic) return []
 
@@ -38,7 +35,7 @@ export default function TimelineView({ topic, documents, onViewDocument }) {
                 : "coverage",
         }
       })
-  }, [documents, topic, timeRange, sourceFilter])
+  }, [documents, topic])
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-SG", {
@@ -86,29 +83,111 @@ export default function TimelineView({ topic, documents, onViewDocument }) {
     }
   }
 
-  if (!topic) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">No topic selected</h3>
-          <p className="text-muted-foreground">Select a topic to view its policy timeline</p>
-        </div>
-      </div>
+
+  const filteredEvents = useMemo(() => {
+    if (!timelineEvents) return []
+    if (!searchTerm.trim()) return timelineEvents
+  
+    return timelineEvents.filter(event =>
+      event.policy.toLowerCase().includes(searchTerm.toLowerCase())
     )
-  }
+  }, [timelineEvents, searchTerm])
+
+  return (
+    <div className="p-6 h-full flex flex-col">
+      {/* Search box */}
+      <div className="mb-6 w-full">
+        <label className="text-sm font-medium mb-2 block">Search policies and their relevant timelines:</label>
+        <input
+          type="text"
+          placeholder="Type to search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              // optional: trigger search immediately on Enter
+              console.log("Searching for:", searchTerm)
+            }
+          }}
+          className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:ring-primary"
+        />
+      </div>
+
+      <div className="flex-1 overflow-auto space-y-4">
+        {searchTerm === "" && (
+          <div className="text-center text-muted-foreground mt-12">
+            Please enter a topic to view the timeline.
+          </div>
+        )}
+
+        {searchTerm != "" && filteredEvents.length === 0 && (
+          <div className="text-center text-muted-foreground mt-12">
+            No events found for this search.
+          </div>
+        )}
+
+        {filteredEvents.map((event) => (
+          <div
+            key={event.id}
+            className="flex items-start gap-4 p-4 border rounded hover:shadow cursor-pointer"
+            onClick={() => onViewDocument(event.id)}
+          >
+            <div
+              className={`flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full ${getEventColor(
+                event.eventType,
+                event.isSignificantChange,
+              )}`}
+            >
+              {getEventIcon(event.eventType)}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between">
+                <h3 className="font-medium">{event.title}</h3>
+                <span className="text-sm text-muted-foreground">{formatDate(event.publishedAt)}</span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1">{event.speaker}</p>
+              <div className="flex flex-wrap gap-1 mt-2">
+                {event.topics.map((topic) => (
+                  <Badge key={topic} variant="secondary" className="text-xs">
+                    {topic}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+  /*
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
+      /* 
       <div className="border-b border-border bg-card/50 p-4">
         <div className="flex items-center gap-4 mb-4">
           <Button variant="ghost" size="sm" onClick={() => window.history.back()}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back
-          </Button>
+          </Button> 
 
           <div className="flex items-center gap-2 ml-auto">
+
+            <Select value={selectedTopicId} onValueChange={setSelectedTopicId}>
+              <SelectTrigger className="w-60">
+                <SelectValue placeholder="Select Topic" />
+              </SelectTrigger>
+              <SelectContent>
+                {topics.map((t) => (
+                  <SelectItem key={t.id} value={t.id}>
+                    {t.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
             <Select value={timeRange} onValueChange={setTimeRange}>
               <SelectTrigger className="w-40">
                 <SelectValue />
@@ -165,27 +244,21 @@ export default function TimelineView({ topic, documents, onViewDocument }) {
         </div>
       </div>
 
-      {/* Timeline Content */}
-      <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto">
         <div className="max-w-6xl mx-auto p-6">
           <div className="grid lg:grid-cols-3 gap-6">
-            {/* Timeline */}
             <div className="lg:col-span-2">
               <div className="relative">
-                {/* Timeline line */}
                 <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-border"></div>
 
                 <div className="space-y-6">
                   {timelineEvents.map((event, index) => (
                     <div key={event.id} className="relative flex gap-4">
-                      {/* Timeline dot */}
                       <div
                         className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full border-2 border-background ${getEventColor(event.eventType, event.isSignificantChange)}`}
                       >
                         <span className="text-xs text-white">{getEventIcon(event.eventType)}</span>
                       </div>
-
-                      {/* Event card */}
                       <Card
                         className={`flex-1 cursor-pointer transition-all hover:shadow-md ${selectedEvent?.id === event.id ? "ring-2 ring-primary" : ""}`}
                         onClick={() => setSelectedEvent(event)}
@@ -260,7 +333,6 @@ export default function TimelineView({ topic, documents, onViewDocument }) {
               </div>
             </div>
 
-            {/* Event Details Sidebar */}
             <div className="lg:col-span-1">
               <div className="sticky top-6">
                 {selectedEvent ? (
@@ -359,4 +431,24 @@ export default function TimelineView({ topic, documents, onViewDocument }) {
       </div>
     </div>
   )
-}
+  /* if (!topic) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <div className="text-center">
+          <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2">No topic selected</h3>
+          <p className="text-muted-foreground">Select a topic to view its policy timeline</p>
+        </div>
+      </div>
+    )
+  }*/
+
+  /*const [selectedTopicId, setSelectedTopicId] = useState(null);
+  const [timeRange, setTimeRange] = useState("all")
+  const [sourceFilter, setSourceFilter] = useState("all")
+  const [selectedEvent, setSelectedEvent] = useState(null)
+
+  const filteredDocs = selectedTopicId ? documents.filter(doc => doc.topicID === selectedTopicId) : []
+
+  const selectedTopic = topics.find(t => t.id === selectedTopicId)
+} */

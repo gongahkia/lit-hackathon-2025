@@ -18,7 +18,6 @@ export default function MinLaw2Platform() {
   // Simplified theme management to prevent hydration issues
   const [theme, setTheme] = useState("light")
   const [mounted, setMounted] = useState(false)
-
   useEffect(() => {
     setMounted(true)
     // Apply theme after mount to prevent hydration mismatch
