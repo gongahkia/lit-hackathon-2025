@@ -10,7 +10,14 @@ def extract_names(text):
 
 POLICY_KEYWORDS = [
     "Act", "Scheme", "Policy", "COVID-19", "Grant", "Bill",
-    "Subsidy", "CPF", "HDB", "Circuit Breaker", "TraceTogether", "NDP", "Parliament"
+    "Subsidy", "CPF", "HDB", "Circuit Breaker", "TraceTogether", "NDP", "Parliament",
+    "Levy", "Package", "Allowance", "Welfare", "Fund", "Support", "Programme", 
+    "Assistance", "Benefit", "Voucher", "Initiative", "Bursary", "Rebate", "Budget",
+    "Plan", "Charter", "Framework", "Mandate", "Order", "Resolution", "Pledge",
+    "Campaign", "Strategy", "Directive", "Subvention", "Provision", "Code", 
+    "Standard", "Compliance", "Agreement", "Moratorium", "Exemption", "Regulation", 
+    "Licence", "Jurisdiction", "Duty", "Tariff", "Quota", "Guideline",
+    "Sponsorship", "Petition", "Payout", "Bond", "Bonus"
 ]
 
 def extract_policies(text):
@@ -20,9 +27,12 @@ def extract_policies(text):
             policies.add(keyword)
     return ", ".join(policies)
 
-# CSV Processing
-input_file = "hansard_master.csv"
-output_file = "full_hansard_master.csv"
+# input_file = "hansard_master.csv"
+# output_file = "full_hansard_master.csv"
+# input_file = "full_cna_articles.csv"
+# output_file = "full_cna_articles_2.csv"
+input_file = "full_straits_times_articles.csv"
+output_file = "full_straits_times_articles_2.csv"
 
 with open(input_file, encoding="utf-8") as fin, open(output_file, "w", newline='', encoding="utf-8") as fout:
     reader = csv.DictReader(fin)

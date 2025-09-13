@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import TimelineView from "./TimelineView"
-
 // Build search string for backend (now always indiscriminate q)
 function buildSearchParams(query) {
   const params = new URLSearchParams()
@@ -15,7 +14,6 @@ function buildSearchParams(query) {
   // If you later add backend filter support, append filter params here
   return params
 }
-
 export default function SearchPane({
   onViewTimeline
 }) {
@@ -28,7 +26,6 @@ export default function SearchPane({
     dateRange: "all",
     speaker: "all",
   })
-
   // Unified search
   async function onSearch(query) {
     setIsSearching(true)
@@ -40,18 +37,39 @@ export default function SearchPane({
       const res = await fetch(url)
       const data = await res.json()
       setSearchResults(
-        (data.results || []).map((row, idx) => ({
-          id: idx,
-          title: row.policies ? row.policies.join(", ") : "",
-          content: row.content,
-          speaker: row.names ? row.names.join(", ") : "",
-          publishedAt: row.date,
-          sourceType: "parliamentary",
-          verified: true,
-          topics: row.policies || [],
-          url: "#",
-          contradictions: []
-        }))
+        (data.results || []).map((row, idx) => {
+          let sourceType = "parliamentary"
+          let newsSource = null
+          const source = row.source || ""
+
+          if (source.toLowerCase().includes("cna")) {
+            sourceType = "news"
+            newsSource = "CNA"
+            url = row.url || "#"    // set to actual CNA url
+            console.log(url);
+          } else if (source.toLowerCase().includes("strait")) {
+            sourceType = "news"
+            newsSource = "Straits Times"
+            url = row.url || "#"    // set to actual Straits Times url
+            console.log(url);
+          } else if (source.toLowerCase().includes("hansard")) {
+            sourceType = "parliamentary"
+            url = "#"              // or your internal hansard doc url (if available)
+          }
+          return {
+            id: idx,
+            title: row.policies ? row.policies.join(", ") : "",
+            content: row.content,
+            speaker: row.names ? row.names.join(", ") : "",
+            publishedAt: row.date,
+            sourceType,
+            newsSource,
+            verified: true,
+            topics: row.policies || [],
+            url,
+            contradictions: []
+          }
+        })
       )
     } catch (err) {
       setSearchResults([])
@@ -59,7 +77,6 @@ export default function SearchPane({
       setIsSearching(false)
     }
   }
-
   const handleFilterChange = (field, value) => {
     setFilters(prev => {
       const updated = { ...prev, [field]: value }
@@ -67,13 +84,11 @@ export default function SearchPane({
       return updated
     })
   }
-
   const handleSearchForm = (e) => {
     e.preventDefault()
     const query = searchRef.current?.value || ""
     onSearch(query)
   }
-
   const getSourceTypeColor = (type) => {
     switch (type) {
       case "parliamentary":
@@ -86,7 +101,6 @@ export default function SearchPane({
         return "bg-muted text-muted-foreground"
     }
   }
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-SG", {
       year: "numeric",
@@ -94,7 +108,6 @@ export default function SearchPane({
       day: "numeric",
     })
   }
-
   return (
     <div className="flex h-full">
       <div className="flex-1 flex flex-col">
@@ -120,8 +133,8 @@ export default function SearchPane({
             </form>
             {/* Quick Examples */}
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-muted-foreground">Try:</span>
-              {["housing policy 2024", "climate change initiatives", "GST increase"].map((example) => (
+              <span className="text-sm text-muted-foreground">Trending:</span>
+              {["housing policy", "covid-19", "tracetogether", "straitstimes", "cna", "hansard", "climate change", "GST increase"].map((example) => (
                 <Button
                   key={example}
                   variant="outline"
@@ -134,7 +147,7 @@ export default function SearchPane({
                   }}
                   className="text-xs"
                 >
-                  {example}
+                  <i>{example}</i>
                 </Button>
               ))}
             </div>
@@ -161,63 +174,81 @@ export default function SearchPane({
                   </Button>
                 </div>
                 {searchResults.map((result) => (
-                  <Card key={result.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              {result.speaker}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {formatDate(result.publishedAt)}
-                            </div>
+                <Card key={result.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {result.speaker}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {formatDate(result.publishedAt)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
-                          {result.verified ? (
-                            <CheckCircle className="h-4 w-4 text-secondary" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-yellow-500" />
-                          )}
-                        </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                          {result.topics.slice(0, 3).map((topic) => (
-                            <Badge key={topic} variant="secondary" className="text-xs">
-                              {topic}
-                            </Badge>
-                          ))}
-                        </div>
-                        <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
+                        <Badge className={getSourceTypeColor(result.sourceType)}>
+                          {result.sourceType}
+                        </Badge>
+                        {/* Hansard badge for parliamentary */}
+                        {result.sourceType === "parliamentary" && (
+                          <Badge variant="outline" className="text-xs">Hansard</Badge>
+                        )}
+                        {/* CNA or Straits Times badge for news */}
+                        {result.newsSource && (
+                          <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                        )}
+                        {result.verified ? (
+                          <CheckCircle className="h-4 w-4 text-secondary" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        {result.topics.slice(0, 3).map((topic) => (
+                          <Badge key={topic} variant="secondary" className="text-xs">
+                            {topic}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        {/* Only show View Timeline for parliamentary/hansard results */}
+                        {result.sourceType === "parliamentary" && (
                           <Button variant="outline" size="sm" onClick={onViewTimeline}>
                             View Timeline
                           </Button>
-                          <Button variant="ghost" size="sm" onClick={() => window.open(result.url, "_blank")}>
-                            <ExternalLink className="h-3 w-3 mr-1" />
-                            View Document
-                          </Button>
+                        )}
+                        {/* Show correct URL for CNA/Straits Times, fallback to "#" for parliamentary */}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => window.open(result.url, "_blank")}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        View Document
+                      </Button>
+                      </div>
+                    </div>
+                    {result.contradictions.length > 0 && (
+                      <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
+                        <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+                          <AlertCircle className="h-3 w-3" />
+                          Potential contradictions detected
                         </div>
                       </div>
-                      {result.contradictions.length > 0 && (
-                        <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
-                          <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-                            <AlertCircle className="h-3 w-3" />
-                            Potential contradictions detected
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
               </div>
             )}
             {!isSearching && searchQuery && searchResults.length === 0 && (
