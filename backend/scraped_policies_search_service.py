@@ -49,7 +49,8 @@ class PolicySearchService:
                     "date": row['date'],
                     "content": row['content'],
                     "names": row['names'],
-                    "policies": row['policies']
+                    "policies": row['policies'],
+                    "url": row['url']
                 }
                 for row in self.data
             ]
