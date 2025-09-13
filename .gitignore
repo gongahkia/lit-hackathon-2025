@@ -256,3 +256,5 @@ $RECYCLE.BIN/
 
 # MinLaw 2 specific ignores
 # Add any project-specific files to ignore here
+
+package-lock.json
