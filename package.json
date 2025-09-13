@@ -2,7 +2,16 @@
   "name": "minlaw2-platform",
   "version": "1.0.0",
   "description": "A modern Next.js application for fast, verifiable access to parliamentary statements, ministerial releases, and government communications",
-  "keywords": ["parliament", "government", "data", "search", "legal", "singapore", "hansard", "policy"],
+  "keywords": [
+    "parliament",
+    "government",
+    "data",
+    "search",
+    "legal",
+    "singapore",
+    "hansard",
+    "policy"
+  ],
   "author": "MinLaw 2 Team",
   "license": "MIT",
   "private": false,
@@ -22,7 +31,8 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next out dist",
     "preview": "next build && next start",
-    "seed-db": "npx tsx scripts/seed-database.ts"
+    "seed-db": "npx tsx scripts/seed-database.ts",
+    "ingest-data": "npx tsx scripts/ingest-golden-dataset.ts"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
@@ -55,8 +65,8 @@
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
     "@remix-run/react": "latest",
-    "@sveltejs/kit": "latest",
     "@supabase/supabase-js": "^2.38.0",
+    "@sveltejs/kit": "latest",
     "@vercel/analytics": "latest",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
@@ -89,6 +99,7 @@
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "csv-parser": "^3.2.0",
     "dotenv": "^16.3.1",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",

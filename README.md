@@ -5,7 +5,7 @@
 
 # MinLaw 2 - Parliamentary Data Platform
 
-[![Version](https://img.shields.io/badge/version-1.1.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
+[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.3-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
@@ -91,10 +91,12 @@ src/
 - **Document Viewer**: Interactive document viewing and analysis
 - **AI Assistant**: Intelligent query processing and responses
 - **Timeline View**: Chronological data visualization
-- **Database Integration**: Supabase PostgreSQL with vector search support
+- **Database Integration**: Complete Supabase PostgreSQL with vector search support
+- **Data Ingestion Pipeline**: Automated CSV processing and database population
 - **Real-time Data**: Live data updates with fallback to mock data
 - **Contradiction Detection**: Automated analysis for conflicting statements
 - **Admin Dashboard**: Administrative interface for data management
+- **API Integration**: Complete Next.js API routes for CRUD operations
 
 ## Getting Started
 
@@ -112,10 +114,14 @@ Below instructions are for running the MVP locally at [localhost:3000](http://lo
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_service_key
    ```
-3. Run the database schema in Supabase SQL Editor (see `database/schema.sql`)
+3. Run the consolidated database schema in Supabase SQL Editor (see `database/schema.sql`)
 4. Seed the database with sample data:
    ```bash
    npm run seed-db
+   ```
+5. Ingest real data from CSV files:
+   ```bash
+   npm run ingest-data
    ```
 
 ### Development
@@ -140,6 +146,23 @@ npm install && npm run dev
 
 ## API Endpoints
 
+- `GET /api/sources` - Fetch all data sources
+- `GET /api/documents` - Fetch all documents with optional search
+- `GET /api/topics` - Fetch all topics
 - `GET/POST /api/scrapers` - Data scraping operations
 - `GET/POST /api/validation` - Data validation services
 - `GET/POST /api/engine` - Core processing engine
+
+## Data Ingestion
+
+The platform includes a complete data ingestion pipeline:
+
+- **CSV Processing**: Automatically processes CSV files from the `golden_dataset` directory
+- **Database Population**: Inserts processed data into Supabase with error handling
+- **Data Validation**: Validates and cleans data before insertion
+- **Batch Processing**: Efficient batch insertion for large datasets
+
+Run the ingestion pipeline:
+```bash
+npm run ingest-data
+```

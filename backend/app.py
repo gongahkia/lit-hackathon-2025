@@ -3,9 +3,9 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
-from validation import validate_document
+from validation_service import validate_document
 from query_engine_service import process_query
-from articles_service import get_all_articles, search_articles  # <-- NEW
+from scraped_news_service import get_all_articles, search_articles
 
 load_dotenv()
 app = Flask(__name__)
