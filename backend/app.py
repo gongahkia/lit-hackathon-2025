@@ -1,7 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
-
 from query_engine_service import process_query
 from scraped_policies_search_service import policy_search_service
 from scraped_policies_timeline_service import get_policy_timeline
@@ -39,12 +38,10 @@ def query_engine():
         }), 500
 
 # ---- NEW ENDPOINTS ----
-
 @app.route('/articles', methods=['GET'])
 def serve_articles():
     """ List all articles or filter by source, or search by query """
     try:
-        # ?query=...&source=... for search/filtering
         query = request.args.get('query', '').strip()
         source = request.args.get('source', None)
         if query:
@@ -75,13 +72,11 @@ def list_policies():
 
 @app.route('/api/search', methods=['GET'])
 def search_records():
-    # Query params: date, names (comma-separated), policies (comma-separated)
-    date = request.args.get('date', None)
-    names = request.args.get('names', None)
-    policies = request.args.get('policies', None)
-    name_list = [n.strip() for n in names.split(',')] if names else None
-    policy_list = [p.strip() for p in policies.split(',')] if policies else None
-    results = policy_search_service.search(date=date, names=name_list, policies=policy_list)
+    # Use unified ('indiscriminate') search
+    q = request.args.get('q', '').strip()
+    # Support multi-term search by splitting, or just use [q] for single term.
+    query_terms = [term.strip() for term in q.split()] if q else None
+    results = policy_search_service.search(query_terms=query_terms)
     return jsonify({"results": results})
 
 @app.route('/api/timeline', methods=['GET'])
