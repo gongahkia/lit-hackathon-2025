@@ -258,3 +258,8 @@ $RECYCLE.BIN/
 # Add any project-specific files to ignore here
 
 package-lock.json
+
+venv
+myenv
+.env
+.env.local
