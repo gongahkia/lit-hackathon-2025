@@ -48,7 +48,7 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
         <h1 className="text-lg font-semibold">{getViewTitle(activeView)}</h1>
       </div>
 
-      {activeView === "search" && (
+      {/*activeView === "search" && (
         <div className="hidden md:flex flex-1 max-w-md mx-4">
           <form onSubmit={handleSearch} className="relative w-full">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -61,7 +61,7 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
             />
           </form>
         </div>
-      )}
+      )*/}
 
       <div className="ml-auto flex items-center gap-2">
         <GhostIconButton label="Notifications">
