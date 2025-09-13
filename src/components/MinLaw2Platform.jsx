@@ -8,12 +8,11 @@ import SearchPane from "./features/SearchPane"
 import DocumentViewer from "./features/DocumentViewer"
 import TimelineView from "./features/TimelineView"
 import ContradictionDetector from "./features/ContradictionDetector"
-import LABCalculator from "./features/LABCalculator"
 import AdminDashboard from "./features/AdminDashboard"
 import AIQueryPane from "./features/AIQueryPane"
 import GhostIconButton from "./ui/GhostIconButton"
 import ThemeToggle from "./ui/ThemeToggle"
-import { INITIAL_SOURCES, INITIAL_DOCUMENTS, INITIAL_TOPICS } from "@/lib/mockData"
+import { DataService } from "../../lib/dataService"
 
 export default function MinLaw2Platform() {
   // Simplified theme management to prevent hydration issues
@@ -40,14 +39,39 @@ export default function MinLaw2Platform() {
   const [selectedTopic, setSelectedTopic] = useState(null)
 
   // Data states
-  const [sources, setSources] = useState(INITIAL_SOURCES)
-  const [documents, setDocuments] = useState(INITIAL_DOCUMENTS)
-  const [topics, setTopics] = useState(INITIAL_TOPICS)
+  const [sources, setSources] = useState([])
+  const [documents, setDocuments] = useState([])
+  const [topics, setTopics] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
   const [searchResults, setSearchResults] = useState([])
   const [isSearching, setIsSearching] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const searchRef = useRef(null)
+
+  // Load data from database on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setIsLoading(true)
+        const [sourcesData, documentsData, topicsData] = await Promise.all([
+          DataService.getSources(),
+          DataService.getDocuments(),
+          DataService.getTopics()
+        ])
+        setSources(sourcesData)
+        setDocuments(documentsData)
+        setTopics(topicsData)
+      } catch (error) {
+        console.error('Error loading data:', error)
+        // DataService will fallback to mock data automatically
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    
+    loadData()
+  }, [])
 
   useEffect(() => {
     const onKey = (e) => {
@@ -62,7 +86,7 @@ export default function MinLaw2Platform() {
   }, [sidebarOpen])
 
   // Search functionality
-  function performSearch(query) {
+  async function performSearch(query) {
     if (!query.trim()) {
       setSearchResults([])
       return
@@ -71,8 +95,12 @@ export default function MinLaw2Platform() {
     setIsSearching(true)
     setSearchQuery(query)
 
-    // Simulate search with mock data
-    setTimeout(() => {
+    try {
+      const results = await DataService.searchDocuments(query)
+      setSearchResults(results.slice(0, 10))
+    } catch (error) {
+      console.error('Search error:', error)
+      // Fallback to client-side search
       const results = documents
         .filter(
           (doc) =>
@@ -81,10 +109,10 @@ export default function MinLaw2Platform() {
             doc.speaker.toLowerCase().includes(query.toLowerCase()),
         )
         .slice(0, 10)
-
       setSearchResults(results)
+    } finally {
       setIsSearching(false)
-    }, 800)
+    }
   }
 
   function viewDocument(docId) {
@@ -104,7 +132,6 @@ export default function MinLaw2Platform() {
     { id: "ai", label: "AI Assistant", icon: Bot },
     { id: "timeline", label: "Policy Timeline", icon: Clock },
     { id: "contradictions", label: "Contradictions", icon: AlertTriangle },
-    { id: "calculator", label: "LAB Calculator", icon: Calculator },
     { id: "admin", label: "Admin", icon: Settings },
   ]
 
@@ -158,7 +185,14 @@ export default function MinLaw2Platform() {
           />
 
           <div className="flex-1 overflow-hidden">
-            {activeView === "search" && (
+            {isLoading ? (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+                  <p className="text-muted-foreground">Loading data...</p>
+                </div>
+              </div>
+            ) : activeView === "search" ? (
               <SearchPane
                 searchQuery={searchQuery}
                 searchResults={searchResults}
@@ -168,27 +202,25 @@ export default function MinLaw2Platform() {
                 onViewTimeline={viewTimeline}
                 searchRef={searchRef}
               />
-            )}
+            ) : null}
 
-            {activeView === "ai" && (
+            {!isLoading && activeView === "ai" && (
               <AIQueryPane onViewDocument={viewDocument} onViewTimeline={viewTimeline} documents={documents} />
             )}
 
-            {activeView === "document" && (
+            {!isLoading && activeView === "document" && (
               <DocumentViewer document={selectedDocument} onBack={() => setActiveView("search")} />
             )}
 
-            {activeView === "timeline" && (
+            {!isLoading && activeView === "timeline" && (
               <TimelineView topic={selectedTopic} documents={documents} onViewDocument={viewDocument} />
             )}
 
-            {activeView === "contradictions" && (
+            {!isLoading && activeView === "contradictions" && (
               <ContradictionDetector documents={documents} onViewDocument={viewDocument} />
             )}
 
-            {activeView === "calculator" && <LABCalculator />}
-
-            {activeView === "admin" && (
+            {!isLoading && activeView === "admin" && (
               <AdminDashboard sources={sources} setSources={setSources} documents={documents} />
             )}
           </div>

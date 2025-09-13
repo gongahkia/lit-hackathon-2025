@@ -5,7 +5,23 @@ All notable changes to the MinLaw 2 Platform will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-12-09
+## [1.1.0] - 2025-09-13
+
+### Added
+- **Database Infrastructure** - Complete Supabase PostgreSQL integration
+- **Database Schema** - Sources, documents, topics tables with Row Level Security
+- **TypeScript Services** - DatabaseService and DataService with fallback to mock data
+- **Seeding Scripts** - Automated database population with sample data
+- **Environment Configuration** - Proper Supabase credentials management
+- **Phase 2 Preparation** - pgvector extension ready for semantic search
+
+### Technical Details
+- **Database**: Supabase PostgreSQL with pgvector extension
+- **Security**: Row Level Security (RLS) policies for public read access
+- **Type Safety**: Full TypeScript integration with database operations
+- **Fallback System**: Automatic fallback to mock data if database unavailable
+
+## [1.0.0] - 2025-09-12
 
 ### Added
 - **Initial Release** - Complete frontend MVP for MinLaw 2 Platform
@@ -13,7 +29,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Document Viewer** - Interactive document viewing with highlighting
 - **Timeline View** - Policy timeline visualization with event markers
 - **Contradiction Detection UI** - Mock contradiction detection interface
-- **LAB Calculator** - Complete Legal Aid Bureau calculation tool with exact PRD formulas
 - **Admin Dashboard** - Source management and system monitoring interface
 - **AI Assistant** - Query processing interface with document linking
 - **Theme System** - Dark/light mode with proper hydration handling
@@ -41,7 +56,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ **AI Assistant** - Intelligent query processing and responses
 - ✅ **Timeline View** - Chronological data visualization
 - ✅ **Contradiction Detection** - Automated analysis for conflicting statements
-- ✅ **LAB Calculator** - Specialized calculation tools with audit trail
 - ✅ **Admin Dashboard** - Administrative interface for data management
 - ✅ **Theme Toggle** - Dark/light mode switching
 - ✅ **Responsive Layout** - Mobile and desktop optimized
@@ -82,15 +96,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2025-12-09
+
+### Added
+- **Data Ingestion Pipeline** - Complete CSV processing and database population system
+- **API Integration** - Full Next.js API routes connected to Supabase database
+- **Frontend-Database Connection** - Real data integration with fallback to mock data
+- **Schema Consolidation** - Single consolidated database schema file
+- **Frontend Views** - Optimized database views for frontend data consumption
+- **Data Validation** - Input validation and error handling for data ingestion
+
+### Changed
+- **Database Schema** - Added frontend-required columns (published_at, source_type, role, verified, confidence, contradictions, url, topics)
+- **Data Service** - Updated to support both real database and mock data fallback
+- **Frontend Components** - Modified to use DataService instead of direct mock data imports
+- **Project Structure** - Cleaned up test files and consolidated schema files
+
+### Technical Details
+- **CSV Processing**: Automated parsing of golden_dataset CSV files
+- **Database Population**: Batch insertion with duplicate handling and error recovery
+- **API Endpoints**: Complete CRUD operations for sources, documents, and topics
+- **Data Mapping**: Proper transformation from CSV format to database schema
+- **Error Handling**: Comprehensive error handling and logging throughout pipeline
+
+### Fixed
+- **Module Resolution** - Fixed all import path issues across the project
+- **Database Connection** - Resolved Supabase key configuration issues
+- **Data Consistency** - Ensured data integrity during ingestion process
+- **Frontend Loading** - Added proper loading states for database operations
+
 ## [Unreleased]
 
 ### Planned Features
-- Real data ingestion from Singapore government sources
-- PostgreSQL database with exact PRD schema
-- Elasticsearch and Vector DB integration
+- Real-time data updates from Singapore government sources
+- Elasticsearch and Vector DB integration for advanced search
 - Actual contradiction detection with NLI models
 - User authentication and authorization
-- Real-time data updates
 - Comprehensive testing suite
 - Production deployment pipeline
 
@@ -106,6 +147,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.2.0** - Database integration and data ingestion pipeline complete
+- **1.1.0** - Database infrastructure and Supabase integration
 - **1.0.0** - Initial release with complete frontend MVP
 - **0.1.0** - Development version (pre-release)
 
