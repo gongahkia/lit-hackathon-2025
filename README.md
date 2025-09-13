@@ -1,3 +1,8 @@
+![Vercel Deploy](https://deploy-badge.vercel.app/vercel/lit-hackathon-2025)
+
+> [!IMPORTANT]
+> The site is now live [***here***](https://lit-hackathon-2025.vercel.app)!
+
 # MinLaw 2 - Parliamentary Data Platform
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
