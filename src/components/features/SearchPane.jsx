@@ -195,12 +195,12 @@ export default function SearchPane() {
                           ))}
                         </div>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => window.alert("View Document not implemented")}>
-                            View Document
+                          <Button variant="outline" size="sm" onClick={() => window.alert("Timeline not implemented")}>
+                            View Timeline
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => window.open(result.url, "_blank")}>
                             <ExternalLink className="h-3 w-3 mr-1" />
-                            Source
+                            View Document
                           </Button>
                         </div>
                       </div>

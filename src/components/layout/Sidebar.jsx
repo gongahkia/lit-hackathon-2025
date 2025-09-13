@@ -22,19 +22,30 @@ export default function Sidebar({
   if (sidebarCollapsed) {
     return (
       <motion.aside
-        initial={{ width: 320 }}
+        /*initial={{ width: 320 }}
         animate={{ width: 64 }}
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
-        className="z-50 flex h-full shrink-0 flex-col border-r border-border bg-sidebar-background"
+        className="z-50 flex h-full shrink-0 flex-col border-r border-border bg-sidebar-background"*/
+
+        key="sidebar"
+        initial={{ width: sidebarCollapsed ? 64 : 320 }}
+        animate={{ width: sidebarCollapsed ? 64 : 320 }}
+        transition={{ type: "spring", stiffness: 260, damping: 28 }}
+        className="z-50 flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar-background fixed inset-y-0 left-0 md:static md:translate-x-0"
+
       >
         <div className="flex items-center justify-center border-b border-sidebar-border px-3 py-3">
           <button
-            onClick={() => setSidebarCollapsed(false)}
+            onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
             className="rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-            aria-label="Open sidebar"
-            title="Open sidebar"
+            aria-label={sidebarCollapsed ? "Open sidebar" : "Close sidebar"}
+            title={sidebarCollapsed ? "Open sidebar" : "Close sidebar"}
           >
-            <PanelLeftOpen className="h-5 w-5" />
+            {sidebarCollapsed ? (
+              <PanelLeftOpen className="h-5 w-5" />
+            ) : (
+              <PanelLeftClose className="h-5 w-5" />
+            )}
           </button>
         </div>
 
@@ -92,17 +103,21 @@ export default function Sidebar({
                 <div className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
                   <span className="text-sm font-bold">⚖</span>
                 </div>
-                <div className="text-sm font-semibold tracking-tight">MinLaw 2</div>
+                <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "MinLaw 2"}</div>
               </div>
               <div className="ml-auto flex items-center gap-1">
-                <button
-                  onClick={() => setSidebarCollapsed(true)}
-                  className="hidden md:block rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
-                  aria-label="Close sidebar"
-                  title="Close sidebar"
-                >
+              <button
+              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="hidden md:block rounded-xl p-2 hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring"
+                aria-label={sidebarCollapsed ? "Open sidebar" : "Close sidebar"}
+                title={sidebarCollapsed ? "Open sidebar" : "Close sidebar"}
+              >
+                {sidebarCollapsed ? (
+                  <PanelLeftOpen className="h-5 w-5" />
+                ) : (
                   <PanelLeftClose className="h-5 w-5" />
-                </button>
+                )}
+              </button>
 
                 <button
                   onClick={onClose}
@@ -135,7 +150,7 @@ export default function Sidebar({
 
               <div className="mt-6">
                 <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                  Data Sources
+                  {!sidebarCollapsed && "Data Sources"}
                 </h3>
                 <div className="space-y-1">
                   {sources.slice(0, 4).map((source) => (
@@ -157,7 +172,7 @@ export default function Sidebar({
 
               <div className="mt-6">
                 <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                  Trending Topics
+                  {!sidebarCollapsed && "Trending Topics"}
                 </h3>
                 <div className="space-y-1">
                   {topics
@@ -178,7 +193,7 @@ export default function Sidebar({
             <div className="mt-auto border-t border-sidebar-border px-3 py-3">
               <div className="flex items-center gap-2">
                 <button className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
-                  <Settings className="h-4 w-4" /> Settings
+                  <Settings className="h-4 w-4" /> {!sidebarCollapsed && "Settings"}
                 </button>
                 <div className="ml-auto">
                   <ThemeToggle theme={theme} setTheme={setTheme} />
@@ -189,8 +204,8 @@ export default function Sidebar({
                   SG
                 </div>
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-medium">Singapore Government</div>
-                  <div className="truncate text-xs text-muted-foreground">Parliamentary Platform</div>
+                  <div className="truncate text-sm font-medium"> {!sidebarCollapsed && "Singapore Government"}</div>
+                  <div className="truncate text-xs text-muted-foreground"> {!sidebarCollapsed && "Parliamentary Platform"}</div>
                 </div>
               </div>
             </div>
