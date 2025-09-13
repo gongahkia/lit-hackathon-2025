@@ -1,20 +1,23 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 import re
 from datetime import datetime
 import hashlib
 import uuid
+import requests
+
+load_dotenv()
+
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-1.5-flash-latest")
+GEMINI_API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={GEMINI_API_KEY}"
 
 app = Flask(__name__)
 CORS(app)
 
-# Example validation workflows and helpers
-
 def extract_statements(text):
-    """
-    Naive atomic sentence extractor (improve this with NLP for prod).
-    Splits on sentence end, returns list of (text, start, end).
-    """
     sentences = [m.group() for m in re.finditer(r'[^.?!\n\r]+[.?!\n\r]', text)]
     result = []
     index = 0
@@ -30,30 +33,50 @@ def extract_statements(text):
     return result
 
 def calculate_fetch_signature(content):
-    """SHA256 of raw content, for deduplication."""
     return hashlib.sha256(content.encode('utf-8')).hexdigest()
+
+def call_gemini(prompt):
+    headers = {
+        "Content-Type": "application/json"
+    }
+    data = {
+        "contents": [
+            {"parts": [{"text": prompt}]}
+        ]
+    }
+    response = requests.post(GEMINI_API_URL, headers=headers, json=data)
+    if response.status_code != 200:
+        raise Exception(f"Gemini API error [{response.status_code}]: {response.text}")
+    gemini_json = response.json()
+    # Gemini returns in: gemini_json['candidates'][0]['content']['parts'][0]['text']
+    out_text = gemini_json.get("candidates", [{}])[0].get("content", {}).get("parts", [{}])[0].get("text", "")
+    return out_text
+
+def build_validation_prompt(document, preview_statements):
+    # Customize instructions for Gemini to be clear and auditable
+    text = document.get("raw_text", "")
+    # Collapsed preview, so prompt isn't huge
+    sample = "\n".join([s['text'] for s in preview_statements[:3]])  # few-shot
+    return (
+        "You are a policy validation and contradiction detection AI. "
+        "Analyze the following government document. "
+        "Instructions:\n"
+        "- Validate if each extracted statement is factual, self-consistent, and not obviously contradicted by other statements in the text or by a set of provided past policy statements (if any).\n"
+        "- If contradictions exist, clearly list them and provide reasoning.\n"
+        "- If the document is generally valid and consistent, say so and summarize the main point.\n"
+        "Here is the beginning of the document:\n"
+        f"{sample}\n\n"
+        "Full document is below (for in-depth analysis):\n"
+        f"{text}\n"
+        "-- End of document --"
+    )
 
 @app.route('/validate', methods=['POST'])
 def validate():
-    """
-    Accepts JSON in the format:
-      {
-        "document": {
-            "raw_text": "...full document...",
-            "source": "hansard",
-            "url": "https://...",
-            "doc_type": "hansard_transcript",
-            "published_at": "2025-09-01T11:00:00Z"
-            // any additional metadata
-        }
-      }
-    Returns extracted statement objects, provenance, and (optional) validation result.
-    """
     try:
         data = request.get_json(force=True)
         assert data and "document" in data, "Missing document key"
         doc = data["document"]
-
         # Provenance fields
         doc_id = str(uuid.uuid4())
         source = doc.get("source", "unknown")
@@ -62,8 +85,6 @@ def validate():
         published_at = doc.get("published_at")
         raw_text = doc.get("raw_text", "")
         language = doc.get("language", "en")
-
-        # Validation rules (example: must not be empty and must be English)
         if not raw_text or len(raw_text) < 40:
             return jsonify({
                 "success": False,
@@ -76,7 +97,6 @@ def validate():
                 "error": "Only English-language documents supported in this MVP.",
                 "provenance": { "source": source, "url": url }
             }), 400
-
         # Extraction phase
         statements = extract_statements(raw_text)
         statement_objs = []
@@ -87,16 +107,14 @@ def validate():
                 "text": st["text"],
                 "start_offset": st["start_offset"],
                 "end_offset": st["end_offset"],
-                "speaker": doc.get("speaker", "UNKNOWN"),  # improve with NER/metadata
+                "speaker": doc.get("speaker", "UNKNOWN"),
                 "role": doc.get("role", "UNKNOWN"),
                 "statement_ts": published_at,
-                "embedding_id": None,  # Filled by downstream enricher/ML
+                "embedding_id": None,
                 "created_at": datetime.utcnow().isoformat() + 'Z'
             }
             statement_objs.append(statement_obj)
-
         fetch_signature = calculate_fetch_signature(raw_text)
-
         provenance = {
             "document_id": doc_id,
             "source": source,
@@ -106,29 +124,27 @@ def validate():
             "published_at": published_at,
             "extract_time": datetime.utcnow().isoformat() + 'Z'
         }
-
-        # (Extensible) Validator output: for contradiction detection
+        # --- Call Gemini for contradiction/validation review ---
+        prompt = build_validation_prompt(doc, statement_objs)
+        gemini_out = call_gemini(prompt)
         validation = {
             "success": True,
             "statements_extracted": len(statement_objs),
             "statements": statement_objs,
-            "provenance": provenance
+            "provenance": provenance,
+            "gemini_analysis": gemini_out
         }
-
-        # For auditing: add request and result log here if required (DB, file, etc)
         return jsonify(validation), 200
-
     except Exception as e:
         return jsonify({
             "success": False,
             "error": str(e),
             "provenance": None
-        }), 400
+        }), 500
 
 @app.route('/')
 def healthcheck():
     return jsonify({"status": "Flask validator running."})
 
 if __name__ == '__main__':
-    # For local only
     app.run(host='0.0.0.0', port=5000, debug=True)
