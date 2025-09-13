@@ -265,3 +265,5 @@ myenv
 .env.local
 
 __pycache__
+
+.vemv
