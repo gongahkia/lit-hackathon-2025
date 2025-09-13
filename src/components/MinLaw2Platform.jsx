@@ -172,7 +172,7 @@ export default function MinLaw2Platform() {
           searchRef={searchRef}
         />
 
-        <main className="relative flex min-w-0 flex-1 flex-col">
+        <main className="relative flex min-w-0 flex-1 flex-col overflow-hidden">
           <Header
             activeView={activeView}
             setSidebarOpen={setSidebarOpen}
@@ -180,7 +180,7 @@ export default function MinLaw2Platform() {
             onSearch={performSearch}
           />
 
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-auto p-4 md:p-6">
             {isLoading ? (
               <div className="flex items-center justify-center h-full">
                 <div className="text-center">
