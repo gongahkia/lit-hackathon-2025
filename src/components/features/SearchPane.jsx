@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import TimelineView from "./TimelineView"
-
 // Build search string for backend (now always indiscriminate q)
 function buildSearchParams(query) {
   const params = new URLSearchParams()
@@ -15,7 +14,6 @@ function buildSearchParams(query) {
   // If you later add backend filter support, append filter params here
   return params
 }
-
 export default function SearchPane({
   onViewTimeline
 }) {
@@ -28,7 +26,6 @@ export default function SearchPane({
     dateRange: "all",
     speaker: "all",
   })
-
   // Unified search
   async function onSearch(query) {
     setIsSearching(true)
@@ -74,7 +71,6 @@ export default function SearchPane({
       setIsSearching(false)
     }
   }
-
   const handleFilterChange = (field, value) => {
     setFilters(prev => {
       const updated = { ...prev, [field]: value }
@@ -82,13 +78,11 @@ export default function SearchPane({
       return updated
     })
   }
-
   const handleSearchForm = (e) => {
     e.preventDefault()
     const query = searchRef.current?.value || ""
     onSearch(query)
   }
-
   const getSourceTypeColor = (type) => {
     switch (type) {
       case "parliamentary":
@@ -101,7 +95,6 @@ export default function SearchPane({
         return "bg-muted text-muted-foreground"
     }
   }
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-SG", {
       year: "numeric",
@@ -109,7 +102,6 @@ export default function SearchPane({
       day: "numeric",
     })
   }
-
   return (
     <div className="flex h-full">
       <div className="flex-1 flex flex-col">
@@ -194,18 +186,9 @@ export default function SearchPane({
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
-                          {/* If news, show specific media */}
                           {result.newsSource && (
                             <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
                           )}
-                          {result.verified ? (
-                            <CheckCircle className="h-4 w-4 text-secondary" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-yellow-500" />
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
                           {result.verified ? (
                             <CheckCircle className="h-4 w-4 text-secondary" />
                           ) : (
