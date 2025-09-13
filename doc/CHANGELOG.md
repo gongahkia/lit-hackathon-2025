@@ -5,6 +5,22 @@ All notable changes to the MinLaw 2 Platform will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-09-13
+
+### Added
+- **Database Infrastructure** - Complete Supabase PostgreSQL integration
+- **Database Schema** - Sources, documents, topics tables with Row Level Security
+- **TypeScript Services** - DatabaseService and DataService with fallback to mock data
+- **Seeding Scripts** - Automated database population with sample data
+- **Environment Configuration** - Proper Supabase credentials management
+- **Phase 2 Preparation** - pgvector extension ready for semantic search
+
+### Technical Details
+- **Database**: Supabase PostgreSQL with pgvector extension
+- **Security**: Row Level Security (RLS) policies for public read access
+- **Type Safety**: Full TypeScript integration with database operations
+- **Fallback System**: Automatic fallback to mock data if database unavailable
+
 ## [1.0.0] - 2025-09-12
 
 ### Added
