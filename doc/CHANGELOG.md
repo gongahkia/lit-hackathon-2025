@@ -96,15 +96,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2025-12-09
+
+### Added
+- **Data Ingestion Pipeline** - Complete CSV processing and database population system
+- **API Integration** - Full Next.js API routes connected to Supabase database
+- **Frontend-Database Connection** - Real data integration with fallback to mock data
+- **Schema Consolidation** - Single consolidated database schema file
+- **Frontend Views** - Optimized database views for frontend data consumption
+- **Data Validation** - Input validation and error handling for data ingestion
+
+### Changed
+- **Database Schema** - Added frontend-required columns (published_at, source_type, role, verified, confidence, contradictions, url, topics)
+- **Data Service** - Updated to support both real database and mock data fallback
+- **Frontend Components** - Modified to use DataService instead of direct mock data imports
+- **Project Structure** - Cleaned up test files and consolidated schema files
+
+### Technical Details
+- **CSV Processing**: Automated parsing of golden_dataset CSV files
+- **Database Population**: Batch insertion with duplicate handling and error recovery
+- **API Endpoints**: Complete CRUD operations for sources, documents, and topics
+- **Data Mapping**: Proper transformation from CSV format to database schema
+- **Error Handling**: Comprehensive error handling and logging throughout pipeline
+
+### Fixed
+- **Module Resolution** - Fixed all import path issues across the project
+- **Database Connection** - Resolved Supabase key configuration issues
+- **Data Consistency** - Ensured data integrity during ingestion process
+- **Frontend Loading** - Added proper loading states for database operations
+
 ## [Unreleased]
 
 ### Planned Features
-- Real data ingestion from Singapore government sources
-- PostgreSQL database with exact PRD schema
-- Elasticsearch and Vector DB integration
+- Real-time data updates from Singapore government sources
+- Elasticsearch and Vector DB integration for advanced search
 - Actual contradiction detection with NLI models
 - User authentication and authorization
-- Real-time data updates
 - Comprehensive testing suite
 - Production deployment pipeline
 
@@ -120,6 +147,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Version History
 
+- **1.2.0** - Database integration and data ingestion pipeline complete
+- **1.1.0** - Database infrastructure and Supabase integration
 - **1.0.0** - Initial release with complete frontend MVP
 - **0.1.0** - Development version (pre-release)
 
