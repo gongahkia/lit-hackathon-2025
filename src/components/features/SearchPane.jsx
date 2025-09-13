@@ -51,6 +51,10 @@ export default function SearchPane({
             sourceType = "news"
             newsSource = "Straits Times"
             url = row.url || "#"
+          } else if (source.toLowerCase().includes("lawgazette")) {
+            sourceType = "articles"
+            newsSource = "Singapore Law Gazette"
+            url = row.url || "#"
           } else if (source.toLowerCase().includes("hansard")) {
             sourceType = "parliamentary"
             url = `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` || "#" // or your hansard link if desired
