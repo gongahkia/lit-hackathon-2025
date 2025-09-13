@@ -40,22 +40,22 @@ export default function SearchPane({
         (data.results || []).map((row, idx) => {
           let sourceType = "parliamentary"
           let newsSource = null
-          const source = row.source || ""
+          let url = "#" // <- declare here so it's in scope for the returned object
 
+          const source = row.source || ""
           if (source.toLowerCase().includes("cna")) {
             sourceType = "news"
             newsSource = "CNA"
-            url = row.url || "#"    // set to actual CNA url
-            console.log(url);
+            url = row.url || "#"
           } else if (source.toLowerCase().includes("strait")) {
             sourceType = "news"
             newsSource = "Straits Times"
-            url = row.url || "#"    // set to actual Straits Times url
-            console.log(url);
+            url = row.url || "#"
           } else if (source.toLowerCase().includes("hansard")) {
             sourceType = "parliamentary"
-            url = "#"              // or your internal hansard doc url (if available)
+            url = "#" // or your hansard link if desired
           }
+
           return {
             id: idx,
             title: row.policies ? row.policies.join(", ") : "",
@@ -66,11 +66,12 @@ export default function SearchPane({
             newsSource,
             verified: true,
             topics: row.policies || [],
-            url,
+            url, // always refers to the correct url after all if/else
             contradictions: []
           }
         })
       )
+
     } catch (err) {
       setSearchResults([])
     } finally {
