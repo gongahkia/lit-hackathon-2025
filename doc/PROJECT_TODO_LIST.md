@@ -1,3 +1,10 @@
+# TODO
+
+- [ ] **Scraper Implementation** - Actual web scrapers for Singapore sources placed within `route.ts` of scra
+  - [ ] **Parliament.gov.sg** - Hansard @ Kevan
+  - [ ] **Ministry Sites** - Law Gazette @ 
+  - [ ] **News Sources** - Straits Times/CNA integration @ 
+
 # MinLaw 2 Platform - Comprehensive To-Do List & Progress Audit
 
 ## 📊 **Current Project Status: Frontend MVP Complete (85%)**
@@ -120,12 +127,7 @@ The MinLaw 2 platform is a **parliamentary data platform** for fast, verifiable 
 - [ ] **Connection Pooling** - Efficient database connections
 
 #### **Data Ingestion Pipeline** ❌
-- [ ] **Scraper Implementation** - Actual web scrapers for Singapore sources
-  - [ ] **Parliament.gov.sg** - Hansard transcript scraping
-  - [ ] **Ministry Sites** - Press release scraping (MOH, MTI, etc.)
-  - [ ] **Social Media APIs** - Official ministerial accounts
-  - [ ] **Government PDFs** - Policy document extraction
-  - [ ] **News Sources** - Straits Times/CNA integration
+
 - [ ] **Parser System** - HTML/PDF parsing and text extraction
 - [ ] **Speaker Detection** - Identify speakers in parliamentary records
 - [ ] **Statement Splitting** - Break documents into atomic statements
