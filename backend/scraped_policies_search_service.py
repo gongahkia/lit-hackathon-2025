@@ -12,7 +12,6 @@ class PolicySearchService:
             reader = csv.DictReader(fin)
             rows = []
             for row in reader:
-                # Normalize names/policies to list for easier search
                 row['names'] = [n.strip() for n in row['names'].split(',') if n.strip()]
                 row['policies'] = [p.strip() for p in row['policies'].split(',') if p.strip()]
                 rows.append(row)
@@ -24,26 +23,40 @@ class PolicySearchService:
             policies.update(row['policies'])
         return sorted([p for p in policies if p])
 
-    def search(self, date: str = None, names: List[str] = None, policies: List[str] = None) -> List[Dict]:
-        result = []
+    def search(self, query_terms: List[str] = None) -> List[Dict]:
+        if not query_terms:
+            # Return all results if no query given
+            return [
+                {
+                    "date": row['Date'],
+                    "content": row['content'],
+                    "names": row['names'],
+                    "policies": row['policies']
+                }
+                for row in self.data
+            ]
+
+        results = []
         for row in self.data:
-            match = True
-            if date and date not in row['Date']:
-                match = False
-            if names:
-                if not any(name in row['names'] for name in names):
-                    match = False
-            if policies:
-                if not any(policy in row['policies'] for policy in policies):
-                    match = False
-            if match:
-                result.append({
+            found = False
+            # check each query term against all fields
+            for term in query_terms:
+                term_lower = term.lower()
+                # Match: in date string, any name, any policy, or in content text
+                if (term_lower in row['Date'].lower()
+                    or any(term_lower in name.lower() for name in row['names'])
+                    or any(term_lower in policy.lower() for policy in row['policies'])
+                    or term_lower in row['content'].lower()):
+                    found = True
+                    break
+            if found:
+                results.append({
                     "date": row['Date'],
                     "content": row['content'],
                     "names": row['names'],
                     "policies": row['policies']
                 })
-        return result
+        return results
 
 # Singleton instance
 policy_search_service = PolicySearchService()

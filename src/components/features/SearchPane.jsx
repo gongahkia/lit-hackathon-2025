@@ -1,6 +1,5 @@
 "use client"
-
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Search, Filter, ExternalLink, Clock, User, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -8,22 +7,77 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
-export default function SearchPane({
-  searchQuery,
-  searchResults,
-  isSearching,
-  onSearch,
-  onViewDocument,
-  onViewTimeline,
-  searchRef,
-}) {
+function buildSearchParams(query, filters) {
+  const params = new URLSearchParams()
+  if (query) params.append("query", query) // Not used on backend, but you may want to pass as a policy/name
+  // Here's a stub - map filters to backend API (date, names, policies)
+  if (filters.dateRange && filters.dateRange !== "all") {
+    // Implement range logic here if needed.
+  }
+  // For speaker: can map to names
+  if (filters.speaker && filters.speaker !== "all") {
+    params.append("names", filters.speaker)
+  }
+  // For sourceType: not supported unless backend adds it
+  if (filters.sourceType && filters.sourceType !== "all") {
+    params.append("sourceType", filters.sourceType)
+  }
+  return params
+}
+
+export default function SearchPane() {
+  const searchRef = useRef()
+  const [searchQuery, setSearchQuery] = useState("")
+  const [searchResults, setSearchResults] = useState([])
+  const [isSearching, setIsSearching] = useState(false)
   const [filters, setFilters] = useState({
     sourceType: "all",
     dateRange: "all",
     speaker: "all",
   })
 
-  const handleSearch = (e) => {
+  async function onSearch(query) {
+    setIsSearching(true)
+    setSearchQuery(query)
+    try {
+      const params = buildSearchParams(query, filters)
+      // Send query as policies/names to backend as per your API
+      // Example implementation: send as policies if not empty
+      let url = `/api/search`
+      if (query) url += `?policies=${encodeURIComponent(query)}`
+      // Add more params for filters as needed.
+      const res = await fetch(url)
+      const data = await res.json()
+      // Normalize/flattens backend results for UI display
+      setSearchResults(
+        (data.results || []).map((row, idx) => ({
+          id: idx,
+          title: row.policies.join(", "),
+          content: row.content,
+          speaker: row.names.join(", "),
+          publishedAt: row.date,
+          sourceType: "parliamentary", // Static example; replace if backend supports
+          verified: true,
+          topics: row.policies,
+          url: "#", // You may want to add a URL from backend later
+          contradictions: []
+        }))
+      )
+    } catch (err) {
+      setSearchResults([])
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  // Optionally handle filter change (search after filter)
+  const handleFilterChange = (field, value) => {
+    const newFilters = { ...filters, [field]: value }
+    setFilters(newFilters)
+    onSearch(searchRef.current?.value || "")
+  }
+
+  const handleSearchForm = (e) => {
     e.preventDefault()
     const query = searchRef.current?.value || ""
     onSearch(query)
@@ -41,7 +95,6 @@ export default function SearchPane({
         return "bg-muted text-muted-foreground"
     }
   }
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-SG", {
       year: "numeric",
@@ -52,7 +105,6 @@ export default function SearchPane({
 
   return (
     <div className="flex h-full">
-      {/* Main Search Area */}
       <div className="flex-1 flex flex-col">
         {/* Search Header */}
         <div className="border-b border-border bg-card/50 p-6">
@@ -60,10 +112,9 @@ export default function SearchPane({
             <h1 className="text-2xl font-semibold mb-4 text-balance">
               Search Parliamentary Data & Government Communications
             </h1>
-
-            <form onSubmit={handleSearch} className="flex gap-3 mb-4">
+            <form onSubmit={handleSearchForm} className="flex gap-3 mb-4">
               <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                 <Input
                   ref={searchRef}
                   placeholder="Search for policies, statements, or speakers... (Cmd+K)"
@@ -75,7 +126,6 @@ export default function SearchPane({
                 Search
               </Button>
             </form>
-
             {/* Quick Examples */}
             <div className="flex flex-wrap gap-2">
               <span className="text-sm text-muted-foreground">Try:</span>
@@ -98,7 +148,6 @@ export default function SearchPane({
             </div>
           </div>
         </div>
-
         {/* Search Results */}
         <div className="flex-1 overflow-auto p-6">
           <div className="max-w-4xl mx-auto">
@@ -108,7 +157,6 @@ export default function SearchPane({
                 <span className="ml-3 text-muted-foreground">Searching parliamentary data...</span>
               </div>
             )}
-
             {!isSearching && searchResults.length > 0 && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -120,7 +168,6 @@ export default function SearchPane({
                     Filters
                   </Button>
                 </div>
-
                 {searchResults.map((result) => (
                   <Card key={result.id} className="hover:shadow-md transition-shadow">
                     <CardHeader className="pb-3">
@@ -150,7 +197,6 @@ export default function SearchPane({
                     </CardHeader>
                     <CardContent className="pt-0">
                       <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
-
                       <div className="flex items-center justify-between">
                         <div className="flex gap-2">
                           {result.topics.slice(0, 3).map((topic) => (
@@ -159,9 +205,8 @@ export default function SearchPane({
                             </Badge>
                           ))}
                         </div>
-
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => onViewDocument(result.id)}>
+                          <Button variant="outline" size="sm" onClick={() => window.alert("View Document not implemented")}>
                             View Document
                           </Button>
                           <Button variant="ghost" size="sm" onClick={() => window.open(result.url, "_blank")}>
@@ -170,7 +215,6 @@ export default function SearchPane({
                           </Button>
                         </div>
                       </div>
-
                       {result.contradictions.length > 0 && (
                         <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
                           <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
@@ -184,18 +228,16 @@ export default function SearchPane({
                 ))}
               </div>
             )}
-
             {!isSearching && searchQuery && searchResults.length === 0 && (
               <div className="text-center py-12">
                 <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No results found</h3>
                 <p className="text-muted-foreground mb-4">Try adjusting your search terms or check the spelling</p>
-                <Button variant="outline" onClick={() => onSearch("")}>
+                <Button variant="outline" onClick={() => { searchRef.current.value = ""; onSearch(""); }}>
                   Clear Search
                 </Button>
               </div>
             )}
-
             {!searchQuery && (
               <div className="text-center py-12">
                 <Search className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
@@ -209,15 +251,13 @@ export default function SearchPane({
           </div>
         </div>
       </div>
-
       {/* Sidebar Filters */}
       <div className="w-80 border-l border-border bg-card/30 p-4 hidden lg:block">
         <h3 className="font-medium mb-4">Refine Search</h3>
-
         <div className="space-y-4">
           <div>
             <label className="text-sm font-medium mb-2 block">Source Type</label>
-            <Select value={filters.sourceType} onValueChange={(value) => setFilters({ ...filters, sourceType: value })}>
+            <Select value={filters.sourceType} onValueChange={(value) => handleFilterChange("sourceType", value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -229,10 +269,9 @@ export default function SearchPane({
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label className="text-sm font-medium mb-2 block">Date Range</label>
-            <Select value={filters.dateRange} onValueChange={(value) => setFilters({ ...filters, dateRange: value })}>
+            <Select value={filters.dateRange} onValueChange={(value) => handleFilterChange("dateRange", value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
@@ -244,10 +283,9 @@ export default function SearchPane({
               </SelectContent>
             </Select>
           </div>
-
           <div>
             <label className="text-sm font-medium mb-2 block">Speaker</label>
-            <Select value={filters.speaker} onValueChange={(value) => setFilters({ ...filters, speaker: value })}>
+            <Select value={filters.speaker} onValueChange={(value) => handleFilterChange("speaker", value)}>
               <SelectTrigger>
                 <SelectValue />
               </SelectTrigger>
