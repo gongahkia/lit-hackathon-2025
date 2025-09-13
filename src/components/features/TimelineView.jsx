@@ -2,19 +2,17 @@
 
 import { useEffect, useState } from "react"
 
-export default function TimelineView() {
+export default function TimelineView({ topic, documents, onViewDocument, onBack }) {
   const [timeline, setTimeline] = useState([])
-  
+
   useEffect(() => {
     fetch("http://localhost:5000/api/timeline")
       .then((res) => res.json())
       .then((data) => {
-        console.log("Timeline API response:", data)
-
         if (Array.isArray(data)) {
-          setTimeline(data)              
+          setTimeline(data)
         } else if (Array.isArray(data.timeline)) {
-          setTimeline(data.timeline)     
+          setTimeline(data.timeline)
         } else {
           console.error("Unexpected data format:", data)
         }
@@ -22,13 +20,22 @@ export default function TimelineView() {
       .catch((err) => console.error("Error fetching timeline:", err))
   }, [])
 
-
   return (
     <div className="w-full h-full overflow-y-auto relative p-6">
-      {/* Central vertical line */}
-      <div className="absolute left-1/2 top-0 w-0.5 h-full bg-gray-300 transform -translate-x-1/2"></div>
+      {/* Sticky Back button */}
+      <div className="sticky top-0 z-20 bg-background py-3">
+        <button
+          onClick={onBack}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 text-sm font-medium"
+        >
+          ← Back to Search
+        </button>
+      </div>
 
-      <div className="flex flex-col items-center relative space-y-12">
+      {/* Central vertical line */}
+      <div className="absolute left-1/2 top-16 w-0.5 h-[calc(100%-4rem)] bg-gray-300 transform -translate-x-1/2"></div>
+
+      <div className="flex flex-col items-center relative space-y-12 mt-6">
         {timeline.map((event, index) => {
           const isLeft = index % 2 === 0
           return (

@@ -128,10 +128,7 @@ export default function MinLaw2Platform() {
 
   const navigationItems = [
     { id: "search", label: "Search", icon: Search },
-    { id: "ai", label: "AI Assistant", icon: Bot },
-    { id: "timeline", label: "Policy Timeline", icon: Clock },
-    { id: "contradictions", label: "Contradictions", icon: AlertTriangle },
-    { id: "admin", label: "Admin", icon: Settings },
+    { id: "fact-checker", label: "POFMAn", icon: Bot },
   ]
 
   // Prevent hydration mismatch by not rendering until mounted
@@ -203,7 +200,7 @@ export default function MinLaw2Platform() {
               />
             ) : null}
 
-            {!isLoading && activeView === "ai" && (
+            {!isLoading && activeView === "fact-checker" && (
               <AIQueryPane onViewDocument={viewDocument} onViewTimeline={viewTimeline} documents={documents} />
             )}
 
@@ -212,7 +209,12 @@ export default function MinLaw2Platform() {
             )}
 
             {!isLoading && activeView === "timeline" && (
-              <TimelineView topic={selectedTopic} documents={documents} onViewDocument={viewDocument} />
+              <TimelineView
+                topic={selectedTopic}
+                documents={documents}
+                onViewDocument={viewDocument}
+                onBack={() => setActiveView("search")} // <-- this makes the back button return to search
+              />
             )}
 
             {!isLoading && activeView === "contradictions" && (
