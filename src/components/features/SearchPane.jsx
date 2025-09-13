@@ -168,66 +168,82 @@ export default function SearchPane({
                   </Button>
                 </div>
                 {searchResults.map((result) => (
-                  <Card key={result.id} className="hover:shadow-md transition-shadow">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1">
-                          <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              {result.speaker}
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
-                              {formatDate(result.publishedAt)}
-                            </div>
+                <Card key={result.id} className="hover:shadow-md transition-shadow">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <User className="h-3 w-3" />
+                            {result.speaker}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {formatDate(result.publishedAt)}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
-                          {result.newsSource && (
-                            <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
-                          )}
-                          {result.verified ? (
-                            <CheckCircle className="h-4 w-4 text-secondary" />
-                          ) : (
-                            <AlertCircle className="h-4 w-4 text-yellow-500" />
-                          )}
-                        </div>
                       </div>
-                    </CardHeader>
-                    <CardContent className="pt-0">
-                      <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2">
-                          {result.topics.slice(0, 3).map((topic) => (
-                            <Badge key={topic} variant="secondary" className="text-xs">
-                              {topic}
-                            </Badge>
-                          ))}
-                        </div>
-                        <div className="flex gap-2">
+                      <div className="flex items-center gap-2">
+                        <Badge className={getSourceTypeColor(result.sourceType)}>
+                          {result.sourceType}
+                        </Badge>
+                        {/* Hansard badge for parliamentary */}
+                        {result.sourceType === "parliamentary" && (
+                          <Badge variant="outline" className="text-xs">Hansard</Badge>
+                        )}
+                        {/* CNA or Straits Times badge for news */}
+                        {result.newsSource && (
+                          <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                        )}
+                        {result.verified ? (
+                          <CheckCircle className="h-4 w-4 text-secondary" />
+                        ) : (
+                          <AlertCircle className="h-4 w-4 text-yellow-500" />
+                        )}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                        {result.topics.slice(0, 3).map((topic) => (
+                          <Badge key={topic} variant="secondary" className="text-xs">
+                            {topic}
+                          </Badge>
+                        ))}
+                      </div>
+                      <div className="flex gap-2">
+                        {/* Only show View Timeline for parliamentary/hansard results */}
+                        {result.sourceType === "parliamentary" && (
                           <Button variant="outline" size="sm" onClick={onViewTimeline}>
                             View Timeline
                           </Button>
-                          <Button variant="ghost" size="sm" onClick={() => window.open(result.url, "_blank")}>
-                            <ExternalLink className="h-3 w-3 mr-1" />
-                            View Document
-                          </Button>
+                        )}
+                        {/* Show correct URL for CNA/Straits Times, fallback to "#" for parliamentary */}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(result.newsSource ? result.url : "#", "_blank")}
+                          disabled={result.sourceType === "parliamentary"}
+                        >
+                          <ExternalLink className="h-3 w-3 mr-1" />
+                          View Document
+                        </Button>
+                      </div>
+                    </div>
+                    {result.contradictions.length > 0 && (
+                      <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
+                        <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+                          <AlertCircle className="h-3 w-3" />
+                          Potential contradictions detected
                         </div>
                       </div>
-                      {result.contradictions.length > 0 && (
-                        <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
-                          <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-                            <AlertCircle className="h-3 w-3" />
-                            Potential contradictions detected
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                    )}
+                  </CardContent>
+                </Card>
+              ))}
               </div>
             )}
             {!isSearching && searchQuery && searchResults.length === 0 && (
