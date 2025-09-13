@@ -40,18 +40,33 @@ export default function SearchPane({
       const res = await fetch(url)
       const data = await res.json()
       setSearchResults(
-        (data.results || []).map((row, idx) => ({
-          id: idx,
-          title: row.policies ? row.policies.join(", ") : "",
-          content: row.content,
-          speaker: row.names ? row.names.join(", ") : "",
-          publishedAt: row.date,
-          sourceType: "parliamentary",
-          verified: true,
-          topics: row.policies || [],
-          url: "#",
-          contradictions: []
-        }))
+        (data.results || []).map((row, idx) => {
+          let sourceType = "parliamentary"
+          let newsSource = null
+          const source = row.source || ""
+          if (source.toLowerCase().includes("cna")) {
+            sourceType = "news"
+            newsSource = "CNA"
+          } else if (source.toLowerCase().includes("strait")) {
+            sourceType = "news"
+            newsSource = "Straits Times"
+          } else if (source.toLowerCase().includes("hansard")) {
+            sourceType = "parliamentary"
+          }
+          return {
+            id: idx,
+            title: row.policies ? row.policies.join(", ") : "",
+            content: row.content,
+            speaker: row.names ? row.names.join(", ") : "",
+            publishedAt: row.date,
+            sourceType,
+            newsSource, // Add this for secondary badge
+            verified: true,
+            topics: row.policies || [],
+            url: "#",
+            contradictions: []
+          }
+        })
       )
     } catch (err) {
       setSearchResults([])
@@ -176,6 +191,18 @@ export default function SearchPane({
                               {formatDate(result.publishedAt)}
                             </div>
                           </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
+                          {/* If news, show specific media */}
+                          {result.newsSource && (
+                            <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                          )}
+                          {result.verified ? (
+                            <CheckCircle className="h-4 w-4 text-secondary" />
+                          ) : (
+                            <AlertCircle className="h-4 w-4 text-yellow-500" />
+                          )}
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className={getSourceTypeColor(result.sourceType)}>{result.sourceType}</Badge>
