@@ -6,7 +6,7 @@ import os
 from datetime import datetime, timedelta
 
 MASTER_FILE_XLSX = "hansard_master.xlsx"
-MASTER_FILE_CSV = "/golden_dataset/hansard_master.csv"
+MASTER_FILE_CSV = "/golden_dataset/full_hansard_master.csv"
 
 
 def ensure_xlsx_from_csv():
