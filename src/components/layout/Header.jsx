@@ -30,7 +30,7 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
       case "admin":
         return "Admin Dashboard"
       default:
-        return "MinLaw 2"
+        return "Pofact"
     }
   }
 

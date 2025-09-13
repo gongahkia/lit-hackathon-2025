@@ -1,4 +1,4 @@
-# MinLaw 2 Platform - Git Ignore File
+# Pofact Platform - Git Ignore File
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # Dependencies
@@ -254,7 +254,7 @@ $RECYCLE.BIN/
 .Trash-*
 .nfs*
 
-# MinLaw 2 specific ignores
+# Pofact specific ignores
 # Add any project-specific files to ignore here
 
 package-lock.json

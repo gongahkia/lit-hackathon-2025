@@ -103,7 +103,7 @@ export default function Sidebar({
                 <div className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
                   <span className="text-sm font-bold">⚖</span>
                 </div>
-                <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "MinLaw 2"}</div>
+                <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "Pofact"}</div>
               </div>
               <div className="ml-auto flex items-center gap-1">
               <button

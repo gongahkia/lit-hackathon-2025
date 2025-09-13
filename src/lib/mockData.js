@@ -1,6 +1,6 @@
 import { makeId } from "./utils"
 
-// MinLaw 2 specific data exports
+// Pofact specific data exports
 export const INITIAL_SOURCES = [
   {
     id: "parliament-gov",

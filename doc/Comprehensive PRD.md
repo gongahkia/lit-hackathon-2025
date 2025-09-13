@@ -1,4 +1,4 @@
-**MinLaw 2 — Product & Engineering Specification (MVP)**
+**Pofact — Product & Engineering Specification (MVP)**
 
 # A platform for fast, verifiable access to parliamentary statements, ministerial releases,
 
@@ -13,7 +13,7 @@ verification of statements across parliamentary Hansard, press releases, ministe
 and news media. Misquotes, out-of-context fragments and rapid misinformation spread make it
 harder to hold debates, do legal research, and make policy decisions.
 
-**MinLaw 2 MVP** solves this by:
+**Pofact MVP** solves this by:
 
 - continuously ingesting target sources (Hansard, press releases, government sites, official
     social posts, major news)

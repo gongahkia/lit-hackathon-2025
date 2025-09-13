@@ -151,7 +151,7 @@ export default function MinLaw2Platform() {
       <div className="md:hidden sticky top-0 z-40 flex items-center gap-2 border-b border-border bg-card/80 px-3 py-2 backdrop-blur">
         <div className="ml-1 flex items-center gap-2 text-sm font-semibold tracking-tight">
           <span className="inline-flex h-4 w-4 items-center justify-center text-primary">⚖</span>
-          MinLaw 2
+          Pofact
         </div>
         <div className="ml-auto flex items-center gap-2">
           <GhostIconButton label="Menu" onClick={() => setSidebarOpen(true)}>
