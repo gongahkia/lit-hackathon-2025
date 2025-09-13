@@ -26,7 +26,7 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
       case "contradictions":
         return "Contradiction Detection"
       case "calculator":
-        return "LAB Calculator"
+        return "Calculator"
       case "admin":
         return "Admin Dashboard"
       default:

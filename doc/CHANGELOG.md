@@ -13,7 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Document Viewer** - Interactive document viewing with highlighting
 - **Timeline View** - Policy timeline visualization with event markers
 - **Contradiction Detection UI** - Mock contradiction detection interface
-- **LAB Calculator** - Complete Legal Aid Bureau calculation tool with exact PRD formulas
 - **Admin Dashboard** - Source management and system monitoring interface
 - **AI Assistant** - Query processing interface with document linking
 - **Theme System** - Dark/light mode with proper hydration handling
@@ -41,7 +40,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ **AI Assistant** - Intelligent query processing and responses
 - ✅ **Timeline View** - Chronological data visualization
 - ✅ **Contradiction Detection** - Automated analysis for conflicting statements
-- ✅ **LAB Calculator** - Specialized calculation tools with audit trail
 - ✅ **Admin Dashboard** - Administrative interface for data management
 - ✅ **Theme Toggle** - Dark/light mode switching
 - ✅ **Responsive Layout** - Mobile and desktop optimized

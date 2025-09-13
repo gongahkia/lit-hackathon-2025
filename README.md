@@ -92,7 +92,6 @@ src/
 - **AI Assistant**: Intelligent query processing and responses
 - **Timeline View**: Chronological data visualization
 - **Contradiction Detection**: Automated analysis for conflicting statements
-- **LAB Calculator**: Specialized calculation tools
 - **Admin Dashboard**: Administrative interface for data management
 
 ## Getting Started

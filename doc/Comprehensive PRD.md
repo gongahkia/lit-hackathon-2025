@@ -22,10 +22,6 @@ harder to hold debates, do legal research, and make policy decisions.
     direct links and provenance
 - tracking policy evolution as timelines and surfacing likely contradictions with confidence
     scores
-- integrating simple legal estimation logic (e.g., LAB eBantu rules) as decision-support
-    (clearly labelled, not legal advice).
-
-LAB eBantu logic for SMU hackat...
 
 **Primary users:** policy analysts, lawyers, journalists, civil society researchers, parliamentary staff.
 
@@ -428,38 +424,6 @@ subsidies","url":"...","source_type":"press_release","score":0.65 }
     before being surfaced on alerts (configurable).
 
 
-**9 — LAB eBantu logic integration (Legal Aid Bureau)**
-
-We integrate the LAB regression rules as decision-support modules (clearly labelled “estimate /
-not legal advice”) and log the calculation provenance for audit.
-
-**From LAB eBantu PDF** (used for MVP calculation logic).
-
-LAB eBantu logic for SMU hackat...
-
-**Example formulas (implement exactly as per document):**
-
-- Iddah_month = 0.14 * salary + 47 (rounding rules configurable; UI shows full precision
-    and a rounded value)
-
-```
-o lower = max(0, 0.14*salary - 3)
-o upper = 0.14*salary + 197
-```
-- Mutaah_day = 0.00096 * salary + 0.
-    o lower = 0.00096*salary - 0.
-    o upper = 0.00096*salary + 1.
-
-**UI example:** user enters salary S=3000:
-
-- Iddah_month = 0.14*3000 + 47 = 467 (lower 417, upper 617).
-- Mutaah_day = 0.00096*3000 + 0.85 = 3.73 (lower 2.73, upper 4.73).
-    Show provenance: link to LAB PDF, show formula and rounding used.
-
-LAB eBantu logic for SMU hackat...
-
-**Implementation note:** Keep legal calculations auditable — store input, formula version, executor,
-timestamp and show “last updated” on UI.
 
 **10 — Frontend UX & screens (MVP)**
 
@@ -484,8 +448,6 @@ timestamp and show “last updated” on UI.
        explanation and confidence.
 6. **Admin / Source Config**
     o Add/edit source, view ingestion logs, reprocess raw blob, inspect DLQ.
-7. **LAB Calculator**
-    o Simple UI with salary input and explained output (with provenance link).
 
 **Accessibility & UX principles**
 
@@ -583,8 +545,6 @@ All agents must be idempotent, use task tokens, and report structured metrics.
     workflow for publishers (store immutable raw for audit).
 - **Social APIs** : obey terms of use; store only permitted fields.
 - **PII** : run PII detection and redact before public display (log redactions).
-- **Legal disclaimers** : for LAB calculators and legal-adjacent features show “Not legal advice”
-    and record calculations for audit.
 - **Audit logs** : immutable logs for ingestion, parsing, contradictions and manual review
     actions.
 
@@ -655,11 +615,6 @@ All agents must be idempotent, use task tokens, and report structured metrics.
 - NLI service + human review workflow.
 - Contradiction UI and alerting for high-confidence events.
 
-**Milestone 5 — LAB calculator + legal features**
-
-- Implement LAB formulas with audit trail UI.
-
-LAB eBantu logic for SMU hackat...
 
 **Milestone 6 — Ops & extend sources**
 
@@ -673,8 +628,7 @@ Show how each rubric item is addressed:
 
 - **Problem (5)** : explain need for fast, verified parliamentary verification with real examples
     and friction points during debate or legal research.
-- **Solution (5)** : demo search → exact quote → timeline & contradiction detection; show
-    LAB calculator integration for Legal Aid Bureau.
+- **Solution (5)** : demo search → exact quote → timeline & contradiction detection.
 - **Technology (5)** : present architecture diagram, parser demo, live query, and NLI
     contradiction detection.
 - **Transformation Potential (5)** : explain how faster verification reduces misinformation,
@@ -702,12 +656,6 @@ SMU LIT Hackathon Grading Rubri...
 - When two conflicting minister statements exist, timeline shows both and a ChangeEvent
     with contradiction flag.
 
-**LAB calculator**
-
-- Given salary input, the UI shows formula, exact numeric output, lower/upper range, and
-    link to LAB logic.
-
-LAB eBantu logic for SMU hackat...
 
 **Contradiction triage**
 
@@ -737,17 +685,5 @@ LAB eBantu logic for SMU hackat...
     schemas for all endpoints, or (c) a starter repo skeleton (Docker + simple Hansard scraper
     + Next.js stub). Tell me which and I’ll produce it next.
 
-**Appendix A — Quick reference: LAB formula examples (from uploaded PDF)**
-
-(See full logic and rounding rules in the LAB eBantu document). Example computed for
-salary=3000:
-
-- Iddah_month = 0.14 × 3000 + 47 = 467 (lower 417, upper 617).
-
-LAB eBantu logic for SMU hackat...
-
-- Mutaah_day = 0.00096 × 3000 + 0.85 = 3.73 (lower 2.73, upper 4.73).
-
-LAB eBantu logic for SMU hackat...
 
 

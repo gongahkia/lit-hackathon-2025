@@ -8,7 +8,6 @@ import SearchPane from "./features/SearchPane"
 import DocumentViewer from "./features/DocumentViewer"
 import TimelineView from "./features/TimelineView"
 import ContradictionDetector from "./features/ContradictionDetector"
-import LABCalculator from "./features/LABCalculator"
 import AdminDashboard from "./features/AdminDashboard"
 import AIQueryPane from "./features/AIQueryPane"
 import GhostIconButton from "./ui/GhostIconButton"
@@ -104,7 +103,6 @@ export default function MinLaw2Platform() {
     { id: "ai", label: "AI Assistant", icon: Bot },
     { id: "timeline", label: "Policy Timeline", icon: Clock },
     { id: "contradictions", label: "Contradictions", icon: AlertTriangle },
-    { id: "calculator", label: "LAB Calculator", icon: Calculator },
     { id: "admin", label: "Admin", icon: Settings },
   ]
 
@@ -186,7 +184,6 @@ export default function MinLaw2Platform() {
               <ContradictionDetector documents={documents} onViewDocument={viewDocument} />
             )}
 
-            {activeView === "calculator" && <LABCalculator />}
 
             {activeView === "admin" && (
               <AdminDashboard sources={sources} setSources={setSources} documents={documents} />
