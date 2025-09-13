@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to the MinLaw 2 Platform will be documented in this file.
+All notable changes to the Pofact Platform will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -24,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-09-12
 
 ### Added
-- **Initial Release** - Complete frontend MVP for MinLaw 2 Platform
+- **Initial Release** - Complete frontend MVP for Pofact Platform
 - **Search Interface** - Advanced search with filters and results display
 - **Document Viewer** - Interactive document viewing with highlighting
 - **Timeline View** - Policy timeline visualization with event markers

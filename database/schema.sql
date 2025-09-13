@@ -1,4 +1,4 @@
--- MinLaw 2 Database Schema - Complete
+-- Pofact Database Schema - Complete
 -- Run this in Supabase SQL Editor to set up the complete database
 
 -- Enable pgvector extension (for Phase 2)

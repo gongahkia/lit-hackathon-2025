@@ -5,7 +5,7 @@
   - [ ] **Ministry Sites** - Law Gazette @ 
   - [ ] **News Sources** - Straits Times/CNA integration @ 
 
-# MinLaw 2 Platform - Comprehensive To-Do List & Progress Audit
+# Pofact Platform - Comprehensive To-Do List & Progress Audit
 
 ## 📊 **Current Project Status: Frontend MVP Complete (85%)**
 
@@ -16,7 +16,7 @@
 
 ## 🎯 **Executive Summary**
 
-The MinLaw 2 platform is a **parliamentary data platform** for fast, verifiable access to government communications with timeline views, cross-verification, and source-attributed answers. The project has achieved a **solid frontend MVP** with comprehensive UI components and mock data, but requires significant backend development to become fully functional.
+The Pofact platform is a **parliamentary data platform** for fast, verifiable access to government communications with timeline views, cross-verification, and source-attributed answers. The project has achieved a **solid frontend MVP** with comprehensive UI components and mock data, but requires significant backend development to become fully functional.
 
 ### **Key Achievements** ✅
 - **Complete Frontend UI** - All major components implemented
@@ -366,7 +366,7 @@ The MinLaw 2 platform is a **parliamentary data platform** for fast, verifiable 
 
 ## 🎉 **Conclusion**
 
-The MinLaw 2 platform has achieved an **excellent frontend MVP** with comprehensive UI components and professional design. The codebase demonstrates high quality with modern React patterns, proper TypeScript usage, and excellent user experience design.
+The Pofact platform has achieved an **excellent frontend MVP** with comprehensive UI components and professional design. The codebase demonstrates high quality with modern React patterns, proper TypeScript usage, and excellent user experience design.
 
 **Key Strengths:**
 - Complete frontend implementation

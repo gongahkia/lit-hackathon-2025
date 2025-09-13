@@ -1,5 +1,5 @@
 {
-  "name": "minlaw2-platform",
+  "name": "pofact",
   "version": "1.0.0",
   "description": "A modern Next.js application for fast, verifiable access to parliamentary statements, ministerial releases, and government communications",
   "keywords": [
@@ -12,7 +12,7 @@
     "hansard",
     "policy"
   ],
-  "author": "MinLaw 2 Team",
+  "author": "Pofact Team",
   "license": "MIT",
   "private": false,
   "homepage": "https://github.com/gongahkia/lit-hackathon-2025",
