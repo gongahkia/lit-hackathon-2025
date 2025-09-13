@@ -7,21 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
-function buildSearchParams(query, filters) {
+// Build search string for backend (now always indiscriminate q)
+function buildSearchParams(query) {
   const params = new URLSearchParams()
-  if (query) params.append("query", query) // Not used on backend, but you may want to pass as a policy/name
-  // Here's a stub - map filters to backend API (date, names, policies)
-  if (filters.dateRange && filters.dateRange !== "all") {
-    // Implement range logic here if needed.
-  }
-  // For speaker: can map to names
-  if (filters.speaker && filters.speaker !== "all") {
-    params.append("names", filters.speaker)
-  }
-  // For sourceType: not supported unless backend adds it
-  if (filters.sourceType && filters.sourceType !== "all") {
-    params.append("sourceType", filters.sourceType)
-  }
+  if (query) params.append("q", query)
+  // If you later add backend filter support, append filter params here
   return params
 }
 
@@ -36,30 +26,27 @@ export default function SearchPane() {
     speaker: "all",
   })
 
+  // Unified search
   async function onSearch(query) {
     setIsSearching(true)
     setSearchQuery(query)
     try {
-      const params = buildSearchParams(query, filters)
-      // Send query as policies/names to backend as per your API
-      // Example implementation: send as policies if not empty
-      let url = `/api/search`
-      if (query) url += `?policies=${encodeURIComponent(query)}`
-      // Add more params for filters as needed.
+      const params = buildSearchParams(query)
+      let url = `http://localhost:5000/api/search`
+      if (params.toString()) url += `?${params}`
       const res = await fetch(url)
       const data = await res.json()
-      // Normalize/flattens backend results for UI display
       setSearchResults(
         (data.results || []).map((row, idx) => ({
           id: idx,
-          title: row.policies.join(", "),
+          title: row.policies ? row.policies.join(", ") : "",
           content: row.content,
-          speaker: row.names.join(", "),
+          speaker: row.names ? row.names.join(", ") : "",
           publishedAt: row.date,
-          sourceType: "parliamentary", // Static example; replace if backend supports
+          sourceType: "parliamentary",
           verified: true,
-          topics: row.policies,
-          url: "#", // You may want to add a URL from backend later
+          topics: row.policies || [],
+          url: "#",
           contradictions: []
         }))
       )
@@ -70,11 +57,12 @@ export default function SearchPane() {
     }
   }
 
-  // Optionally handle filter change (search after filter)
   const handleFilterChange = (field, value) => {
-    const newFilters = { ...filters, [field]: value }
-    setFilters(newFilters)
-    onSearch(searchRef.current?.value || "")
+    setFilters(prev => {
+      const updated = { ...prev, [field]: value }
+      // Optionally, you could re-filter here; currently, filters are frontend-only
+      return updated
+    })
   }
 
   const handleSearchForm = (e) => {
@@ -95,6 +83,7 @@ export default function SearchPane() {
         return "bg-muted text-muted-foreground"
     }
   }
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString("en-SG", {
       year: "numeric",
