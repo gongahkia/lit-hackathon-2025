@@ -105,7 +105,7 @@ export default function Sidebar({
             <div className="flex items-center gap-2 border-b border-sidebar-border px-3 py-3">
               <div className="flex items-center gap-2">
                 <div className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-                  <span className="text-sm font-bold">⚖</span>
+                  <img src="/P.png" alt="Pofact Logo" className="h-8 w-8 object-contain" />
                 </div>
                 <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "Pofact"}</div>
               </div>

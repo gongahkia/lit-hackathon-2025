@@ -39,13 +39,12 @@ export const metadata: Metadata = {
   generator: "v0.app",
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={geistSans.variable}>
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body className={`${geistSans.className} antialiased`} suppressHydrationWarning={true}>
         <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         <ClientOnlyWrapper>
