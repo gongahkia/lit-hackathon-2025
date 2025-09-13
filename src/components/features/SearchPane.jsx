@@ -116,7 +116,7 @@ export default function SearchPane({
         <div className="border-b border-border bg-card/50 p-6">
           <div className="max-w-4xl mx-auto">
             <h1 className="text-2xl font-semibold mb-4 text-balance">
-              Search Parliamentary Data & Government Communications
+              Search Verified Sources
             </h1>
             <form onSubmit={handleSearchForm} className="flex gap-3 mb-4">
               <div className="relative flex-1">
@@ -267,7 +267,7 @@ export default function SearchPane({
                 <Search className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
                 <h2 className="text-xl font-semibold mb-3">Search Parliamentary Data</h2>
                 <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Search through parliamentary debates, ministerial statements, press releases, and verified government
+                  Keyword search through parliamentary debates, ministerial statements, press releases, and verified government
                   communications with exact source attribution.
                 </p>
               </div>
