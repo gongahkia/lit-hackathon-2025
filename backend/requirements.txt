@@ -1,5 +1,0 @@
-flask
-flask_cors
-dotenv
-requests
-bs4
