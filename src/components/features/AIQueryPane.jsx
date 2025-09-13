@@ -146,7 +146,10 @@ export default function AIAssistantSearch() {
   }
   return (
     <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
-      <div className="w-full max-w-2xl p-8 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-8">
+    <div className={`w-full transition-all duration-300
+      ${searchResults.length > 0 ? 'max-w-5xl' : 'max-w-2xl'}
+      p-8 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-8`}>
+
         {/* --- POFMan Bot Header --- */}
         <div className="flex flex-col items-center mb-2">
           <POFManIcon />
@@ -303,9 +306,6 @@ export default function AIAssistantSearch() {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    {result.sourceType === "parliamentary" && (
-                      <button className="px-2 py-1 rounded border border-zinc-200 text-xs bg-zinc-50 hover:bg-zinc-100 dark:bg-zinc-900 dark:border-zinc-700 dark:hover:bg-zinc-800">View Timeline</button>
-                    )}
                     <button
                       className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
                       onClick={() => window.open(result.url, "_blank")}
