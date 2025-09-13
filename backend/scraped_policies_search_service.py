@@ -4,13 +4,15 @@ from typing import List, Dict
 CSV_PATHS = [
     "../golden_dataset/full_hansard_master.csv",
     "../golden_dataset/full_cna_articles.csv",
-    "../golden_dataset/full_straits_times_articles.csv"
+    "../golden_dataset/full_straits_times_articles.csv",
+    "../golden_dataset/full_lawgaz_master.csv"
 ]
 
 HEADERS_MAP = {
     "full_hansard_master.csv": ["source", "Date", "content", "names", "policies"],
     "full_cna_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
-    "full_straits_times_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"]
+    "full_straits_times_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
+    "full_lawgaz_master.csv": ["source", "headline", "url" , "date", "content", "names", "policies"]
 }
 
 class PolicySearchService:
@@ -75,7 +77,7 @@ class PolicySearchService:
             "names": row['names'],
             "policies": row['policies']
         }
-        if row['source'] and row['source'].lower() in ['straitstimes', 'cna', 'straits_times', 'straits times'] and row.get('url'):
+        if row['source'] and row['source'].lower() in ['straitstimes', 'cna', 'straits_times', 'straits times', 'lawgazette'] and row.get('url'):
             result["url"] = row["url"]
         return result
 
