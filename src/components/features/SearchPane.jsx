@@ -53,7 +53,7 @@ export default function SearchPane({
             url = row.url || "#"
           } else if (source.toLowerCase().includes("hansard")) {
             sourceType = "parliamentary"
-            url = "#" // or your hansard link if desired
+            url = `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` || "#" // or your hansard link if desired
           }
 
           return {

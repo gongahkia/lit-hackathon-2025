@@ -7,7 +7,6 @@ CSV_PATHS = [
     "../golden_dataset/full_straits_times_articles.csv"
 ]
 
-# column headers for each file
 HEADERS_MAP = {
     "full_hansard_master.csv": ["source", "Date", "content", "names", "policies"],
     "full_cna_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
@@ -17,6 +16,7 @@ HEADERS_MAP = {
 class PolicySearchService:
     def __init__(self, csv_paths=CSV_PATHS):
         self.data = self._load_csvs(csv_paths)
+
     def _load_csvs(self, paths: List[str]) -> List[Dict]:
         rows = []
         for path in paths:
@@ -25,33 +25,27 @@ class PolicySearchService:
             with open(path, encoding="utf-8") as fin:
                 reader = csv.DictReader(fin)
                 for row in reader:
-                    # Standardize keys
                     row_standard = {}
-                    # Map 'Date'/'date', 'content'/'raw_text', etc.
+                    # Map keys, handle URL for news sources
                     row_standard['source'] = row.get('source')
                     row_standard['date'] = row.get('Date') or row.get('date')
-                    row_standard['content'] = row.get('content') or row.get('raw_text') or row.get('headline') # headline as fallback
+                    row_standard['content'] = row.get('content') or row.get('raw_text') or row.get('headline')
                     row_standard['names'] = [n.strip() for n in row.get('names', '').split(',') if n.strip()]
                     row_standard['policies'] = [p.strip() for p in row.get('policies', '').split(',') if p.strip()]
+                    row_standard['url'] = row.get('url') if 'url' in row else None
                     rows.append(row_standard)
         return rows
+
     def get_all_policies(self) -> List[str]:
         policies = set()
         for row in self.data:
             policies.update(row['policies'])
         return sorted([p for p in policies if p])
+
     def search(self, query_terms: List[str] = None) -> List[Dict]:
         if not query_terms:
-            # Return all results if no query given
             return [
-                {
-                    "source": row['source'],
-                    "date": row['date'],
-                    "content": row['content'],
-                    "names": row['names'],
-                    "policies": row['policies'],
-                    "url": row['url']
-                }
+                self._format_result(row)
                 for row in self.data
             ]
         results = []
@@ -69,14 +63,24 @@ class PolicySearchService:
                     found = True
                     break
             if found:
-                results.append({
-                    "source": row['source'],
-                    "date": row['date'],
-                    "content": row['content'],
-                    "names": row['names'],
-                    "policies": row['policies']
-                })
+                results.append(self._format_result(row))
         return results
+
+    def _format_result(self, row: Dict) -> Dict:
+        # only include 'url' for CNA or ST
+        result = {
+            "source": row['source'],
+            "date": row['date'],
+            "content": row['content'],
+            "names": row['names'],
+            "policies": row['policies']
+        }
+        if row['source'] and row['source'].lower() in ['straitstimes', 'cna', 'straits_times', 'straits times'] and row.get('url'):
+            result["url"] = row["url"]
+        return result
 
 # Singleton instance
 policy_search_service = PolicySearchService()
+for row in policy_search_service.data:
+    if row.get('url'):
+        print(row)
