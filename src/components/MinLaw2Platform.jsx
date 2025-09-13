@@ -198,7 +198,7 @@ export default function MinLaw2Platform() {
                 isSearching={isSearching}
                 onSearch={performSearch}
                 onViewDocument={viewDocument}
-                onViewTimeline={viewTimeline}
+                onViewTimeline={() => setActiveView("timeline")}
                 searchRef={searchRef}
               />
             ) : null}
