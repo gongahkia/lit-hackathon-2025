@@ -99,9 +99,11 @@ src/
 
 Below instructions are for running the MVP locally at [localhost:3000](http://localhost:3000).
 
-```bash
-npm install
-npm run dev
+```console
+python3 -m venv .venv
+source .venv/bin/activate
+cd backend && pip install -r requirements.txt && cd ..
+npm install && npm run dev
 ```
 
 ## Stack
