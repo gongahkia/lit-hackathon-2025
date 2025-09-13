@@ -41,14 +41,20 @@ export default function SearchPane({
           let sourceType = "parliamentary"
           let newsSource = null
           const source = row.source || ""
+
           if (source.toLowerCase().includes("cna")) {
             sourceType = "news"
             newsSource = "CNA"
+            url = row.url || "#"    // set to actual CNA url
+            console.log(url);
           } else if (source.toLowerCase().includes("strait")) {
             sourceType = "news"
             newsSource = "Straits Times"
+            url = row.url || "#"    // set to actual Straits Times url
+            console.log(url);
           } else if (source.toLowerCase().includes("hansard")) {
             sourceType = "parliamentary"
+            url = "#"              // or your internal hansard doc url (if available)
           }
           return {
             id: idx,
@@ -57,10 +63,10 @@ export default function SearchPane({
             speaker: row.names ? row.names.join(", ") : "",
             publishedAt: row.date,
             sourceType,
-            newsSource, // Add this for secondary badge
+            newsSource,
             verified: true,
             topics: row.policies || [],
-            url: "#",
+            url,
             contradictions: []
           }
         })
@@ -222,15 +228,14 @@ export default function SearchPane({
                           </Button>
                         )}
                         {/* Show correct URL for CNA/Straits Times, fallback to "#" for parliamentary */}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => window.open(result.newsSource ? result.url : "#", "_blank")}
-                          disabled={result.sourceType === "parliamentary"}
-                        >
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          View Document
-                        </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => window.open(result.url, "_blank")}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
+                        View Document
+                      </Button>
                       </div>
                     </div>
                     {result.contradictions.length > 0 && (
