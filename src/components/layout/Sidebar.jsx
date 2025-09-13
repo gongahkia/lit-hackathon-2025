@@ -31,7 +31,11 @@ export default function Sidebar({
         initial={{ width: sidebarCollapsed ? 64 : 320 }}
         animate={{ width: sidebarCollapsed ? 64 : 320 }}
         transition={{ type: "spring", stiffness: 260, damping: 28 }}
-        className="z-50 flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar-background fixed inset-y-0 left-0 md:static md:translate-x-0"
+        className={cls(
+          "z-50 flex h-full shrink-0 flex-col border-r border-sidebar-border bg-sidebar-background",
+          "fixed inset-y-0 left-0 md:static md:translate-x-0",
+          sidebarCollapsed ? "w-16 md:w-20" : "w-64 md:w-80" // responsive widths
+        )}
 
       >
         <div className="flex items-center justify-center border-b border-sidebar-border px-3 py-3">
@@ -130,6 +134,7 @@ export default function Sidebar({
             </div>
 
             <nav className="flex-1 overflow-y-auto p-3">
+              {/* Navigation items */}
               <div className="space-y-2">
                 {navigationItems.map((item) => (
                   <button
@@ -147,48 +152,30 @@ export default function Sidebar({
                   </button>
                 ))}
               </div>
-
-              <div className="mt-6">
-                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                  {!sidebarCollapsed && "Data Sources"}
-                </h3>
-                <div className="space-y-1">
-                  {sources.slice(0, 4).map((source) => (
-                    <div key={source.id} className="flex items-center justify-between px-3 py-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className={cls(
-                            "h-2 w-2 rounded-full",
-                            source.status === "active" ? "bg-green-500" : "bg-gray-400",
-                          )}
-                        />
-                        <span className="truncate">{source.name}</span>
-                      </div>
-                      <span className="text-xs text-muted-foreground">{source.documentsCount}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="mt-6">
-                <h3 className="px-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
-                  {!sidebarCollapsed && "Trending Topics"}
-                </h3>
-                <div className="space-y-1">
-                  {topics
-                    .filter((t) => t.trending)
-                    .slice(0, 3)
-                    .map((topic) => (
-                      <div key={topic.id} className="px-3 py-2 text-sm">
-                        <div className="flex items-center justify-between">
-                          <span className="truncate">{topic.name}</span>
-                          <span className="text-xs text-muted-foreground">{topic.documentCount}</span>
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
             </nav>
+
+            {/* Data Sources at bottom, just above Settings */}
+            <div className="mt-auto mb-4 px-3">
+              <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
+                {!sidebarCollapsed && "Data Sources"}
+              </h3>
+              <div className="space-y-1">
+                {sources.slice(0, 4).map((source) => (
+                  <div key={source.id} className="flex items-center justify-between py-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div
+                        className={cls(
+                          "h-2 w-2 rounded-full",
+                          source.status === "active" ? "bg-green-500" : "bg-gray-400",
+                        )}
+                      />
+                      <span className="truncate">{source.name}</span>
+                    </div>
+                    <span className="text-xs text-muted-foreground">{source.documentsCount}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="mt-auto border-t border-sidebar-border px-3 py-3">
               <div className="flex items-center gap-2">
