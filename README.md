@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > The site is now live [***here***](https://lit-hackathon-2025.vercel.app)!
 
-# Pofact - Rule-based Certainity
+# POFact - Rule-based Certainity
 
 [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.3-black.svg)](https://nextjs.org/)
@@ -12,7 +12,7 @@
 
 Providing fast, verifiable access to parliamentary statements, ministerial releases, and government communications with timeline views, cross-verification, and source-attributed answers.
 
-Made for the MinLaw 2 problem statement for the [SMU LIT Hackathon 2025](https://www.smulit.org/lit-hackathon-2025).q
+Made for the MinLaw 2 problem statement for the [SMU LIT Hackathon 2025](https://www.smulit.org/lit-hackathon-2025).
 
 ## Team members
 
