@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > The site is now live [***here***](https://lit-hackathon-2025.vercel.app)!
 
-# POFact - Rule-based Certainity
+# `POFact` - Rule-based Certainity
 
 [![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
 [![Next.js](https://img.shields.io/badge/Next.js-15.5.3-black.svg)](https://nextjs.org/)
