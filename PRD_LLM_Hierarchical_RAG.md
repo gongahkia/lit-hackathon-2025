@@ -29,32 +29,32 @@ Integrate multi-provider LLM support (Gemini 3, Opus 4.5, GPT 5.2) with hierarch
 ## 2. Technical Architecture
 
 flowchart TD
-  UserQuery[User Query] --> QueryProcessor[Query Processor]
-  QueryProcessor --> HierarchicalRetriever[Hierarchical Retriever]
+    UserQuery[User Query] --> QueryProcessor[Query Processor]
+    QueryProcessor --> HierarchicalRetriever[Hierarchical Retriever]
     
-  HierarchicalRetriever --> Level1[Level 1: Encyclopedia<br/>50k docs → 200 candidates]
-  Level1 --> Level2[Level 2: Chapter<br/>200 → 200 candidates]
-  Level2 --> Level3[Level 3: Section<br/>200 → 200 candidates]
-  Level3 --> Level4[Level 4: Paragraph<br/>200 → Final chunks]
+    HierarchicalRetriever --> Level1[Level 1: Encyclopedia<br/>50k docs → 200 candidates]
+    Level1 --> Level2[Level 2: Chapter<br/>200 → 200 candidates]
+    Level2 --> Level3[Level 3: Section<br/>200 → 200 candidates]
+    Level3 --> Level4[Level 4: Paragraph<br/>200 → Final chunks]
     
-  Level4 --> RAGContext[RAG Context Builder]
-  RAGContext --> MultiProviderLLM[Multi-Provider LLM Router]
+    Level4 --> RAGContext[RAG Context Builder]
+    RAGContext --> MultiProviderLLM[Multi-Provider LLM Router]
     
-  MultiProviderLLM --> Gemini[Gemini 3]
-  MultiProviderLLM --> Opus[Opus 4.5]
-  MultiProviderLLM --> GPT[GPT 5.2]
+    MultiProviderLLM --> Gemini[Gemini 3]
+    MultiProviderLLM --> Opus[Opus 4.5]
+    MultiProviderLLM --> GPT[GPT 5.2]
     
-  Gemini --> ResponseValidator[Response Validator]
-  Opus --> ResponseValidator
-  GPT --> ResponseValidator
+    Gemini --> ResponseValidator[Response Validator]
+    Opus --> ResponseValidator
+    GPT --> ResponseValidator
     
-  ResponseValidator --> CrossVerify[Cross-Source Verification]
-  CrossVerify --> AuditLogger[Audit Logger]
-  AuditLogger --> StructuredOutput[Structured Output with Citations]
-  StructuredOutput --> UserResponse[User Response]
+    ResponseValidator --> CrossVerify[Cross-Source Verification]
+    CrossVerify --> AuditLogger[Audit Logger]
+    AuditLogger --> StructuredOutput[Structured Output with Citations]
+    StructuredOutput --> UserResponse[User Response]
     
-  AuditLogger --> ProvenanceDB[(Provenance Database)]
-  HierarchicalRetriever --> VectorDB[(Vector Database<br/>pgvector)]
+    AuditLogger --> ProvenanceDB[(Provenance Database)]
+    HierarchicalRetriever --> VectorDB[(Vector Database<br/>pgvector)]
 
 ### 2.1 System Components
 
