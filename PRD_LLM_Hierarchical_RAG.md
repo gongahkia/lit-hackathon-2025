@@ -28,6 +28,7 @@ Integrate multi-provider LLM support (Gemini 3, Opus 4.5, GPT 5.2) with hierarch
 
 ## 2. Technical Architecture
 
+```mermaid
 flowchart TD
     UserQuery[User Query] --> QueryProcessor[Query Processor]
     QueryProcessor --> HierarchicalRetriever[Hierarchical Retriever]
@@ -55,6 +56,7 @@ flowchart TD
     
     AuditLogger --> ProvenanceDB[(Provenance Database)]
     HierarchicalRetriever --> VectorDB[(Vector Database<br/>pgvector)]
+```
 
 ### 2.1 System Components
 
@@ -924,31 +926,168 @@ psycopg2-binary>=2.9.0
 
 ## 8. Migration Strategy
 
-### 8.1 Phase 1: Database Migration (Week 1)
-1. Deploy schema extensions to Supabase
-2. Migrate existing documents to hierarchy structure
-3. Generate embeddings for all documents
-4. Build hierarchy relationships
+### 8.1 Phase 1: Database Schema Extensions (Week 1)
 
-### 8.2 Phase 2: Backend Services (Week 2-3)
-1. Implement hierarchical retriever in Python
-2. Add LLM provider integrations
-3. Build validation service
-4. Create audit trail logging
+**File:** `database/schema.sql`
 
-### 8.3 Phase 3: Frontend Integration (Week 4)
-1. Update query API endpoints
-2. Integrate with existing UI components
-3. Add citation display
-4. Build audit trail viewer
+Add tables for:
+- `document_hierarchy`: Tracks parent-child relationships (Encyclopedia → Chapter → Section → Paragraph)
+- `llm_providers`: Stores provider configurations and credentials
+- `query_audit_trail`: Comprehensive audit log with provenance graph
+- `retrieval_metrics`: Precision/recall tracking for retrieval quality
+- `source_compositions`: Tracks how sources are combined/verified
 
-### 8.4 Phase 4: Testing & Optimization (Week 5)
-1. Run comprehensive test suite
-2. Benchmark retrieval quality
-3. Optimize performance
-4. Fine-tune hierarchy levels
+**Key Schema Additions:**
+- Add `hierarchy_level` and `parent_document_id` to `documents` table
+- Add `compressed_summary` column for progressive summarization
+- Add `embedding` vector column (already prepared in schema)
+- Create indexes for hierarchical traversal
 
----
+### 8.2 Phase 2: Multi-Provider LLM Abstraction Layer (Week 2)
+
+**File:** `lib/llm/providers/base.ts`
+- Abstract base class `LLMProvider` with methods: `generate()`, `stream()`, `validate()`
+- Standardized response format with citations and confidence scores
+
+**File:** `lib/llm/providers/gemini.ts`
+- Gemini 3 implementation using Google AI SDK
+- Structured output enforcement via function calling
+
+**File:** `lib/llm/providers/anthropic.ts`
+- Opus 4.5 implementation using Anthropic SDK
+- Structured output via tool use
+
+**File:** `lib/llm/providers/openai.ts`
+- GPT 5.2 implementation using OpenAI SDK
+- Structured output via JSON mode and function calling
+
+**File:** `lib/llm/router.ts`
+- Provider router with fallback logic
+- Cost optimization and latency balancing
+- Multi-provider consensus for critical queries
+
+### 8.3 Phase 3: Hierarchical RAG Implementation (Week 2-3)
+
+**File:** `lib/rag/hierarchical-retriever.ts`
+- Implements 4-level hierarchy: Encyclopedia → Chapter → Section → Paragraph
+- Progressive summarization at each level
+- Search space reduction: 50k → 200 → 200 → 200 → final chunks
+
+**File:** `lib/rag/compression.ts`
+- Document summarization service
+- Maintains key facts while reducing size
+- Preserves legal citations and references
+
+**File:** `lib/rag/embedding-service.ts`
+- Unified embedding service (supports multiple models)
+- Batch embedding generation
+- Embedding cache for performance
+
+**File:** `backend/hierarchical_retrieval_service.py`
+- Python service for hierarchical retrieval
+- Integrates with pgvector for vector search
+- Implements precision/recall metrics collection
+
+### 8.4 Phase 4: Audit Trail and Provenance System (Week 3)
+
+**File:** `lib/audit/provenance-tracker.ts`
+- Tracks source lineage through transformations
+- Builds provenance graph for each query
+- Stores in `query_audit_trail` table
+
+**File:** `lib/audit/composition-tracker.ts`
+- Tracks how multiple sources are combined
+- Records confidence propagation
+- Enables source decomposition for verification
+
+**File:** `lib/audit/metrics-collector.ts`
+- Collects precision/recall metrics
+- Tracks retrieval quality at each hierarchy level
+- Benchmarks against golden dataset
+
+### 8.5 Phase 5: Hallucination Prevention (Week 3-4)
+
+**File:** `lib/validation/response-validator.ts`
+- Validates LLM responses against retrieved documents
+- Checks for unsupported claims
+- Confidence score calculation
+
+**File:** `lib/validation/cross-verifier.ts`
+- Cross-verifies answers across multiple sources
+- Detects contradictions
+- Multi-provider consensus checking
+
+**File:** `lib/validation/structured-output.ts`
+- Enforces structured output format with required fields:
+  - `answer`: The actual answer
+  - `citations`: Array of source IDs with exact quotes
+  - `confidence`: Confidence score (0-1)
+  - `unsupported_claims`: Array of claims not found in sources
+  - `source_lineage`: Provenance graph
+
+### 8.6 Phase 6: API Integration (Week 4)
+
+**File:** `src/app/api/query/route.ts`
+- New unified query endpoint
+- Integrates hierarchical RAG + multi-provider LLM
+- Returns structured response with audit trail
+
+**File:** `src/app/api/audit/route.ts`
+- Endpoint to retrieve audit trails
+- Supports querying provenance graphs
+- Enables source decomposition
+
+**File:** `backend/app.py`
+- Update `process_query()` to use new hierarchical RAG
+- Add `validate_document()` implementation
+- Integrate with Python retrieval service
+
+### 8.7 Phase 7: Frontend Integration (Week 4)
+
+**File:** `src/components/features/AIQueryPane.jsx`
+- Update to use new query API
+- Display structured citations
+- Show confidence scores and audit trail
+
+**File:** `src/components/features/SourceCompositionView.jsx`
+- New component to visualize source compositions
+- Shows provenance graph
+- Enables source decomposition
+
+**File:** `src/components/features/RetrievalMetrics.jsx`
+- Display precision/recall metrics
+- Show retrieval quality at each hierarchy level
+- Benchmark visualization
+
+### 8.8 Key Implementation Details
+
+#### Hierarchical Retrieval Algorithm
+
+1. **Level 1 (Encyclopedia)**: Search all 50k documents, return top 200 summaries
+2. **Level 2 (Chapter)**: Expand top 200 to full chapters, re-rank, return top 200
+3. **Level 3 (Section)**: Extract sections from top 200 chapters, return top 200
+4. **Level 4 (Paragraph)**: Extract paragraphs from top 200 sections, return final chunks
+
+Each level uses vector similarity search with pgvector, progressively narrowing the search space.
+
+#### Audit Trail Structure
+
+Each query generates an audit record containing:
+- Query text and parameters
+- Retrieval path (which documents at each level)
+- LLM provider used and response
+- Validation results
+- Source composition graph
+- Confidence scores at each step
+- Timestamp and user context
+
+#### Source Composability
+
+Sources can be:
+- **Combined**: Multiple sources support a claim
+- **Verified**: Cross-checked against other sources
+- **Decomposed**: Traced back to original documents
+- **Weighted**: Confidence scores reflect source reliability
 
 ## 9. To-Do List
 
