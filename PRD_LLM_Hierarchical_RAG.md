@@ -29,6 +29,7 @@ Integrate multi-provider LLM support (Gemini 3, Opus 4.5, GPT 5.2) with hierarch
 ## 2. Technical Architecture
 
 flowchart TD
+
     UserQuery[User Query] --> QueryProcessor[Query Processor]
     QueryProcessor --> HierarchicalRetriever[Hierarchical Retriever]
     
