@@ -21,6 +21,27 @@ SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 3. Copy and paste the contents of `schema.sql`
 4. Run the SQL script
 
+### 3.5. Fix RLS for Seeding (IMPORTANT!)
+**If you get "UPDATE requires a WHERE clause" or RLS restrictions when seeding:**
+
+This error occurs because PostgREST checks RLS policies even with the service role key. You need to run the RLS fix SQL:
+
+1. **In Supabase SQL Editor, run `fix-rls-service-role.sql`**
+   - Copy and paste the contents of `database/fix-rls-service-role.sql`
+   - This recreates all RLS policies to allow INSERT/UPDATE/DELETE operations
+   - **Why:** Even with service role key, PostgREST requires explicit RLS policies
+
+2. **Verify policies were created:**
+   - After running the SQL, check the output to see all policies listed
+   - You should see policies for SELECT, INSERT, UPDATE, and DELETE on all three tables
+
+3. **If still not working:**
+   - Check that you're using `SUPABASE_SERVICE_ROLE_KEY` (not `SUPABASE_ANON_KEY`)
+   - Verify the key is from Supabase Dashboard → Settings → API → service_role (legacy) or secret key (new)
+   - Try temporarily disabling RLS for testing (see comments in the SQL file)
+
+**Note:** Supabase now uses "secret" API keys (not JWT tokens). Both formats work, but make sure you're using the service role key, not the anon key.
+
 ### 4. Seed Database
 ```bash
 npm run seed-db
