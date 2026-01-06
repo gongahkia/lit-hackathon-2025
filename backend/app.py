@@ -3,10 +3,105 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 from scraped_policies_search_service import policy_search_service
 from scraped_policies_timeline_service import get_policy_timeline
+import logging
 
 load_dotenv()
 app = Flask(__name__)
 CORS(app)
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# P0.3: Stub implementations for missing functions
+def validate_document(data):
+    """
+    P0.3: Stub implementation for document validation
+    
+    Args:
+        data: Dictionary containing document data to validate
+        
+    Returns:
+        tuple: (result_dict, status_code)
+    """
+    try:
+        # Basic validation - check if required fields exist
+        required_fields = ['title', 'content']
+        missing_fields = [field for field in required_fields if field not in data]
+        
+        if missing_fields:
+            return {
+                "success": False,
+                "error": f"Missing required fields: {', '.join(missing_fields)}",
+                "provenance": None
+            }, 400
+        
+        # Stub validation logic - always passes for now
+        # TODO: Implement actual validation logic in Phase 2 (RICHARD_PRD)
+        logger.info(f"Validating document: {data.get('title', 'Unknown')}")
+        
+        return {
+            "success": True,
+            "validated": True,
+            "provenance": {
+                "document_id": data.get('id', 'unknown'),
+                "validation_timestamp": None,  # TODO: Add timestamp
+                "validation_method": "stub"
+            }
+        }, 200
+        
+    except Exception as e:
+        logger.error(f"Error in validate_document: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "provenance": None
+        }, 500
+
+
+def process_query(data):
+    """
+    P0.3: Stub implementation for query processing
+    
+    Args:
+        data: Dictionary containing query data (can be from POST body or GET params)
+        
+    Returns:
+        tuple: (result_dict, status_code)
+    """
+    try:
+        # Extract query from data
+        query = data.get('query') or data.get('q', '').strip()
+        
+        if not query:
+            return {
+                "success": False,
+                "error": "Query parameter 'query' or 'q' is required",
+                "results": []
+            }, 400
+        
+        logger.info(f"Processing query: {query}")
+        
+        # Stub query processing - use existing search service
+        # TODO: Implement full RAG processing in Phase 2 (RICHARD_PRD)
+        query_terms = [term.strip() for term in query.split()] if query else None
+        search_results = policy_search_service.search(query_terms=query_terms)
+        
+        return {
+            "success": True,
+            "query": query,
+            "results": search_results,
+            "count": len(search_results),
+            "processing_method": "stub_search"  # Indicates this is a stub
+        }, 200
+        
+    except Exception as e:
+        logger.error(f"Error in process_query: {str(e)}")
+        return {
+            "success": False,
+            "error": str(e),
+            "results": []
+        }, 500
 
 @app.route('/validate', methods=['POST'])
 def validate():

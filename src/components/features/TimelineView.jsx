@@ -13,7 +13,7 @@ function formatDate(dateString) {
 export default function TimelineView({ topic, documents, onViewDocument, onBack }) {
   const [timeline, setTimeline] = useState([])
   useEffect(() => {
-    fetch("http://localhost:5000/api/timeline")
+    fetch("/api/timeline")
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) {

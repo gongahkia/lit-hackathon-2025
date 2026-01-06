@@ -32,7 +32,7 @@ export default function SearchPane({
     setSearchQuery(query)
     try {
       const params = buildSearchParams(query)
-      let url = `http://localhost:5000/api/search`
+      let url = `/api/search`
       if (params.toString()) url += `?${params}`
       const res = await fetch(url)
       const data = await res.json()

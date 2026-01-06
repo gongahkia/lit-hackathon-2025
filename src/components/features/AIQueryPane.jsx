@@ -71,8 +71,8 @@ export default function AIAssistantSearch() {
     // Backend search (GET)
     try {
       const params = new URLSearchParams()
-      params.append("query", query)
-      const res = await fetch(`http://localhost:5000/api/search?${params.toString()}`, {
+      params.append("q", query)
+      const res = await fetch(`/api/search?${params.toString()}`, {
         method: "GET",
       })
       if (!res.ok) throw new Error("Search failed.")
