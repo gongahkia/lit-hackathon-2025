@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   ArrowLeft,
   ExternalLink,
@@ -12,6 +12,8 @@ import {
   Clock,
   User,
   Building,
+  BookmarkPlus,
+  Plus,
 } from "lucide-react"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
@@ -19,11 +21,36 @@ import { Badge } from "../ui/badge"
 import { Separator } from "../ui/separator"
 import { Alert, AlertDescription } from "../ui/alert"
 import { Textarea } from "../ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
+import { Input } from "../ui/input"
 
 export default function DocumentViewer({ document, onBack }) {
   const [selectedText, setSelectedText] = useState("")
   const [showReportForm, setShowReportForm] = useState(false)
   const [reportReason, setReportReason] = useState("")
+  // P1.1: Evidence Bundle state
+  const [matters, setMatters] = useState([])
+  const [selectedMatterId, setSelectedMatterId] = useState("")
+  const [showBundleDialog, setShowBundleDialog] = useState(false)
+  const [newMatterName, setNewMatterName] = useState("")
+  const [newMatterDescription, setNewMatterDescription] = useState("")
+  const [isCreatingMatter, setIsCreatingMatter] = useState(false)
+  const [userNote, setUserNote] = useState("")
+  const [isAddingEvidence, setIsAddingEvidence] = useState(false)
 
   if (!document) {
     return (
@@ -38,13 +65,18 @@ export default function DocumentViewer({ document, onBack }) {
   }
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-SG", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
+    if (!dateString) return "Date not available"
+    try {
+      return new Date(dateString).toLocaleDateString("en-SG", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    } catch (error) {
+      return dateString
+    }
   }
 
   const getSourceTypeColor = (type) => {
@@ -93,6 +125,100 @@ export default function DocumentViewer({ document, onBack }) {
     setReportReason("")
   }
 
+  // P1.1: Fetch matters on mount
+  useEffect(() => {
+    const fetchMatters = async () => {
+      try {
+        const res = await fetch("/api/matters")
+        const data = await res.json()
+        if (data.success) {
+          setMatters(data.matters || [])
+        }
+      } catch (error) {
+        console.error("Error fetching matters:", error)
+      }
+    }
+    fetchMatters()
+  }, [])
+
+  // P1.1: Create new matter
+  const createMatter = async () => {
+    if (!newMatterName.trim()) return
+
+    setIsCreatingMatter(true)
+    try {
+      const res = await fetch("/api/matters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newMatterName.trim(),
+          description: newMatterDescription.trim() || null,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setMatters([...matters, data.matter])
+        setSelectedMatterId(data.matter.id)
+        setNewMatterName("")
+        setNewMatterDescription("")
+      }
+    } catch (error) {
+      console.error("Error creating matter:", error)
+    } finally {
+      setIsCreatingMatter(false)
+    }
+  }
+
+  // P1.1: Add evidence item to bundle
+  const addToEvidenceBundle = async () => {
+    if (!selectedMatterId || !selectedText.trim()) return
+
+    setIsAddingEvidence(true)
+    try {
+      // Build citation JSON
+      const citationJson = {
+        title: document.title,
+        speaker: document.speaker,
+        role: document.role,
+        date: document.date,
+        publishedAt: document.publishedAt,
+        source: document.source,
+        sourceType: document.sourceType,
+        url: document.url,
+        documentId: document.id,
+      }
+
+      const res = await fetch("/api/evidence-items", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          matter_id: selectedMatterId,
+          document_id: document.id,
+          quote_text: selectedText.trim(),
+          citation_json: citationJson,
+          user_note: userNote.trim() || null,
+        }),
+      })
+
+      const data = await res.json()
+      if (data.success) {
+        // Success - close dialog and clear selection
+        setShowBundleDialog(false)
+        setSelectedText("")
+        setUserNote("")
+        // You could add a toast notification here
+        alert("Quote added to evidence bundle!")
+      } else {
+        alert(`Error: ${data.error}`)
+      }
+    } catch (error) {
+      console.error("Error adding evidence item:", error)
+      alert("Failed to add quote to evidence bundle")
+    } finally {
+      setIsAddingEvidence(false)
+    }
+  }
+
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
@@ -108,10 +234,12 @@ export default function DocumentViewer({ document, onBack }) {
               <Share2 className="h-4 w-4 mr-2" />
               Share
             </Button>
-            <Button variant="outline" size="sm" onClick={() => window.open(document.url, "_blank")}>
-              <ExternalLink className="h-4 w-4 mr-2" />
-              View Source
-            </Button>
+            {document.url && (
+              <Button variant="outline" size="sm" onClick={() => window.open(document.url, "_blank")}>
+                <ExternalLink className="h-4 w-4 mr-2" />
+                View Source
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={() => setShowReportForm(true)}>
               <Flag className="h-4 w-4 mr-2" />
               Report Error
@@ -123,19 +251,23 @@ export default function DocumentViewer({ document, onBack }) {
           <h1 className="text-2xl font-semibold mb-3 text-balance">{document.title}</h1>
 
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-3">
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              <span className="font-medium">{document.speaker}</span>
-              <span>({document.role})</span>
-            </div>
+            {document.speaker && (
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4" />
+                <span className="font-medium">{document.speaker}</span>
+                {document.role && <span>({document.role})</span>}
+              </div>
+            )}
             <div className="flex items-center gap-2">
               <Clock className="h-4 w-4" />
               {formatDate(document.publishedAt)}
             </div>
-            <div className="flex items-center gap-2">
-              <Building className="h-4 w-4" />
-              {document.source}
-            </div>
+            {document.source && (
+              <div className="flex items-center gap-2">
+                <Building className="h-4 w-4" />
+                {document.source_name || document.source}
+              </div>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -153,7 +285,11 @@ export default function DocumentViewer({ document, onBack }) {
               </div>
             )}
 
-            <div className="text-sm text-muted-foreground">Confidence: {Math.round(document.confidence * 100)}%</div>
+            {document.confidence !== undefined && (
+              <div className="text-sm text-muted-foreground">
+                Confidence: {Math.round((document.confidence || 0) * 100)}%
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -193,16 +329,104 @@ export default function DocumentViewer({ document, onBack }) {
                 <div className="mt-4 p-3 bg-muted rounded-lg border">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Selected Text:</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                        copyToClipboard(`"${selectedText}" - ${document.speaker}, ${formatDate(document.publishedAt)}`)
-                      }
-                    >
-                      <Copy className="h-3 w-3 mr-1" />
-                      Copy Quote
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() =>
+                          copyToClipboard(`"${selectedText}" - ${document.speaker}, ${formatDate(document.publishedAt)}`)
+                        }
+                      >
+                        <Copy className="h-3 w-3 mr-1" />
+                        Copy Quote
+                      </Button>
+                      {/* P1.1: Add to Evidence Bundle button */}
+                      <Dialog open={showBundleDialog} onOpenChange={setShowBundleDialog}>
+                        <DialogTrigger asChild>
+                          <Button variant="default" size="sm">
+                            <BookmarkPlus className="h-3 w-3 mr-1" />
+                            Add to Bundle
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add to Evidence Bundle</DialogTitle>
+                            <DialogDescription>
+                              Select a matter or create a new one to add this quote to your evidence bundle.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div>
+                              <label className="text-sm font-medium mb-2 block">Selected Quote</label>
+                              <p className="text-sm italic bg-muted p-2 rounded">"{selectedText}"</p>
+                            </div>
+
+                            <div>
+                              <label className="text-sm font-medium mb-2 block">Matter</label>
+                              <Select value={selectedMatterId} onValueChange={setSelectedMatterId}>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a matter or create new" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {matters.map((matter) => (
+                                    <SelectItem key={matter.id} value={matter.id}>
+                                      {matter.name}
+                                    </SelectItem>
+                                  ))}
+                                  <SelectItem value="__new__">+ Create New Matter</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            </div>
+
+                            {selectedMatterId === "__new__" && (
+                              <div className="space-y-2 p-3 bg-muted rounded-lg">
+                                <Input
+                                  placeholder="Matter name (required)"
+                                  value={newMatterName}
+                                  onChange={(e) => setNewMatterName(e.target.value)}
+                                />
+                                <Textarea
+                                  placeholder="Description (optional)"
+                                  value={newMatterDescription}
+                                  onChange={(e) => setNewMatterDescription(e.target.value)}
+                                  className="min-h-[80px]"
+                                />
+                                <Button
+                                  onClick={createMatter}
+                                  disabled={!newMatterName.trim() || isCreatingMatter}
+                                  size="sm"
+                                >
+                                  <Plus className="h-3 w-3 mr-1" />
+                                  {isCreatingMatter ? "Creating..." : "Create Matter"}
+                                </Button>
+                              </div>
+                            )}
+
+                            <div>
+                              <label className="text-sm font-medium mb-2 block">Note (optional)</label>
+                              <Textarea
+                                placeholder="Add a note about this quote..."
+                                value={userNote}
+                                onChange={(e) => setUserNote(e.target.value)}
+                                className="min-h-[80px]"
+                              />
+                            </div>
+
+                            <div className="flex gap-2 justify-end">
+                              <Button variant="outline" onClick={() => setShowBundleDialog(false)}>
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={addToEvidenceBundle}
+                                disabled={!selectedMatterId || selectedMatterId === "__new__" || isAddingEvidence}
+                              >
+                                {isAddingEvidence ? "Adding..." : "Add to Bundle"}
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    </div>
                   </div>
                   <p className="text-sm italic">"{selectedText}"</p>
                 </div>
@@ -250,11 +474,11 @@ export default function DocumentViewer({ document, onBack }) {
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-2 block">Related Topics</label>
                     <div className="flex flex-wrap gap-2">
-                      {document.topics.map((topic) => (
-                        <Badge key={topic} variant="secondary" className="text-xs">
-                          {topic}
-                        </Badge>
-                      ))}
+                {(document.topics || []).map((topic) => (
+                  <Badge key={topic} variant="secondary" className="text-xs">
+                    {topic}
+                  </Badge>
+                ))}
                     </div>
                   </div>
 
@@ -263,13 +487,13 @@ export default function DocumentViewer({ document, onBack }) {
                   <div>
                     <label className="text-sm font-medium text-muted-foreground">Reliability Score</label>
                     <div className="flex items-center gap-2 mt-1">
-                      <div className="flex-1 bg-muted rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full transition-all"
-                          style={{ width: `${document.confidence * 100}%` }}
-                        />
-                      </div>
-                      <span className="text-sm font-medium">{Math.round(document.confidence * 100)}%</span>
+                  <div className="flex-1 bg-muted rounded-full h-2">
+                    <div
+                      className="bg-primary h-2 rounded-full transition-all"
+                      style={{ width: `${(document.confidence || 0) * 100}%` }}
+                    />
+                  </div>
+                  <span className="text-sm font-medium">{Math.round((document.confidence || 0) * 100)}%</span>
                     </div>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Search, Clock, AlertTriangle, Calculator, Settings, Menu, Bot } from "lucide-react"
+import { Search, Clock, AlertTriangle, Calculator, Settings, Menu, Bot, Folder } from "lucide-react"
 import Sidebar from "./layout/Sidebar"
 import Header from "./layout/Header"
 import SearchPane from "./features/SearchPane"
@@ -10,6 +10,7 @@ import TimelineView from "./features/TimelineView"
 import ContradictionDetector from "./features/ContradictionDetector"
 import AdminDashboard from "./features/AdminDashboard"
 import AIQueryPane from "./features/AIQueryPane"
+import EvidenceBundleView from "./features/EvidenceBundleView"
 import GhostIconButton from "./ui/GhostIconButton"
 import ThemeToggle from "./ui/ThemeToggle"
 import { DataService } from "../../lib/dataService"
@@ -114,10 +115,30 @@ export default function MinLaw2Platform() {
     }
   }
 
-  function viewDocument(docId) {
-    const doc = documents.find((d) => d.id === docId)
-    setSelectedDocument(doc)
-    setActiveView("document")
+  async function viewDocument(docId) {
+    // Try to find document in current documents array first
+    let doc = documents.find((d) => d.id === docId)
+    
+    // If not found, fetch from API by ID
+    if (!doc) {
+      try {
+        const res = await fetch(`/api/documents/${docId}`)
+        const data = await res.json()
+        if (data.success && data.data) {
+          doc = data.data
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error)
+      }
+    }
+    
+    if (doc) {
+      setSelectedDocument(doc)
+      setActiveView("document")
+    } else {
+      console.error("Document not found:", docId)
+      alert("Document not found. Please try searching again.")
+    }
   }
 
   function viewTimeline(topicId) {
@@ -129,6 +150,7 @@ export default function MinLaw2Platform() {
   const navigationItems = [
     { id: "search", label: "Search", icon: Search },
     { id: "fact-checker", label: "POFMAn", icon: Bot },
+    { id: "bundles", label: "Evidence Bundles", icon: Folder },
   ]
 
   // Prevent hydration mismatch by not rendering until mounted
@@ -189,15 +211,9 @@ export default function MinLaw2Platform() {
                 </div>
               </div>
             ) : activeView === "search" ? (
-              <SearchPane
-                searchQuery={searchQuery}
-                searchResults={searchResults}
-                isSearching={isSearching}
-                onSearch={performSearch}
-                onViewDocument={viewDocument}
-                onViewTimeline={() => setActiveView("timeline")}
-                searchRef={searchRef}
-              />
+              <SearchPane onViewDocument={viewDocument} onViewTimeline={() => setActiveView("timeline")} />
+            ) : activeView === "bundles" ? (
+              <EvidenceBundleView />
             ) : null}
 
             {!isLoading && activeView === "fact-checker" && (

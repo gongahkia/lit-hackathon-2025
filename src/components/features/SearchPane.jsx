@@ -7,15 +7,49 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import TimelineView from "./TimelineView"
-// Build search string for backend (now always indiscriminate q)
-function buildSearchParams(query) {
+
+// Build search params for backend, including filters (P1.2)
+function buildSearchParams(query, filters) {
   const params = new URLSearchParams()
-  if (query) params.append("q", query)
-  // If you later add backend filter support, append filter params here
+  if (query && query.trim()) params.append("q", query.trim())
+
+  if (filters?.sourceType && filters.sourceType !== "all") {
+    params.append("sourceType", filters.sourceType)
+  }
+
+  // Date range: map to from/to ISO dates
+  if (filters?.dateRange && filters.dateRange !== "all") {
+    const now = new Date()
+    const to = now.toISOString().slice(0, 10)
+    let from
+    if (filters.dateRange === "week") {
+      const d = new Date(now)
+      d.setDate(d.getDate() - 7)
+      from = d.toISOString().slice(0, 10)
+    } else if (filters.dateRange === "month") {
+      const d = new Date(now)
+      d.setMonth(d.getMonth() - 1)
+      from = d.toISOString().slice(0, 10)
+    } else if (filters.dateRange === "year") {
+      const d = new Date(now)
+      d.setFullYear(d.getFullYear() - 1)
+      from = d.toISOString().slice(0, 10)
+    }
+    if (from) {
+      params.append("dateFrom", from)
+      params.append("dateTo", to)
+    }
+  }
+
+  if (filters?.speaker && filters.speaker !== "all") {
+    params.append("speakerCategory", filters.speaker)
+  }
+
   return params
 }
 export default function SearchPane({
-  onViewTimeline
+  onViewTimeline,
+  onViewDocument
 }) {
   const searchRef = useRef()
   const [searchQuery, setSearchQuery] = useState("")
@@ -26,57 +60,54 @@ export default function SearchPane({
     dateRange: "all",
     speaker: "all",
   })
-  // Unified search
+  // Unified search using Supabase API with filters (P1.2)
   async function onSearch(query) {
     setIsSearching(true)
     setSearchQuery(query)
     try {
-      const params = buildSearchParams(query)
-      let url = `/api/search`
-      if (params.toString()) url += `?${params}`
+      const params = buildSearchParams(query, filters)
+      let url = `/api/documents`
+      if (params.toString()) {
+        url += `?${params.toString()}`
+      }
+
       const res = await fetch(url)
       const data = await res.json()
-      setSearchResults(
-        (data.results || []).map((row, idx) => {
-          let sourceType = "parliamentary"
-          let newsSource = null
-          let url = "#" // <- declare here so it's in scope for the returned object
-
-          const source = row.source || ""
-          if (source.toLowerCase().includes("cna")) {
-            sourceType = "news"
-            newsSource = "CNA"
-            url = row.url || "#"
-          } else if (source.toLowerCase().includes("strait")) {
-            sourceType = "news"
-            newsSource = "Straits Times"
-            url = row.url || "#"
-          } else if (source.toLowerCase().includes("lawgazette")) {
-            sourceType = "articles"
-            newsSource = "Singapore Law Gazette"
-            url = row.url || "#"
-          } else if (source.toLowerCase().includes("hansard")) {
-            sourceType = "parliamentary"
-            url = `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` || "#" // or your hansard link if desired
-          }
-
-          return {
-            id: idx,
-            title: row.policies ? row.policies.join(", ") : "",
-            content: row.content,
-            speaker: row.names ? row.names.join(", ") : "",
-            publishedAt: row.date,
-            sourceType,
-            newsSource,
+      
+      if (data.success && data.data) {
+        // Results are already in the correct Document format from Supabase
+        setSearchResults(data.data)
+      } else {
+        // Fallback: try Flask API if Supabase fails
+        let flaskUrl = `/api/search`
+        const legacyParams = buildSearchParams(query, { sourceType: "all", dateRange: "all", speaker: "all" })
+        if (legacyParams.toString()) flaskUrl += `?${legacyParams.toString()}`
+        const flaskRes = await fetch(flaskUrl)
+        const flaskData = await flaskRes.json()
+        
+        // Transform Flask results to Document format
+        setSearchResults(
+          (flaskData.results || []).map((row, idx) => ({
+            id: row.id || `flask-${idx}`,
+            title: row.policies ? row.policies.join(", ") : row.title || "Untitled",
+            content: row.content || "",
+            speaker: row.names ? row.names.join(", ") : row.speaker || "",
+            publishedAt: row.date || new Date().toISOString(),
+            sourceType: row.source_type || "parliamentary",
             verified: true,
             topics: row.policies || [],
-            url, // always refers to the correct url after all if/else
-            contradictions: []
-          }
-        })
-      )
-
+            url: row.url || "#",
+            contradictions: [],
+            source: row.source || "",
+            confidence: 0.75,
+            role: row.role || "",
+            tags: row.tags || [],
+            summary: row.summary || ""
+          }))
+        )
+      }
     } catch (err) {
+      console.error("Search error:", err)
       setSearchResults([])
     } finally {
       setIsSearching(false)
@@ -197,15 +228,11 @@ export default function SearchPane({
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getSourceTypeColor(result.sourceType)}>
-                          {result.sourceType}
+                          {result.sourceType || "parliamentary"}
                         </Badge>
-                        {/* Hansard badge for parliamentary */}
-                        {result.sourceType === "parliamentary" && (
-                          <Badge variant="outline" className="text-xs">Hansard</Badge>
-                        )}
-                        {/* CNA or Straits Times badge for news */}
-                        {result.newsSource && (
-                          <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                        {/* Show source name if available */}
+                        {result.source_name && (
+                          <Badge variant="secondary" className="text-xs">{result.source_name}</Badge>
                         )}
                         {result.verified ? (
                           <CheckCircle className="h-4 w-4 text-secondary" />
@@ -216,7 +243,9 @@ export default function SearchPane({
                     </div>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <p className="text-sm leading-relaxed mb-4 text-pretty">{result.content.substring(0, 200)}...</p>
+                    <p className="text-sm leading-relaxed mb-4 text-pretty">
+                      {result.content ? (result.content.length > 200 ? result.content.substring(0, 200) + "..." : result.content) : "No content available"}
+                    </p>
                     <div className="flex items-center justify-between">
                       <div className="flex gap-2">
                         {result.topics.slice(0, 3).map((topic) => (
@@ -227,20 +256,30 @@ export default function SearchPane({
                       </div>
                       <div className="flex gap-2">
                         {/* Only show View Timeline for parliamentary/hansard results */}
-                        {result.sourceType === "parliamentary" && (
+                        {result.sourceType === "parliamentary" && onViewTimeline && (
                           <Button variant="outline" size="sm" onClick={onViewTimeline}>
                             View Timeline
                           </Button>
                         )}
-                        {/* Show correct URL for CNA/Straits Times, fallback to "#" for parliamentary */}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(result.url, "_blank")}
-                      >
-                        <ExternalLink className="h-3 w-3 mr-1" />
-                        View Document
-                      </Button>
+                        {/* Use onViewDocument callback to open in DocumentViewer */}
+                        {onViewDocument ? (
+                          <Button
+                            variant="default"
+                            size="sm"
+                            onClick={() => onViewDocument(result.id)}
+                          >
+                            View Document
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => window.open(result.url || "#", "_blank")}
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1" />
+                            View Source
+                          </Button>
+                        )}
                       </div>
                     </div>
                     {result.contradictions.length > 0 && (
