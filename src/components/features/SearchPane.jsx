@@ -201,95 +201,137 @@ export default function SearchPane({
                   </p>
                 </div>
                 {searchResults.map((result) => (
-                <Card key={result.id} className="hover:shadow-md transition-shadow">
+                <Card 
+                  key={result.id} 
+                  className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg border-border bg-card"
+                >
+                  {/* Accent border on hover */}
+                  <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all duration-300 group-hover:w-1.5" />
+                  
                   <CardHeader className="pb-3">
                     <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
-                        <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <div className="flex-1 space-y-2">
+                        {/* Badges row */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge className={getSourceTypeColor(result.sourceType)} variant="outline">
+                            {result.sourceType || "parliamentary"}
+                          </Badge>
+                          {result.source_name && (
+                            <Badge variant="secondary" className="text-xs">{result.source_name}</Badge>
+                          )}
+                          {result.confidence !== undefined && (
+                            <ConfidenceBadge confidence={result.confidence} className="text-xs" />
+                          )}
+                          {result.verified ? (
+                            <Badge variant="outline" className="text-xs border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300 dark:border-green-800">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Verified
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-xs border-yellow-200 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300 dark:border-yellow-800">
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                              Unverified
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        {/* Title */}
+                        <CardTitle className="text-xl font-semibold leading-tight group-hover:text-primary transition-colors duration-200">
+                          {result.title}
+                        </CardTitle>
+                        
+                        {/* Metadata */}
+                        <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
                           {result.speaker && (
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3" />
-                              <span>{result.speaker}</span>
+                            <div className="flex items-center gap-1.5">
+                              <User className="h-4 w-4" />
+                              <span className="font-medium">{result.speaker}</span>
                               {result.role && <span className="text-xs">({result.role})</span>}
                             </div>
                           )}
                           {result.publishedAt && (
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3" />
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-4 w-4" />
                               {formatDateShort(result.publishedAt)}
                             </div>
                           )}
                         </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Badge className={getSourceTypeColor(result.sourceType)}>
-                          {result.sourceType || "parliamentary"}
-                        </Badge>
-                        {/* Show source name if available */}
-                        {result.source_name && (
-                          <Badge variant="secondary" className="text-xs">{result.source_name}</Badge>
-                        )}
-                        {result.verified ? (
-                          <CheckCircle className="h-4 w-4 text-secondary" />
-                        ) : (
-                          <AlertCircle className="h-4 w-4 text-yellow-500" />
-                        )}
-                      </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-0">
-                    <p className="text-sm leading-relaxed mb-4 text-pretty">
+                  
+                  <CardContent className="pt-0 space-y-4">
+                    {/* Content Preview */}
+                    <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
                       {truncateText(result.content, 200)}
                     </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-2 flex-wrap">
-                        {(result.topics || []).slice(0, 3).map((topic, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                            {topic}
-                          </Badge>
-                        ))}
-                        {result.confidence !== undefined && (
-                          <ConfidenceBadge confidence={result.confidence} className="text-xs" />
-                        )}
+                    
+                    {/* Topics Section */}
+                    {(result.topics || []).length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                          Related Topics
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {(result.topics || []).slice(0, 4).map((topic, idx) => (
+                            <Badge 
+                              key={idx} 
+                              variant="outline"
+                              className="text-xs bg-background hover:bg-accent transition-colors cursor-pointer"
+                            >
+                              {topic}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
+                    )}
+                    
+                    {/* Contradictions Alert */}
+                    {(result.contradictions || []).length > 0 && (
+                      <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                        <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+                          <AlertCircle className="h-4 w-4" />
+                          <span className="font-medium">Potential contradictions detected</span>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Action Buttons */}
+                    <div className="flex items-center justify-between gap-4 pt-2 border-t border-border">
                       <div className="flex gap-2">
-                        {/* Only show View Timeline for parliamentary/hansard results */}
                         {result.sourceType === "parliamentary" && onViewTimeline && (
                           <Button variant="outline" size="sm" onClick={onViewTimeline}>
                             View Timeline
                           </Button>
                         )}
-                        {/* Use onViewDocument callback to open in DocumentViewer */}
+                      </div>
+                      <div className="flex gap-2">
                         {onViewDocument ? (
                           <Button
                             variant="default"
                             size="sm"
                             onClick={() => onViewDocument(result.id)}
+                            className="group/btn"
                           >
                             View Document
+                            <ExternalLink className="h-3 w-3 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
                           </Button>
-                        ) : (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                            onClick={() => window.open(result.url || "#", "_blank")}
-                      >
-                        <ExternalLink className="h-3 w-3 mr-1" />
+                        ) : result.url ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => window.open(result.url, "_blank")}
+                          >
+                            <ExternalLink className="h-3 w-3 mr-1.5" />
                             View Source
-                      </Button>
-                        )}
+                          </Button>
+                        ) : null}
                       </div>
                     </div>
-                    {result.contradictions.length > 0 && (
-                      <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
-                        <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-                          <AlertCircle className="h-3 w-3" />
-                          Potential contradictions detected
-                        </div>
-                      </div>
-                    )}
                   </CardContent>
+                  
+                  {/* Hover Effect Overlay */}
+                  <div className="absolute inset-0 bg-primary/5 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
                 </Card>
               ))}
               </div>

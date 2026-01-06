@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
-import { Download, Folder, FileText, Loader2, Trash2 } from "lucide-react"
+import { Download, Folder, FileText, Loader2, Trash2, User, Clock, Building } from "lucide-react"
 import { formatDateShort, buildCitation } from "@/lib/formatters"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
@@ -246,68 +246,94 @@ export default function EvidenceBundleView() {
             evidenceItems.map((item, index) => {
               const citation = item.citation_json || {}
               return (
-                <Card key={item.id}>
-                  <CardHeader className="pb-2 flex flex-row items-start justify-between gap-3">
-                    <div className="flex-1 space-y-1">
-                      <CardTitle className="text-sm flex items-center gap-2">
-                        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs font-semibold">
+                <Card key={item.id} className="group relative overflow-hidden transition-all duration-300 hover:shadow-md border-border">
+                  {/* Accent border */}
+                  <div className="absolute top-0 left-0 w-1 h-full bg-primary/20 group-hover:bg-primary transition-all duration-300" />
+                  
+                  <CardHeader className="pb-3 flex flex-row items-start justify-between gap-3">
+                    <div className="flex-1 space-y-2">
+                      <CardTitle className="text-base flex items-center gap-3">
+                        <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-bold border border-primary/20">
                           {index + 1}
                         </span>
-                        <span className="truncate">{citation.title || "Untitled"}</span>
+                        <span className="truncate font-semibold">{citation.title || "Untitled"}</span>
                       </CardTitle>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        {citation.speaker && (
-                          <span>
-                            <strong>{citation.speaker}</strong>
-                            {citation.role ? ` (${citation.role})` : ""}
-                          </span>
-                        )}
-                        {citation.publishedAt && (
-                          <>
-                            <Separator orientation="vertical" className="h-3" />
-                            <span>{formatDateShort(citation.publishedAt)}</span>
-                          </>
-                        )}
-                        {(citation.source_name || citation.source) && (
-                          <>
-                            <Separator orientation="vertical" className="h-3" />
-                            <span>{citation.source_name || citation.source}</span>
-                          </>
-                        )}
+                      
+                      {/* Enhanced Citation Display */}
+                      <div className="pl-10 space-y-2">
+                        <div className="flex flex-wrap items-center gap-2 text-sm">
+                          {citation.speaker && (
+                            <div className="flex items-center gap-1.5">
+                              <User className="h-3.5 w-3.5 text-muted-foreground" />
+                              <span className="font-medium">{citation.speaker}</span>
+                              {citation.role && (
+                                <span className="text-xs text-muted-foreground">({citation.role})</span>
+                              )}
+                            </div>
+                          )}
+                          {citation.publishedAt && (
+                            <>
+                              <Separator orientation="vertical" className="h-4" />
+                              <div className="flex items-center gap-1.5">
+                                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>{formatDateShort(citation.publishedAt || citation.date)}</span>
+                              </div>
+                            </>
+                          )}
+                          {(citation.source_name || citation.source) && (
+                            <>
+                              <Separator orientation="vertical" className="h-4" />
+                              <div className="flex items-center gap-1.5">
+                                <Building className="h-3.5 w-3.5 text-muted-foreground" />
+                                <span>{citation.source_name || citation.source}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="text-destructive hover:text-destructive"
+                      className="h-9 w-9 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
                       onClick={() => handleDeleteEvidenceItem(item.id)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </CardHeader>
-                  <CardContent className="space-y-3 pt-0">
-                    <p className="text-sm italic border-l-2 border-primary/40 pl-3 text-pretty">"{item.quote_text}"</p>
+                  <CardContent className="space-y-4 pt-0 pl-10">
+                    {/* Quote - Enhanced Styling */}
+                    <div className="relative">
+                      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary/40 rounded-full" />
+                      <blockquote className="pl-4 text-sm leading-relaxed text-foreground italic border-l-2 border-primary/30 bg-muted/30 p-3 rounded-r-md">
+                        "{item.quote_text}"
+                      </blockquote>
+                    </div>
 
+                    {/* User Note - Enhanced */}
                     {item.user_note && (
-                      <div className="text-xs text-muted-foreground">
-                        <span className="font-medium">Note: </span>
-                        {item.user_note}
+                      <div className="bg-accent/30 rounded-lg p-4 border border-accent/50">
+                        <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
+                          Your Note
+                        </label>
+                        <p className="text-sm leading-relaxed">{item.user_note}</p>
                       </div>
                     )}
-
-                    {citation.url && (
-                      <div className="text-xs text-muted-foreground truncate">
-                        <span className="font-medium">URL: </span>
-                        <a
-                          href={citation.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="underline underline-offset-2"
-                        >
-                          {citation.url}
-                        </a>
-                      </div>
-                    )}
+                    
+                    {/* Citation Footer */}
+                    <div className="pt-2 border-t border-border">
+                      <p className="text-xs text-muted-foreground font-mono">
+                        {buildCitation({
+                          speaker: citation.speaker,
+                          role: citation.role,
+                          publishedAt: citation.publishedAt || citation.date,
+                          source_name: citation.source_name,
+                          source: citation.source,
+                          url: citation.url,
+                          documentId: citation.documentId
+                        })}
+                      </p>
+                    </div>
                   </CardContent>
                 </Card>
               )

@@ -6,6 +6,8 @@ import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
 import { Badge } from "../ui/badge"
+import { Button } from "../ui/button"
+import { Separator } from "../ui/separator"
 // P2: Uncomment when implementing hierarchical RAG
 // import { RAGResponseView } from "./RAGResponseView"
 // import { QueryResponse } from "@/lib/types/query"
@@ -268,83 +270,129 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
               </button>
             </div>
             {searchResults.map((result) => (
-              <div key={result.id} className="relative rounded-lg border bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-700 p-4 hover:shadow-lg transition-shadow">
-                {/* Rank badge */}
-                <span className="absolute left-[-1.8rem] top-3 bg-indigo-600 text-white text-xs font-bold rounded-full h-7 w-7 flex items-center justify-center shadow">
+              <div 
+                key={result.id} 
+                className="group relative rounded-xl border bg-card border-border p-5 hover:shadow-lg transition-all duration-300 overflow-hidden"
+              >
+                {/* Accent border on hover */}
+                <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all duration-300 group-hover:w-1.5" />
+                
+                {/* Rank badge - Improved */}
+                <div className="absolute left-[-1.5rem] top-4 bg-primary text-primary-foreground text-xs font-bold rounded-full h-8 w-8 flex items-center justify-center shadow-lg border-2 border-background">
                   {result.rank}
-                </span>
-                {/* Confidence badge */}
-                <div className="absolute right-2 top-2">
+                </div>
+                
+                {/* Confidence badge - Top right */}
+                <div className="absolute right-3 top-3">
                   <ConfidenceBadge confidence={result.confidence / 100} className="text-xs" />
                 </div>
-                <div className="flex items-start justify-between mb-2">
-                  <div className="flex flex-col flex-1">
-                    <div className="text-lg font-semibold leading-tight mb-1">
-                      {result.title || "Untitled"}
+                
+                <div className="pl-6 pr-20 space-y-3">
+                  {/* Header */}
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 space-y-2">
+                      {/* Badges */}
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge className={`${getSourceTypeColor(result.sourceType)} text-xs capitalize`} variant="outline">
+                          {result.sourceType}
+                        </Badge>
+                        {result.newsSource && (
+                          <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                        )}
+                        {result.verified ? (
+                          <Badge variant="outline" className="text-xs border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Verified
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs border-yellow-200 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300">
+                            <AlertCircle className="h-3 w-3 mr-1" />
+                            Unverified
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {/* Title */}
+                      <h3 className="text-lg font-semibold leading-tight group-hover:text-primary transition-colors duration-200">
+                        {result.title || "Untitled"}
+                      </h3>
+                      
+                      {/* Metadata */}
+                      <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+                        {result.speaker && (
+                          <div className="flex items-center gap-1.5">
+                            <User className="h-4 w-4" />
+                            <span className="font-medium">{result.speaker}</span>
+                            {result.role && <span className="text-xs">({result.role})</span>}
+                          </div>
+                        )}
+                        {result.publishedAt && (
+                          <div className="flex items-center gap-1.5">
+                            <Clock className="h-4 w-4" />
+                            {formatDateShort(result.publishedAt)}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
-                      <span className="flex items-center gap-1">
-                        <User className="h-3 w-3" />
-                        {result.speaker}
-                      </span>
-                      {result.publishedAt && (
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                          {formatDateShort(result.publishedAt)}
-                      </span>
-                      )}
+                  </div>
+                  
+                  {/* Content Preview */}
+                  <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
+                    {truncateText(result.content, 220)}
+                  </p>
+                  
+                  {/* Topics */}
+                  {(result.topics || []).length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {(result.topics || []).slice(0, 3).map((topic, i) => (
+                        <Badge 
+                          key={i} 
+                          variant="outline"
+                          className="text-xs bg-background hover:bg-accent transition-colors"
+                        >
+                          {topic}
+                        </Badge>
+                      ))}
                     </div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Badge className={`${getSourceTypeColor(result.sourceType)} text-xs capitalize`}>
-                      {result.sourceType}
-                    </Badge>
-                    {/* News badges */}
-                    {result.newsSource && (
-                      <span className="px-2 py-0.5 rounded border text-xs bg-yellow-100 text-yellow-800 border-yellow-200">{result.newsSource}</span>
-                    )}
-                    {result.verified ? (
-                      <CheckCircle className="h-4 w-4 text-emerald-500" />
-                    ) : (
-                      <AlertCircle className="h-4 w-4 text-yellow-400" />
-                    )}
-                  </div>
-                </div>
-                <p className="text-sm leading-relaxed mb-3 text-zinc-800 dark:text-zinc-200">
-                  {truncateText(result.content, 220)}
-                </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2">
-                    {result.topics.slice(0, 3).map((topic, i) => (
-                      <span key={i} className="px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 text-xs font-medium">{topic}</span>
-                    ))}
-                  </div>
-                  <div className="flex gap-2">
+                  )}
+                  
+                  {/* Contradictions Alert */}
+                  {(result.contradictions || []).length > 0 && (
+                    <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                      <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+                        <AlertCircle className="h-4 w-4" />
+                        <span className="font-medium">Potential contradictions detected</span>
+                      </div>
+                    </div>
+                  )}
+                  
+                  {/* Actions */}
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
                     {onViewDocument && result.id ? (
-                      <button
-                        className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                      <Button
+                        variant="default"
+                        size="sm"
                         onClick={() => onViewDocument(result.id)}
+                        className="group/btn"
                       >
-                        <ExternalLink className="h-3 w-3" />
                         View Document
-                      </button>
+                        <ExternalLink className="h-3 w-3 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
+                      </Button>
                     ) : result.url ? (
-                    <button
-                      className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
-                      onClick={() => window.open(result.url, "_blank")}
-                    >
-                      <ExternalLink className="h-3 w-3" />
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => window.open(result.url, "_blank")}
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1.5" />
                         View Source
-                    </button>
+                      </Button>
                     ) : null}
                   </div>
                 </div>
-                {(result.contradictions || []).length > 0 && (
-                  <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800 flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-                    <AlertCircle className="h-3 w-3" />
-                    Potential contradictions detected
-                  </div>
-                )}
+                
+                {/* Hover Effect Overlay */}
+                <div className="absolute inset-0 bg-primary/5 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
               </div>
             ))}
           </div>

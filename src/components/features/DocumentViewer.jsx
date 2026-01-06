@@ -421,52 +421,111 @@ export default function DocumentViewer({ document, onBack }) {
 
           {/* Metadata */}
           <div className="grid md:grid-cols-2 gap-6">
-            {/* Source Attribution */}
-            <Card>
+            {/* Source Attribution - Enhanced for Legal Use */}
+            <Card className="border-primary/20">
               <CardHeader>
-                <CardTitle className="text-base">Source Attribution</CardTitle>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Building className="h-4 w-4" />
+                  Source Attribution
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-4">
+                {/* Citation Block - Prominent for Legal Practitioners */}
+                <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                  <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
+                    Legal Citation
+                  </label>
+                  <p className="text-sm font-medium leading-relaxed">
+                    {buildCitation({
+                      speaker: document.speaker,
+                      role: document.role,
+                      publishedAt: document.publishedAt,
+                      source_name: document.source_name,
+                      url: document.url,
+                      documentId: document.id
+                    })}
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="mt-2"
+                    onClick={() => {
+                      const citation = buildCitation({
+                        speaker: document.speaker,
+                        role: document.role,
+                        publishedAt: document.publishedAt,
+                        source_name: document.source_name,
+                        url: document.url,
+                        documentId: document.id
+                      })
+                      copyToClipboard(citation)
+                    }}
+                  >
+                    <Copy className="h-3 w-3 mr-1.5" />
+                    Copy Citation
+                  </Button>
+                </div>
+
                 <div>
-                  <label className="text-sm font-medium text-muted-foreground">Original URL</label>
-                  <div className="flex items-center gap-2 mt-1">
-                    <code className="text-xs bg-muted px-2 py-1 rounded flex-1 truncate">{document.url}</code>
-                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(document.url)}>
-                      <Copy className="h-3 w-3" />
-                    </Button>
+                  <label className="text-sm font-medium text-muted-foreground mb-2 block">Original URL</label>
+                  <div className="flex items-center gap-2">
+                    <code className="text-xs bg-muted px-3 py-2 rounded-md flex-1 truncate border border-border">
+                      {document.url || "N/A"}
+                    </code>
+                    {document.url && (
+                      <Button variant="ghost" size="sm" onClick={() => copyToClipboard(document.url)}>
+                        <Copy className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
                 </div>
 
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Document ID</label>
-                  <p className="text-sm font-mono mt-1">{document.id}</p>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">Last Verified</label>
-                  <p className="text-sm mt-1">{formatDateLong(document.publishedAt)}</p>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                      Document ID
+                    </label>
+                    <p className="text-sm font-mono bg-muted px-2 py-1 rounded border border-border">
+                      {document.id}
+                    </p>
+                  </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
+                      Last Verified
+                    </label>
+                    <p className="text-sm">{formatDateLong(document.publishedAt)}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Topics & Tags */}
+            {/* Topics & Classification - Enhanced */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Topics & Classification</CardTitle>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Flag className="h-4 w-4" />
+                  Topics & Classification
+                </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Related Topics</label>
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-3 block">
+                      Related Topics
+                    </label>
                     <div className="flex flex-wrap gap-2">
                       {(document.topics || []).length > 0 ? (
                         (document.topics || []).map((topic, idx) => (
-                          <Badge key={idx} variant="secondary" className="text-xs">
-                          {topic}
-                        </Badge>
+                          <Badge 
+                            key={idx} 
+                            variant="outline" 
+                            className="text-xs bg-background hover:bg-accent transition-colors"
+                          >
+                            {topic}
+                          </Badge>
                         ))
                       ) : (
-                        <span className="text-xs text-muted-foreground">No topics assigned</span>
+                        <span className="text-sm text-muted-foreground italic">No topics assigned</span>
                       )}
                     </div>
                   </div>
@@ -474,8 +533,20 @@ export default function DocumentViewer({ document, onBack }) {
                   <Separator />
 
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Reliability Score</label>
-                    <ConfidenceBadge confidence={document.confidence} showLabel />
+                    <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 block">
+                      Reliability Score
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <ConfidenceBadge confidence={document.confidence} showLabel />
+                      {document.confidence !== undefined && (
+                        <div className="flex-1 bg-muted rounded-full h-2">
+                          <div
+                            className="bg-primary h-2 rounded-full transition-all duration-300"
+                            style={{ width: `${(document.confidence || 0) * 100}%` }}
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>
