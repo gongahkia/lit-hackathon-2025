@@ -1,10 +1,14 @@
 "use client"
 import React, { useRef, useState } from "react"
 import { Paperclip, Search, CheckCircle, Clock, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
-import { formatDateShort, getSourceTypeColor } from "@/lib/formatters"
+import { formatDateShort, getSourceTypeColor, truncateText } from "@/lib/formatters"
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
+import { Badge } from "../ui/badge"
+// P2: Uncomment when implementing hierarchical RAG
+// import { RAGResponseView } from "./RAGResponseView"
+// import { QueryResponse } from "@/lib/types/query"
 // --- POFMan bot SVG (minimal, replace with your brand asset as needed) ---
 function POFManIcon() {
   return (
@@ -37,10 +41,19 @@ const THINKING_STEPS = [
 function delay(ms) {
   return new Promise((res) => setTimeout(res, ms));
 }
-export default function AIAssistantSearch() {
+
+/**
+ * AIQueryPane component for semantic search
+ * @param {Object} props
+ * @param {Function} [props.onViewDocument] - Callback when viewing a document
+ * @param {Function} [props.onViewTimeline] - Callback when viewing a timeline
+ * @param {Array} [props.documents] - Array of documents
+ */
+export default function AIQueryPane({ onViewDocument, onViewTimeline, documents = [] }) {
   const [query, setQuery] = useState("")
   const [file, setFile] = useState(null)
   const [searchResults, setSearchResults] = useState([])
+  const [ragResponse, setRagResponse] = useState(null) // P2: For future RAG responses
   const [thinkingStep, setThinkingStep] = useState(-1)
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState(null)
@@ -85,9 +98,9 @@ export default function AIAssistantSearch() {
       // If Supabase fails, try Flask API
       if (!data.success || !data.data) {
         res = await fetch(`/api/search?${params.toString()}`, {
-          method: "GET",
-        })
-        if (!res.ok) throw new Error("Search failed.")
+        method: "GET",
+      })
+      if (!res.ok) throw new Error("Search failed.")
         data = await res.json()
       }
       
@@ -236,12 +249,13 @@ export default function AIAssistantSearch() {
           </div>
         )}
         {/* --- RAG Response (P2) - Future implementation --- */}
-        {!isSearching && ragResponse && (
+        {/* Note: RAGResponseView will be used when P2 is implemented */}
+        {/* {!isSearching && ragResponse && (
           <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />
-        )}
+        )} */}
 
         {/* --- Search Results (Current implementation) --- */}
-        {!isSearching && !ragResponse && searchResults.length > 0 && (
+        {!isSearching && searchResults.length > 0 && (
           <div className="flex flex-col gap-4 max-h-[28rem] overflow-y-auto pr-1">
             <div className="flex items-center justify-between mb-2 sticky top-0 bg-white dark:bg-zinc-900 z-10">
               <p className="text-sm text-zinc-500">
@@ -274,10 +288,10 @@ export default function AIAssistantSearch() {
                         {result.speaker}
                       </span>
                       {result.publishedAt && (
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
                           {formatDateShort(result.publishedAt)}
-                        </span>
+                      </span>
                       )}
                     </div>
                   </div>
@@ -315,17 +329,17 @@ export default function AIAssistantSearch() {
                         View Document
                       </button>
                     ) : result.url ? (
-                      <button
-                        className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
-                        onClick={() => window.open(result.url, "_blank")}
-                      >
-                        <ExternalLink className="h-3 w-3" />
+                    <button
+                      className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                      onClick={() => window.open(result.url, "_blank")}
+                    >
+                      <ExternalLink className="h-3 w-3" />
                         View Source
-                      </button>
+                    </button>
                     ) : null}
                   </div>
                 </div>
-                {result.contradictions.length > 0 && (
+                {(result.contradictions || []).length > 0 && (
                   <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800 flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
                     <AlertCircle className="h-3 w-3" />
                     Potential contradictions detected

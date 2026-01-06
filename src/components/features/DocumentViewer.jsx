@@ -213,10 +213,10 @@ export default function DocumentViewer({ document, onBack }) {
               Share
             </Button>
             {document.url && (
-              <Button variant="outline" size="sm" onClick={() => window.open(document.url, "_blank")}>
-                <ExternalLink className="h-4 w-4 mr-2" />
-                View Source
-              </Button>
+            <Button variant="outline" size="sm" onClick={() => window.open(document.url, "_blank")}>
+              <ExternalLink className="h-4 w-4 mr-2" />
+              View Source
+            </Button>
             )}
             <Button variant="outline" size="sm" onClick={() => setShowReportForm(true)}>
               <Flag className="h-4 w-4 mr-2" />
@@ -230,23 +230,23 @@ export default function DocumentViewer({ document, onBack }) {
 
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-3">
             {document.speaker && (
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span className="font-medium">{document.speaker}</span>
+            <div className="flex items-center gap-2">
+              <User className="h-4 w-4" />
+              <span className="font-medium">{document.speaker}</span>
                 {document.role && <span>({document.role})</span>}
-              </div>
+            </div>
             )}
             {document.publishedAt && (
-              <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4" />
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
                 {formatDateLong(document.publishedAt)}
-              </div>
+            </div>
             )}
             {document.source && (
-              <div className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
+            <div className="flex items-center gap-2">
+              <Building className="h-4 w-4" />
                 {document.source_name || document.source}
-              </div>
+            </div>
             )}
           </div>
 
@@ -308,10 +308,10 @@ export default function DocumentViewer({ document, onBack }) {
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium">Selected Text:</span>
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() =>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() =>
                           copyToClipboard(`"${selectedText}" - ${buildCitation({
                             speaker: document.speaker,
                             role: document.role,
@@ -320,11 +320,11 @@ export default function DocumentViewer({ document, onBack }) {
                             url: document.url,
                             documentId: document.id
                           })}`)
-                        }
-                      >
-                        <Copy className="h-3 w-3 mr-1" />
-                        Copy Quote
-                      </Button>
+                      }
+                    >
+                      <Copy className="h-3 w-3 mr-1" />
+                      Copy Quote
+                    </Button>
                       {/* P1.1: Add to Evidence Bundle button */}
                       <Dialog open={showBundleDialog} onOpenChange={setShowBundleDialog}>
                         <DialogTrigger asChild>
@@ -462,8 +462,8 @@ export default function DocumentViewer({ document, onBack }) {
                       {(document.topics || []).length > 0 ? (
                         (document.topics || []).map((topic, idx) => (
                           <Badge key={idx} variant="secondary" className="text-xs">
-                            {topic}
-                          </Badge>
+                          {topic}
+                        </Badge>
                         ))
                       ) : (
                         <span className="text-xs text-muted-foreground">No topics assigned</span>
