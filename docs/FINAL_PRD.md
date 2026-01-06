@@ -285,38 +285,39 @@ def process_query(data):
 
 ## 7. Implementation Checklist
 
-### Week 1: Foundation (Gabriel P0)
+### Week 1: Foundation (Gabriel P0) ✅ COMPLETE
 
-- [ ] **Day 1-2**: P0.1 - Create Next.js API proxy routes
-  - [ ] Create `src/app/api/search/route.ts`
-  - [ ] Create `src/app/api/timeline/route.ts`
-  - [ ] Update all components to use `/api/*` instead of `localhost:5000`
-  - [ ] Add `FLASK_API_BASE` env var
-  - [ ] Test: `npm run dev` works without localhost references
+- [x] **Day 1-2**: P0.1 - Create Next.js API proxy routes
+  - [x] Create `src/app/api/search/route.ts`
+  - [x] Create `src/app/api/timeline/route.ts`
+  - [x] Create `src/app/api/query/route.ts`
+  - [x] Update all components to use `/api/*` instead of `localhost:5000`
+  - [x] Add `FLASK_API_BASE` env var
+  - [x] Test: `npm run dev` works without localhost references
 
-- [ ] **Day 3-4**: P0.2 - Enable Supabase data layer
-  - [ ] Uncomment Supabase calls in `lib/dataService.ts`
-  - [ ] Run `npm run seed-db` or `npm run ingest-data`
-  - [ ] Verify documents appear in UI from Supabase
-  - [ ] Remove or gate mock data fallback
-  - [ ] Test: UI shows real data from Supabase
+- [x] **Day 3-4**: P0.2 - Enable Supabase data layer
+  - [x] Uncomment Supabase calls in `lib/dataService.ts`
+  - [x] Run `npm run seed-db` or `npm run ingest-data`
+  - [x] Verify documents appear in UI from Supabase
+  - [x] Remove or gate mock data fallback
+  - [x] Test: UI shows real data from Supabase
 
-- [ ] **Day 5**: P0.3 - Fix Flask endpoints
-  - [ ] Implement `validate_document()` stub
-  - [ ] Implement `process_query()` stub
-  - [ ] Add error handling
-  - [ ] Test: `/validate` and `/query` endpoints return JSON
+- [x] **Day 5**: P0.3 - Fix Flask endpoints
+  - [x] Implement `validate_document()` stub
+  - [x] Implement `process_query()` stub
+  - [x] Add error handling
+  - [x] Test: `/validate` and `/query` endpoints return JSON
 
-### Week 2: Practitioner Features (Gabriel P1)
+### Week 2: Practitioner Features (Gabriel P1) ✅ COMPLETE
 
-- [ ] **Day 6-8**: P1.1 - Evidence Bundles
-  - [ ] Create database tables
-  - [ ] Add UI in DocumentViewer
-  - [ ] Implement export
+- [x] **Day 6-8**: P1.1 - Evidence Bundles
+  - [x] Create database tables (`matters`, `evidence_items`)
+  - [x] Add UI in `DocumentViewer` for **Add to Evidence Bundle**
+  - [x] Implement export as **print-friendly PDF** from `EvidenceBundleView`
 
-- [ ] **Day 9-10**: P1.2 - Search Filters
-  - [ ] Add filter params to API
-  - [ ] Update UI
+- [x] **Day 9-10**: P1.2 - Search Filters
+  - [x] Add filter params to API (`/api/documents` with `sourceType`, `dateFrom/dateTo`, `speakerCategory`)
+  - [x] Update `SearchPane` UI to send and use filters
 
 ### Week 3+: Advanced RAG (Richard P2)
 
