@@ -152,11 +152,13 @@ CREATE OR REPLACE FUNCTION update_topic_document_count()
 RETURNS TRIGGER AS $$
 BEGIN
   -- Update document count for affected topics
-  UPDATE topics 
+  -- Fix: Use explicit table aliases to avoid ambiguity
+  -- 'topics' refers to both table name AND column name in documents
+  UPDATE topics t
   SET document_count = (
     SELECT COUNT(*) 
-    FROM documents 
-    WHERE topics && ARRAY[topics.id]
+    FROM documents d
+    WHERE d.topics && ARRAY[t.id]  -- d.topics is the column, t.id is the topic table id
   );
   
   RETURN COALESCE(NEW, OLD);
