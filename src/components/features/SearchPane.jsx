@@ -6,6 +6,10 @@ import { Input } from "../ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { formatDateShort, getSourceTypeColor, truncateText } from "@/lib/formatters"
+import { ConfidenceBadge } from "../ui/ConfidenceBadge"
+import { EmptyState } from "../ui/EmptyState"
+import { LoadingState } from "../ui/LoadingState"
 import TimelineView from "./TimelineView"
 
 // Build search params for backend, including filters (P1.2)
@@ -113,35 +117,22 @@ export default function SearchPane({
       setIsSearching(false)
     }
   }
-  const handleFilterChange = (field, value) => {
-    setFilters(prev => {
-      const updated = { ...prev, [field]: value }
-      // Optionally, you could re-filter here; currently, filters are frontend-only
-      return updated
-    })
-  }
   const handleSearchForm = (e) => {
     e.preventDefault()
     const query = searchRef.current?.value || ""
     onSearch(query)
   }
-  const getSourceTypeColor = (type) => {
-    switch (type) {
-      case "parliamentary":
-        return "bg-primary/10 text-primary"
-      case "ministerial":
-        return "bg-secondary/10 text-secondary"
-      case "news":
-        return "bg-muted text-muted-foreground"
-      default:
-        return "bg-muted text-muted-foreground"
-    }
-  }
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-SG", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
+  // Auto-apply filters when they change (P1.2 improvement)
+  const handleFilterChange = (field, value) => {
+    setFilters(prev => {
+      const updated = { ...prev, [field]: value }
+      // Re-run search with new filters if we have a query
+      if (searchQuery) {
+        setTimeout(() => {
+          onSearch(searchQuery)
+        }, 0)
+      }
+      return updated
     })
   }
   return (
@@ -193,21 +184,21 @@ export default function SearchPane({
         <div className="flex-1 overflow-auto p-6">
           <div className="max-w-4xl mx-auto">
             {isSearching && (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-                <span className="ml-3 text-muted-foreground">Searching parliamentary data...</span>
-              </div>
+              <LoadingState message="Searching parliamentary data..." />
             )}
             {!isSearching && searchResults.length > 0 && (
               <div className="space-y-4">
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between mb-2">
                   <p className="text-sm text-muted-foreground">
-                    Found {searchResults.length} results for "{searchQuery}"
+                    Found <strong>{searchResults.length}</strong> result{searchResults.length === 1 ? "" : "s"} for "{searchQuery}"
+                    {(filters.sourceType !== "all" || filters.dateRange !== "all" || filters.speaker !== "all") && (
+                      <span className="ml-2 text-xs">
+                        (filtered: {filters.sourceType !== "all" && filters.sourceType}{" "}
+                        {filters.dateRange !== "all" && filters.dateRange}{" "}
+                        {filters.speaker !== "all" && filters.speaker})
+                      </span>
+                    )}
                   </p>
-                  <Button variant="outline" size="sm">
-                    <Filter className="h-4 w-4 mr-2" />
-                    Filters
-                  </Button>
                 </div>
                 {searchResults.map((result) => (
                 <Card key={result.id} className="hover:shadow-md transition-shadow">
@@ -216,14 +207,19 @@ export default function SearchPane({
                       <div className="flex-1">
                         <CardTitle className="text-lg leading-tight mb-2">{result.title}</CardTitle>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            {result.speaker}
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {formatDate(result.publishedAt)}
-                          </div>
+                          {result.speaker && (
+                            <div className="flex items-center gap-1">
+                              <User className="h-3 w-3" />
+                              <span>{result.speaker}</span>
+                              {result.role && <span className="text-xs">({result.role})</span>}
+                            </div>
+                          )}
+                          {result.publishedAt && (
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatDateShort(result.publishedAt)}
+                            </div>
+                          )}
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -244,15 +240,18 @@ export default function SearchPane({
                   </CardHeader>
                   <CardContent className="pt-0">
                     <p className="text-sm leading-relaxed mb-4 text-pretty">
-                      {result.content ? (result.content.length > 200 ? result.content.substring(0, 200) + "..." : result.content) : "No content available"}
+                      {truncateText(result.content, 200)}
                     </p>
                     <div className="flex items-center justify-between">
-                      <div className="flex gap-2">
-                        {result.topics.slice(0, 3).map((topic) => (
-                          <Badge key={topic} variant="secondary" className="text-xs">
+                      <div className="flex gap-2 flex-wrap">
+                        {(result.topics || []).slice(0, 3).map((topic, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
                             {topic}
                           </Badge>
                         ))}
+                        {result.confidence !== undefined && (
+                          <ConfidenceBadge confidence={result.confidence} className="text-xs" />
+                        )}
                       </div>
                       <div className="flex gap-2">
                         {/* Only show View Timeline for parliamentary/hansard results */}
@@ -271,14 +270,14 @@ export default function SearchPane({
                             View Document
                           </Button>
                         ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
+                      <Button
+                        variant="ghost"
+                        size="sm"
                             onClick={() => window.open(result.url || "#", "_blank")}
-                          >
-                            <ExternalLink className="h-3 w-3 mr-1" />
+                      >
+                        <ExternalLink className="h-3 w-3 mr-1" />
                             View Source
-                          </Button>
+                      </Button>
                         )}
                       </div>
                     </div>
@@ -296,24 +295,27 @@ export default function SearchPane({
               </div>
             )}
             {!isSearching && searchQuery && searchResults.length === 0 && (
-              <div className="text-center py-12">
-                <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                <h3 className="text-lg font-medium mb-2">No results found</h3>
-                <p className="text-muted-foreground mb-4">Try adjusting your search terms or check the spelling</p>
-                <Button variant="outline" onClick={() => { searchRef.current.value = ""; onSearch(""); }}>
-                  Clear Search
-                </Button>
-              </div>
+              <EmptyState
+                icon={Search}
+                title="No results found"
+                description="Try adjusting your search terms or check the spelling"
+                action={{
+                  label: "Clear Search",
+                  onClick: () => {
+                    if (searchRef.current) {
+                      searchRef.current.value = ""
+                      onSearch("")
+                    }
+                  }
+                }}
+              />
             )}
             {!searchQuery && (
-              <div className="text-center py-12">
-                <Search className="h-16 w-16 text-muted-foreground mx-auto mb-6" />
-                <h2 className="text-xl font-semibold mb-3">Search Parliamentary Data</h2>
-                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
-                  Keyword search through parliamentary debates, ministerial statements, press releases, and verified government
-                  communications with exact source attribution.
-                </p>
-              </div>
+              <EmptyState
+                icon={Search}
+                title="Search Parliamentary Data"
+                description="Keyword search through parliamentary debates, ministerial statements, press releases, and verified government communications with exact source attribution."
+              />
             )}
           </div>
         </div>
