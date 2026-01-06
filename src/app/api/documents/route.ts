@@ -5,10 +5,20 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q')
+    const sourceType = searchParams.get('sourceType')
+    const dateFrom = searchParams.get('dateFrom')
+    const dateTo = searchParams.get('dateTo')
+    const speakerCategory = searchParams.get('speakerCategory')
     
     let documents
-    if (query) {
-      documents = await DatabaseService.searchDocuments(query)
+    if (query || sourceType || dateFrom || dateTo || speakerCategory) {
+      documents = await DatabaseService.searchDocumentsWithFilters({
+        query: query || undefined,
+        sourceType: sourceType || undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+        speakerCategory: speakerCategory || undefined,
+      })
     } else {
       documents = await DatabaseService.getDocuments()
     }
