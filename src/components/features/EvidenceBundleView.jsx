@@ -7,6 +7,9 @@ import { Badge } from "../ui/badge"
 import { Separator } from "../ui/separator"
 import { Textarea } from "../ui/textarea"
 import { Download, Folder, FileText, Loader2, Trash2 } from "lucide-react"
+import { formatDateShort, buildCitation } from "@/lib/formatters"
+import { EmptyState } from "../ui/EmptyState"
+import { LoadingState } from "../ui/LoadingState"
 
 export default function EvidenceBundleView() {
   const [matters, setMatters] = useState([])
@@ -85,18 +88,6 @@ export default function EvidenceBundleView() {
     }
   }
 
-  const formatDate = (dateString) => {
-    if (!dateString) return ""
-    try {
-      return new Date(dateString).toLocaleDateString("en-SG", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-      })
-    } catch {
-      return dateString
-    }
-  }
 
   const exportAsPdf = () => {
     if (!selectedMatter || evidenceItems.length === 0) return
@@ -107,7 +98,7 @@ export default function EvidenceBundleView() {
       if (c.speaker) {
         lines.push(`Speaker: ${c.speaker}${c.role ? ` (${c.role})` : ""}`)
       }
-      const dateStr = formatDate(c.publishedAt || c.date)
+      const dateStr = formatDateShort(c.publishedAt || c.date)
       if (dateStr) lines.push(`Date: ${dateStr}`)
       if (c.source) lines.push(`Source: ${c.source}`)
       if (c.url) lines.push(`URL: ${c.url}`)
@@ -181,9 +172,12 @@ export default function EvidenceBundleView() {
         </div>
         <div className="flex-1 overflow-auto">
           {matters.length === 0 && !isLoadingMatters ? (
-            <div className="p-4 text-sm text-muted-foreground">
-              No matters yet. Use <strong>Add to Bundle</strong> in DocumentViewer to create one.
-            </div>
+            <EmptyState
+              icon={Folder}
+              title="No matters yet"
+              description="Use Add to Bundle in DocumentViewer to create one."
+              className="p-4"
+            />
           ) : (
             <div className="p-2 space-y-1">
               {matters.map((matter) => (
@@ -237,17 +231,15 @@ export default function EvidenceBundleView() {
 
         <div className="flex-1 overflow-auto space-y-3">
           {isLoadingItems && (
-            <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Loading evidence items...
-            </div>
+            <LoadingState message="Loading evidence items..." />
           )}
 
           {!isLoadingItems && selectedMatter && evidenceItems.length === 0 && (
-            <div className="border border-dashed border-border rounded-lg p-6 text-center text-sm text-muted-foreground">
-              No evidence items yet. Open a document, select text, and click <strong>Add to Bundle</strong> to start
-              building this bundle.
-            </div>
+            <EmptyState
+              icon={FileText}
+              title="No evidence items yet"
+              description="Open a document, select text, and click Add to Bundle to start building this bundle."
+            />
           )}
 
           {!isLoadingItems &&
@@ -273,13 +265,13 @@ export default function EvidenceBundleView() {
                         {citation.publishedAt && (
                           <>
                             <Separator orientation="vertical" className="h-3" />
-                            <span>{formatDate(citation.publishedAt)}</span>
+                            <span>{formatDateShort(citation.publishedAt)}</span>
                           </>
                         )}
-                        {citation.source && (
+                        {(citation.source_name || citation.source) && (
                           <>
                             <Separator orientation="vertical" className="h-3" />
-                            <span>{citation.source}</span>
+                            <span>{citation.source_name || citation.source}</span>
                           </>
                         )}
                       </div>

@@ -1,14 +1,9 @@
 "use client"
 import { useEffect, useState } from "react"
-
-function formatDate(dateString) {
-  if (!dateString) return ""
-  return new Date(dateString).toLocaleDateString("en-SG", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  })
-}
+import { formatDateTimeline } from "@/lib/formatters"
+import { EmptyState } from "../ui/EmptyState"
+import { LoadingState } from "../ui/LoadingState"
+import { Clock } from "lucide-react"
 
 export default function TimelineView({ topic, documents, onViewDocument, onBack }) {
   const [timeline, setTimeline] = useState([])
@@ -117,7 +112,7 @@ export default function TimelineView({ topic, documents, onViewDocument, onBack 
                   >
                     {event.type} {(event.type === "Amendment" && event.index) ? `#${event.index}` : ""}
                   </span>
-                  <span className="text-sm text-gray-500 font-light">{formatDate(event.date)}</span>
+                  <span className="text-sm text-gray-500 font-light">{formatDateTimeline(event.date)}</span>
                 </div>
                 {/* Speakers */}
                 {event.speakers && event.speakers.length > 0 && (

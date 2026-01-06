@@ -14,6 +14,7 @@ import {
   Building,
   BookmarkPlus,
   Plus,
+  FileText,
 } from "lucide-react"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
@@ -37,6 +38,9 @@ import {
   SelectValue,
 } from "../ui/select"
 import { Input } from "../ui/input"
+import { formatDateLong, formatDateShort, getSourceTypeColor, buildCitation, formatConfidence } from "@/lib/formatters"
+import { ConfidenceBadge } from "../ui/ConfidenceBadge"
+import { EmptyState } from "../ui/EmptyState"
 
 export default function DocumentViewer({ document, onBack }) {
   const [selectedText, setSelectedText] = useState("")
@@ -54,42 +58,16 @@ export default function DocumentViewer({ document, onBack }) {
 
   if (!document) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <h3 className="text-lg font-medium mb-2">No document selected</h3>
-          <p className="text-muted-foreground mb-4">Select a document from search results to view it here</p>
-          <Button onClick={onBack}>Back to Search</Button>
-        </div>
-      </div>
+      <EmptyState
+        icon={FileText}
+        title="No document selected"
+        description="Select a document from search results to view it here"
+        action={{
+          label: "Back to Search",
+          onClick: onBack
+        }}
+      />
     )
-  }
-
-  const formatDate = (dateString) => {
-    if (!dateString) return "Date not available"
-    try {
-      return new Date(dateString).toLocaleDateString("en-SG", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    } catch (error) {
-      return dateString
-    }
-  }
-
-  const getSourceTypeColor = (type) => {
-    switch (type) {
-      case "parliamentary":
-        return "bg-primary/10 text-primary border-primary/20"
-      case "ministerial":
-        return "bg-secondary/10 text-secondary border-secondary/20"
-      case "news":
-        return "bg-muted text-muted-foreground border-border"
-      default:
-        return "bg-muted text-muted-foreground border-border"
-    }
   }
 
   const handleTextSelection = () => {
@@ -258,10 +236,12 @@ export default function DocumentViewer({ document, onBack }) {
                 {document.role && <span>({document.role})</span>}
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <Clock className="h-4 w-4" />
-              {formatDate(document.publishedAt)}
-            </div>
+            {document.publishedAt && (
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                {formatDateLong(document.publishedAt)}
+              </div>
+            )}
             {document.source && (
               <div className="flex items-center gap-2">
                 <Building className="h-4 w-4" />
@@ -286,9 +266,7 @@ export default function DocumentViewer({ document, onBack }) {
             )}
 
             {document.confidence !== undefined && (
-              <div className="text-sm text-muted-foreground">
-                Confidence: {Math.round((document.confidence || 0) * 100)}%
-              </div>
+              <ConfidenceBadge confidence={document.confidence} showLabel />
             )}
           </div>
         </div>
@@ -334,7 +312,14 @@ export default function DocumentViewer({ document, onBack }) {
                         variant="outline"
                         size="sm"
                         onClick={() =>
-                          copyToClipboard(`"${selectedText}" - ${document.speaker}, ${formatDate(document.publishedAt)}`)
+                          copyToClipboard(`"${selectedText}" - ${buildCitation({
+                            speaker: document.speaker,
+                            role: document.role,
+                            publishedAt: document.publishedAt,
+                            source_name: document.source_name,
+                            url: document.url,
+                            documentId: document.id
+                          })}`)
                         }
                       >
                         <Copy className="h-3 w-3 mr-1" />
@@ -459,7 +444,7 @@ export default function DocumentViewer({ document, onBack }) {
 
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">Last Verified</label>
-                  <p className="text-sm mt-1">{formatDate(document.publishedAt)}</p>
+                  <p className="text-sm mt-1">{formatDateLong(document.publishedAt)}</p>
                 </div>
               </CardContent>
             </Card>
@@ -474,27 +459,23 @@ export default function DocumentViewer({ document, onBack }) {
                   <div>
                     <label className="text-sm font-medium text-muted-foreground mb-2 block">Related Topics</label>
                     <div className="flex flex-wrap gap-2">
-                {(document.topics || []).map((topic) => (
-                  <Badge key={topic} variant="secondary" className="text-xs">
-                    {topic}
-                  </Badge>
-                ))}
+                      {(document.topics || []).length > 0 ? (
+                        (document.topics || []).map((topic, idx) => (
+                          <Badge key={idx} variant="secondary" className="text-xs">
+                            {topic}
+                          </Badge>
+                        ))
+                      ) : (
+                        <span className="text-xs text-muted-foreground">No topics assigned</span>
+                      )}
                     </div>
                   </div>
 
                   <Separator />
 
                   <div>
-                    <label className="text-sm font-medium text-muted-foreground">Reliability Score</label>
-                    <div className="flex items-center gap-2 mt-1">
-                  <div className="flex-1 bg-muted rounded-full h-2">
-                    <div
-                      className="bg-primary h-2 rounded-full transition-all"
-                      style={{ width: `${(document.confidence || 0) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-medium">{Math.round((document.confidence || 0) * 100)}%</span>
-                    </div>
+                    <label className="text-sm font-medium text-muted-foreground mb-2 block">Reliability Score</label>
+                    <ConfidenceBadge confidence={document.confidence} showLabel />
                   </div>
                 </div>
               </CardContent>
