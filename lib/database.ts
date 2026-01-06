@@ -148,4 +148,71 @@ export class DatabaseService {
       url: doc.url
     }))
   }
+
+  // Search documents with optional filters (P1.2 Search Filters)
+  static async searchDocumentsWithFilters(filters: {
+    query?: string
+    sourceType?: string
+    dateFrom?: string
+    dateTo?: string
+    speakerCategory?: string
+  }): Promise<Document[]> {
+    let queryBuilder = supabase
+      .from('documents_frontend')
+      .select('*')
+
+    if (filters.query && filters.query.trim().length > 0) {
+      const q = filters.query.trim()
+      queryBuilder = queryBuilder.or(
+        `title.ilike.%${q}%,content.ilike.%${q}%,speaker.ilike.%${q}%`
+      )
+    }
+
+    if (filters.sourceType && filters.sourceType !== 'all') {
+      queryBuilder = queryBuilder.eq('source_type', filters.sourceType)
+    }
+
+    if (filters.dateFrom) {
+      queryBuilder = queryBuilder.gte('date', filters.dateFrom)
+    }
+
+    if (filters.dateTo) {
+      queryBuilder = queryBuilder.lte('date', filters.dateTo)
+    }
+
+    if (filters.speakerCategory && filters.speakerCategory !== 'all') {
+      if (filters.speakerCategory === 'ministers') {
+        queryBuilder = queryBuilder.ilike('role', '%Minister%')
+      } else if (filters.speakerCategory === 'mps') {
+        queryBuilder = queryBuilder.ilike('role', '%MP%')
+      }
+    }
+
+    const { data, error } = await queryBuilder.order('published_at', { ascending: false })
+
+    if (error) throw error
+
+    return (data || []).map(doc => ({
+      id: doc.id,
+      title: doc.title,
+      source: doc.source_id,
+      source_name: doc.source_name,
+      source_url: doc.source_url,
+      source_category: doc.source_category,
+      date: doc.date,
+      publishedAt: doc.published_at,
+      type: doc.type,
+      content: doc.content,
+      summary: doc.summary || '',
+      speaker: doc.speaker || '',
+      role: doc.role,
+      tags: doc.tags || [],
+      topics: doc.topics || [],
+      sourceType: doc.source_type,
+      verified: doc.verified,
+      confidence: doc.confidence,
+      contradictions: doc.contradictions || [],
+      url: doc.url
+    }))
+  }
 }
