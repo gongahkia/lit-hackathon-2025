@@ -9,6 +9,9 @@ import { Input } from "../ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { Alert, AlertDescription } from "../ui/alert"
 import { Separator } from "../ui/separator"
+import { formatDateLong, formatDateShort } from "@/lib/formatters"
+import { ConfidenceBadge } from "../ui/ConfidenceBadge"
+import { EmptyState } from "../ui/EmptyState"
 
 export default function ContradictionDetector({ documents, onViewDocument }) {
   const [searchQuery, setSearchQuery] = useState("")
@@ -55,15 +58,6 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
     })
   }, [contradictions, searchQuery, confidenceFilter, statusFilter])
 
-  const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString("en-SG", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
 
   const getConfidenceColor = (confidence) => {
     if (confidence >= 0.8) return "text-red-600 bg-red-50 border-red-200"
@@ -207,10 +201,8 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                       <div className="flex-1">
                         <CardTitle className="text-base leading-tight mb-2">{contradiction.description}</CardTitle>
                         <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                          <span>Detected {formatDate(contradiction.detectedAt)}</span>
-                          <Badge className={getConfidenceColor(contradiction.confidence)}>
-                            {Math.round(contradiction.confidence * 100)}% confidence
-                          </Badge>
+                          <span>Detected {formatDateShort(contradiction.detectedAt)}</span>
+                          <ConfidenceBadge confidence={contradiction.confidence} />
                         </div>
                       </div>
 
@@ -227,7 +219,7 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                         <p className="text-sm mt-1">{contradiction.primaryDocument.title}</p>
                         <p className="text-xs text-muted-foreground">
                           {contradiction.primaryDocument.speaker} •{" "}
-                          {formatDate(contradiction.primaryDocument.publishedAt)}
+                          {formatDateShort(contradiction.primaryDocument.publishedAt)}
                         </p>
                       </div>
 
@@ -239,7 +231,7 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                           <div key={doc.id} className="text-sm mt-1">
                             <p>{doc.title}</p>
                             <p className="text-xs text-muted-foreground">
-                              {doc.speaker} • {formatDate(doc.publishedAt)}
+                              {doc.speaker} • {formatDateShort(doc.publishedAt)}
                             </p>
                           </div>
                         ))}
@@ -250,17 +242,15 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
               ))}
 
               {filteredContradictions.length === 0 && (
-                <Card>
-                  <CardContent className="p-6 text-center">
-                    <AlertTriangle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                    <h4 className="font-medium mb-2">No contradictions found</h4>
-                    <p className="text-sm text-muted-foreground">
-                      {searchQuery
-                        ? "Try adjusting your search terms or filters"
-                        : "No contradictions detected in the current dataset"}
-                    </p>
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={AlertTriangle}
+                  title="No contradictions found"
+                  description={
+                    searchQuery
+                      ? "Try adjusting your search terms or filters"
+                      : "No contradictions detected in the current dataset"
+                  }
+                />
               )}
             </div>
 
@@ -298,7 +288,7 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                         <h5 className="font-medium text-sm mb-1">{selectedContradiction.primaryDocument.title}</h5>
                         <p className="text-xs text-muted-foreground mb-2">
                           {selectedContradiction.primaryDocument.speaker} •{" "}
-                          {formatDate(selectedContradiction.primaryDocument.publishedAt)}
+                          {formatDateShort(selectedContradiction.primaryDocument.publishedAt)}
                         </p>
                         <p className="text-sm leading-relaxed">
                           {selectedContradiction.primaryDocument.content.substring(0, 200)}...
@@ -321,7 +311,7 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                           </div>
                           <h5 className="font-medium text-sm mb-1">{doc.title}</h5>
                           <p className="text-xs text-muted-foreground mb-2">
-                            {doc.speaker} • {formatDate(doc.publishedAt)}
+                            {doc.speaker} • {formatDateShort(doc.publishedAt)}
                           </p>
                           <p className="text-sm leading-relaxed">{doc.content.substring(0, 200)}...</p>
                         </div>
@@ -367,15 +357,11 @@ export default function ContradictionDetector({ documents, onViewDocument }) {
                   </CardContent>
                 </Card>
               ) : (
-                <Card className="sticky top-6">
-                  <CardContent className="p-6 text-center">
-                    <AlertTriangle className="h-8 w-8 text-muted-foreground mx-auto mb-3" />
-                    <h4 className="font-medium mb-2">Select a Contradiction</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Click on any contradiction to view detailed analysis and comparison
-                    </p>
-                  </CardContent>
-                </Card>
+                <EmptyState
+                  icon={AlertTriangle}
+                  title="Select a Contradiction"
+                  description="Click on any contradiction to view detailed analysis and comparison"
+                />
               )}
             </div>
           </div>

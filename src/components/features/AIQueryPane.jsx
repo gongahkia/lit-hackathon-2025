@@ -1,6 +1,10 @@
 "use client"
 import React, { useRef, useState } from "react"
 import { Paperclip, Search, CheckCircle, Clock, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
+import { formatDateShort, getSourceTypeColor } from "@/lib/formatters"
+import { ConfidenceBadge } from "../ui/ConfidenceBadge"
+import { EmptyState } from "../ui/EmptyState"
+import { LoadingState } from "../ui/LoadingState"
 // --- POFMan bot SVG (minimal, replace with your brand asset as needed) ---
 function POFManIcon() {
   return (
@@ -72,46 +76,54 @@ export default function AIAssistantSearch() {
     try {
       const params = new URLSearchParams()
       params.append("q", query)
-      const res = await fetch(`/api/search?${params.toString()}`, {
+      // Try Supabase API first (P1.2), fallback to Flask
+      let res = await fetch(`/api/documents?q=${encodeURIComponent(query)}`, {
         method: "GET",
       })
-      if (!res.ok) throw new Error("Search failed.")
-      const data = await res.json()
-      setSearchResults((data.results || []).map((row, idx) => {
-        let sourceType = "parliamentary"
-        let newsSource = null
-        let url = "#"
-        const source = row.source || ""
-        if (source.toLowerCase().includes("cna")) {
-          sourceType = "news"
-          newsSource = "CNA"
-          url = row.url || "#"
-        } else if (source.toLowerCase().includes("strait")) {
-          sourceType = "news"
-          newsSource = "Straits Times"
-          url = row.url || "#"
-        } else if (source.toLowerCase().includes("hansard")) {
-          sourceType = "parliamentary"
-          url = `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` || "#"
-        }
-        // Safe confidence fallback: row.confidence or 1-descending
+      let data = await res.json()
+      
+      // If Supabase fails, try Flask API
+      if (!data.success || !data.data) {
+        res = await fetch(`/api/search?${params.toString()}`, {
+          method: "GET",
+        })
+        if (!res.ok) throw new Error("Search failed.")
+        data = await res.json()
+      }
+      
+      // Transform results to consistent format
+      const results = data.success && data.data ? data.data : (data.results || [])
+      setSearchResults(results.map((row, idx) => {
+        // Use Supabase fields directly if available, otherwise transform Flask format
+        const sourceType = row.source_type || row.sourceType || "parliamentary"
+        const newsSource = row.source_name && (row.source_name.includes("CNA") || row.source_name.includes("Straits")) 
+          ? row.source_name 
+          : null
+        const url = row.url || (row.date && sourceType === "parliamentary" 
+          ? `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` 
+          : "#")
+        
+        // Confidence: use from Supabase if available, otherwise calculate
         let confidence = typeof row.confidence === "number"
-          ? row.confidence * 100
-          : Math.max(97 - idx * 2, 60) + Math.random() * 2
+          ? row.confidence
+          : (typeof row.confidence === "number" && row.confidence <= 1 ? row.confidence : Math.max(0.97 - idx * 0.02, 0.6))
+        
         return {
-          id: idx,
-          title: row.policies ? row.policies.join(", ") : "",
-          content: row.content,
-          speaker: row.names ? row.names.join(", ") : "",
-          publishedAt: row.date,
+          id: row.id || `result-${idx}`,
+          title: row.title || (row.policies ? row.policies.join(", ") : "Untitled"),
+          content: row.content || "",
+          speaker: row.speaker || (row.names ? row.names.join(", ") : ""),
+          role: row.role || "",
+          publishedAt: row.published_at || row.publishedAt || row.date || new Date().toISOString(),
           sourceType,
+          source_name: row.source_name || newsSource,
           newsSource,
-          verified: true,
-          topics: row.policies || [],
+          verified: row.verified !== false,
+          topics: row.topics || row.policies || [],
           url,
-          contradictions: [],
+          contradictions: row.contradictions || [],
           rank: idx + 1,
-          confidence: confidence, // As percentage
+          confidence: confidence, // As 0-1 value
         }
       }))
     } catch (err) {
@@ -124,25 +136,6 @@ export default function AIAssistantSearch() {
   // Allow Enter key to trigger search
   function handleInputKeyDown(e) {
     if (e.key === "Enter") handleSearch(e)
-  }
-  // Badge color for source type
-  function getSourceTypeColor(type) {
-    switch (type) {
-      case "parliamentary":
-        return "bg-blue-50 text-blue-700 border-blue-200"
-      case "ministerial":
-        return "bg-gray-100 text-gray-700 border-gray-200"
-      case "news":
-        return "bg-yellow-50 text-yellow-700 border-yellow-200"
-      default:
-        return "bg-gray-100 text-gray-700 border-gray-200"
-    }
-  }
-  // Format date
-  function formatDate(dateString) {
-    return new Date(dateString).toLocaleDateString("en-SG", {
-      year: "numeric", month: "short", day: "numeric"
-    })
   }
   return (
     <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
@@ -242,8 +235,13 @@ export default function AIAssistantSearch() {
             {error}
           </div>
         )}
-        {/* --- Search Results --- */}
-        {!isSearching && searchResults.length > 0 && (
+        {/* --- RAG Response (P2) - Future implementation --- */}
+        {!isSearching && ragResponse && (
+          <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />
+        )}
+
+        {/* --- Search Results (Current implementation) --- */}
+        {!isSearching && !ragResponse && searchResults.length > 0 && (
           <div className="flex flex-col gap-4 max-h-[28rem] overflow-y-auto pr-1">
             <div className="flex items-center justify-between mb-2 sticky top-0 bg-white dark:bg-zinc-900 z-10">
               <p className="text-sm text-zinc-500">
@@ -262,9 +260,9 @@ export default function AIAssistantSearch() {
                   {result.rank}
                 </span>
                 {/* Confidence badge */}
-                <span className="absolute right-2 top-2 bg-emerald-100 text-emerald-800 text-xs px-2 py-0.5 rounded font-semibold border border-emerald-200">
-                  {Number(result.confidence).toFixed(1)}%
-                </span>
+                <div className="absolute right-2 top-2">
+                  <ConfidenceBadge confidence={result.confidence / 100} className="text-xs" />
+                </div>
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex flex-col flex-1">
                     <div className="text-lg font-semibold leading-tight mb-1">
@@ -275,16 +273,18 @@ export default function AIAssistantSearch() {
                         <User className="h-3 w-3" />
                         {result.speaker}
                       </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {formatDate(result.publishedAt)}
-                      </span>
+                      {result.publishedAt && (
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
+                          {formatDateShort(result.publishedAt)}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded border text-xs capitalize font-medium ${getSourceTypeColor(result.sourceType)}`}>
+                    <Badge className={`${getSourceTypeColor(result.sourceType)} text-xs capitalize`}>
                       {result.sourceType}
-                    </span>
+                    </Badge>
                     {/* News badges */}
                     {result.newsSource && (
                       <span className="px-2 py-0.5 rounded border text-xs bg-yellow-100 text-yellow-800 border-yellow-200">{result.newsSource}</span>
@@ -297,7 +297,7 @@ export default function AIAssistantSearch() {
                   </div>
                 </div>
                 <p className="text-sm leading-relaxed mb-3 text-zinc-800 dark:text-zinc-200">
-                  {result.content && result.content.length > 220 ? result.content.substring(0, 220) + "..." : result.content}
+                  {truncateText(result.content, 220)}
                 </p>
                 <div className="flex items-center justify-between">
                   <div className="flex gap-2">
@@ -306,13 +306,23 @@ export default function AIAssistantSearch() {
                     ))}
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
-                      onClick={() => window.open(result.url, "_blank")}
-                    >
-                      <ExternalLink className="h-3 w-3" />
-                      View Document
-                    </button>
+                    {onViewDocument && result.id ? (
+                      <button
+                        className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                        onClick={() => onViewDocument(result.id)}
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        View Document
+                      </button>
+                    ) : result.url ? (
+                      <button
+                        className="px-2 py-1 rounded text-indigo-700 dark:text-indigo-300 text-xs flex items-center gap-1 hover:underline"
+                        onClick={() => window.open(result.url, "_blank")}
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        View Source
+                      </button>
+                    ) : null}
                   </div>
                 </div>
                 {result.contradictions.length > 0 && (
@@ -327,20 +337,18 @@ export default function AIAssistantSearch() {
         )}
         {/* --- No Results or initial state --- */}
         {!isSearching && !error && query && searchResults.length === 0 && (
-          <div className="text-center py-8">
-            <Search className="h-12 w-12 text-zinc-300 mx-auto mb-3" />
-            <div className="text-lg font-medium mb-1">No results found</div>
-            <div className="text-zinc-500 mb-4">Try different terms or check for typos</div>
-          </div>
+          <EmptyState
+            icon={Search}
+            title="No results found"
+            description="Try different terms or check for typos"
+          />
         )}
         {!isSearching && !error && !query && searchResults.length === 0 && (
-          <div className="text-center py-8">
-            <Search className="h-14 w-14 text-zinc-200 mx-auto mb-4" />
-            <div className="text-2xl font-bold mb-1">Welcome to POFMan's Deep Search</div>
-            <div className="text-zinc-500 max-w-md mx-auto">
-              Search in-depth through parliamentary debates, press, or personal files using natural language embeddings.
-            </div>
-          </div>
+          <EmptyState
+            icon={Search}
+            title="Welcome to POFMan's Deep Search"
+            description="Search in-depth through parliamentary debates, press, or personal files using natural language embeddings."
+          />
         )}
       </div>
     </div>
