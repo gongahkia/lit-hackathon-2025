@@ -146,8 +146,11 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
       })
       let data = await res2.json()
       
-      // If Supabase fails, try Flask API
-      if (!data.success || !data.data) {
+      const supabaseReturnedArray = data.success && Array.isArray(data.data)
+      const supabaseHasResults = supabaseReturnedArray && data.data.length > 0
+
+      // If Supabase has no results (common when Supabase isn't populated yet), try Flask CSV API
+      if (!supabaseHasResults && query.trim()) {
         res2 = await fetch(`/api/search?${params.toString()}`, {
         method: "GET",
       })
@@ -156,7 +159,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
       }
       
       // Transform results to consistent format
-      const results = data.success && data.data ? data.data : (data.results || [])
+      const results = (data.success && Array.isArray(data.data)) ? data.data : (data.results || [])
       setSearchResults(results.map((row, idx) => {
         // Use Supabase fields directly if available, otherwise transform Flask format
         const sourceType = row.source_type || row.sourceType || "parliamentary"

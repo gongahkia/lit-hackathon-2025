@@ -55,6 +55,7 @@ export default function DocumentViewer({ document, onBack }) {
   const [isCreatingMatter, setIsCreatingMatter] = useState(false)
   const [userNote, setUserNote] = useState("")
   const [isAddingEvidence, setIsAddingEvidence] = useState(false)
+  const [topicsById, setTopicsById] = useState({})
 
   if (!document) {
     return (
@@ -166,7 +167,23 @@ export default function DocumentViewer({ document, onBack }) {
         console.error("Error fetching matters:", error)
       }
     }
+    const fetchTopics = async () => {
+      try {
+        const res = await fetch("/api/topics")
+        const data = await res.json()
+        if (data.success && Array.isArray(data.data)) {
+          const byId = data.data.reduce((acc, t) => {
+            acc[t.id] = t
+            return acc
+          }, {})
+          setTopicsById(byId)
+        }
+      } catch (error) {
+        console.error("Error fetching topics:", error)
+      }
+    }
     fetchMatters()
+    fetchTopics()
   }, [])
 
   // P1.1: Create new matter
@@ -302,6 +319,11 @@ export default function DocumentViewer({ document, onBack }) {
 
           <div className="flex items-center gap-3">
             <Badge className={getSourceTypeColor(document.sourceType)}>{document.sourceType}</Badge>
+            {document.language && document.language !== "en" && (
+              <Badge variant="outline" className="text-xs">
+                {document.language === "zh" ? "中文" : String(document.language).toUpperCase()}
+              </Badge>
+            )}
 
             {document.verified ? (
               <div className="flex items-center gap-1 text-secondary">
@@ -571,7 +593,7 @@ export default function DocumentViewer({ document, onBack }) {
                             variant="outline" 
                             className="text-xs bg-background hover:bg-accent transition-colors"
                           >
-                          {topic}
+                          {topicsById?.[topic]?.name || topic}
                         </Badge>
                         ))
                       ) : (

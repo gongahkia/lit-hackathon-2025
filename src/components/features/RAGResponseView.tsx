@@ -65,7 +65,7 @@ export function RAGResponseView({ response, onViewDocument }: RAGResponseViewPro
                   <div className="flex-1">
                     <h4 className="font-medium text-sm mb-1">{citation.document_title}</h4>
                     <div className="flex items-center gap-2 text-xs text-muted-foreground mb-2">
-                      <Badge className={getSourceTypeColor(citation.source_name)} variant="outline" className="text-xs">
+                      <Badge className={`${getSourceTypeColor(citation.source_name)} text-xs`} variant="outline">
                         Level {citation.hierarchy_level}
                       </Badge>
                       <span>{citation.source_name}</span>

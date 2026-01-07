@@ -49,6 +49,14 @@ function buildSearchParams(query, filters) {
     params.append("speakerCategory", filters.speaker)
   }
 
+  if (filters?.language && filters.language !== "all") {
+    params.append("language", filters.language)
+  }
+
+  if (filters?.topicId) {
+    params.append("topicId", filters.topicId)
+  }
+
   return params
 }
 export default function SearchPane({
@@ -63,20 +71,42 @@ export default function SearchPane({
     sourceType: "all",
     dateRange: "all",
     speaker: "all",
+    language: "all",
+    topicId: "",
   })
   const [trendingTopics, setTrendingTopics] = useState([])
+  const [topicsById, setTopicsById] = useState({})
   const [isLoadingTrending, setIsLoadingTrending] = useState(false)
 
   // Fetch trending topics on component mount
   useEffect(() => {
+    const FALLBACK_TRENDING = [
+      "housing",
+      "GST",
+      "COVID-19",
+      "TraceTogether",
+      "climate change",
+      "healthcare",
+      "education",
+      "CPF",
+    ]
+
     async function fetchTrendingTopics() {
       setIsLoadingTrending(true)
       try {
         const res = await fetch('/api/topics')
         const data = await res.json()
-        if (data.success && data.data) {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const allTopics = data.data
+          // Build lookup map for displaying topic names from IDs
+          const byId = allTopics.reduce((acc, t) => {
+            acc[t.id] = t
+            return acc
+          }, {})
+          setTopicsById(byId)
+
           // Sort by documentCount (descending) or lastUpdated (recent), take top 8-10
-          const sorted = data.data
+          const sorted = [...allTopics]
             .sort((a, b) => {
               // Primary sort: documentCount (descending)
               if (b.documentCount !== a.documentCount) {
@@ -88,13 +118,14 @@ export default function SearchPane({
               return dateB - dateA
             })
             .slice(0, 10)
-            .map(topic => topic.name)
           setTrendingTopics(sorted)
+        } else {
+          // Supabase not populated yet - use fallback trending keywords
+          setTrendingTopics(FALLBACK_TRENDING.map((name) => ({ id: null, name })))
         }
       } catch (err) {
         console.error("Error fetching trending topics:", err)
-        // Fallback to empty array on error
-        setTrendingTopics([])
+        setTrendingTopics(FALLBACK_TRENDING.map((name) => ({ id: null, name })))
       } finally {
         setIsLoadingTrending(false)
       }
@@ -103,11 +134,12 @@ export default function SearchPane({
   }, [])
 
   // Unified search using Supabase API with filters (P1.2)
-  async function onSearch(query) {
+  async function onSearch(query, overrideFilters) {
     setIsSearching(true)
     setSearchQuery(query)
     try {
-      const params = buildSearchParams(query, filters)
+      const activeFilters = overrideFilters || filters
+      const params = buildSearchParams(query, activeFilters)
       let url = `/api/documents`
       if (params.toString()) {
         url += `?${params.toString()}`
@@ -116,38 +148,50 @@ export default function SearchPane({
       const res = await fetch(url)
       const data = await res.json()
       
-      if (data.success && data.data) {
-        // Results are already in the correct Document format from Supabase
+      const supabaseReturnedArray = data.success && Array.isArray(data.data)
+      const supabaseHasResults = supabaseReturnedArray && data.data.length > 0
+
+      if (supabaseHasResults || (supabaseReturnedArray && !query?.trim())) {
+        // Supabase returned results (or this is a browse-with-filters call)
         setSearchResults(data.data)
-      } else {
-        // Fallback: try Flask API if Supabase fails
-        let flaskUrl = `/api/search`
-        const legacyParams = buildSearchParams(query, { sourceType: "all", dateRange: "all", speaker: "all" })
-        if (legacyParams.toString()) flaskUrl += `?${legacyParams.toString()}`
-        const flaskRes = await fetch(flaskUrl)
-        const flaskData = await flaskRes.json()
-        
-        // Transform Flask results to Document format
-        setSearchResults(
-          (flaskData.results || []).map((row, idx) => ({
-            id: row.id || `flask-${idx}`,
-            title: row.policies ? row.policies.join(", ") : row.title || "Untitled",
-            content: row.content || "",
-            speaker: row.names ? row.names.join(", ") : row.speaker || "",
-            publishedAt: row.date || row.published_at || null,
-            sourceType: row.source_type || "parliamentary",
-            verified: true,
-            topics: row.policies || [],
-            url: row.url || "#",
-            contradictions: [],
-            source: row.source || "",
-            confidence: normalizeConfidence(row.confidence),
-            role: row.role || "",
-            tags: row.tags || [],
-            summary: row.summary || ""
-          }))
-        )
+        return
       }
+
+      // If Supabase has no results and we're querying keywords (common when Supabase isn't populated yet),
+      // fall back to Flask CSV search. Flask does not support topicId/language filters, so we only fall back
+      // for plain keyword searches.
+      const canFallbackToFlask = Boolean(query?.trim()) && !activeFilters.topicId
+      if (!canFallbackToFlask) {
+        setSearchResults([])
+        return
+      }
+
+      let flaskUrl = `/api/search`
+      const legacyParams = buildSearchParams(query, { sourceType: "all", dateRange: "all", speaker: "all", language: "all", topicId: "" })
+      if (legacyParams.toString()) flaskUrl += `?${legacyParams.toString()}`
+      const flaskRes = await fetch(flaskUrl)
+      const flaskData = await flaskRes.json()
+      
+      // Transform Flask results to Document format
+      setSearchResults(
+        (flaskData.results || []).map((row, idx) => ({
+          id: row.id || `flask-${idx}`,
+          title: row.policies ? row.policies.join(", ") : row.title || "Untitled",
+          content: row.content || "",
+          speaker: row.names ? row.names.join(", ") : row.speaker || "",
+          publishedAt: row.date || row.published_at || null,
+          sourceType: row.source_type || "parliamentary",
+          verified: true,
+          topics: row.policies || [],
+          url: row.url || "#",
+          contradictions: [],
+          source: row.source || "",
+          confidence: normalizeConfidence(row.confidence),
+          role: row.role || "",
+          tags: row.tags || [],
+          summary: row.summary || ""
+        }))
+      )
     } catch (err) {
       console.error("Search error:", err)
       setSearchResults([])
@@ -164,40 +208,34 @@ export default function SearchPane({
   const handleFilterChange = (field, value) => {
     setFilters(prev => {
       const updated = { ...prev, [field]: value }
-      // Re-run search with new filters if we have a query
-      if (searchQuery) {
+      const hasAnyFilter =
+        updated.sourceType !== "all" ||
+        updated.dateRange !== "all" ||
+        updated.speaker !== "all" ||
+        updated.language !== "all" ||
+        Boolean(updated.topicId)
+
+      // Re-run search with new filters if we have an active query or any active filter
+      if (searchQuery || hasAnyFilter) {
         setTimeout(() => {
-          onSearch(searchQuery)
+          onSearch(searchQuery, updated)
         }, 0)
       }
       return updated
     })
   }
-  // Fetch trending topics on mount
-  useEffect(() => {
-    const fetchTrendingTopics = async () => {
-      setIsLoadingTrending(true)
-      try {
-        const res = await fetch("/api/topics")
-        const data = await res.json()
-        if (data.success && data.data) {
-          // Sort by documentCount (descending) and take top 8-10
-          const sorted = [...data.data]
-            .sort((a, b) => (b.documentCount || 0) - (a.documentCount || 0))
-            .slice(0, 10)
-            .map(topic => topic.name)
-          setTrendingTopics(sorted)
-        }
-      } catch (err) {
-        console.error("Error fetching trending topics:", err)
-        // Fallback to empty array on error
-        setTrendingTopics([])
-      } finally {
-        setIsLoadingTrending(false)
-      }
-    }
-    fetchTrendingTopics()
-  }, [])
+
+  const activeTopicName = filters.topicId
+    ? (topicsById?.[filters.topicId]?.name || filters.topicId)
+    : ""
+  const activeSearchLabel = searchQuery || activeTopicName
+  const hasActiveSearch =
+    Boolean(activeSearchLabel) ||
+    filters.sourceType !== "all" ||
+    filters.dateRange !== "all" ||
+    filters.speaker !== "all" ||
+    filters.language !== "all"
+
   return (
     <div className="flex h-full">
       <div className="flex-1 flex flex-col">
@@ -227,19 +265,31 @@ export default function SearchPane({
                 <span className="text-sm text-muted-foreground">Trending:</span>
                 {trendingTopics.map((topic) => (
                   <Button
-                    key={topic}
+                    key={topic.id || topic.name}
                     variant="outline"
                     size="sm"
                     onClick={() => {
-                      if (searchRef.current) {
-                        searchRef.current.value = topic
-                        onSearch(topic)
+                      const label = topic.name
+                      // If topic has an ID, use topicId filter for accurate results.
+                      if (topic.id) {
+                        const updated = { ...filters, topicId: topic.id }
+                        setFilters(updated)
+                        if (searchRef.current) searchRef.current.value = ""
+                        onSearch("", updated)
+                        return
                       }
+                      // Fallback topics (no ID): treat as keyword search
+                      const updated = { ...filters, topicId: "" }
+                      setFilters(updated)
+                      if (searchRef.current) {
+                        searchRef.current.value = label
+                      }
+                      onSearch(label, updated)
                     }}
                     className="text-xs"
                     disabled={isLoadingTrending}
                   >
-                    <i>{topic}</i>
+                    <i>{topic.name}</i>
                   </Button>
                 ))}
               </div>
@@ -256,12 +306,15 @@ export default function SearchPane({
               <div className="space-y-4">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm text-muted-foreground">
-                    Found <strong>{searchResults.length}</strong> result{searchResults.length === 1 ? "" : "s"} for "{searchQuery}"
-                    {(filters.sourceType !== "all" || filters.dateRange !== "all" || filters.speaker !== "all") && (
+                    Found <strong>{searchResults.length}</strong> result{searchResults.length === 1 ? "" : "s"}
+                    {activeSearchLabel && <> for "{activeSearchLabel}"</>}
+                    {(filters.sourceType !== "all" || filters.dateRange !== "all" || filters.speaker !== "all" || filters.language !== "all" || filters.topicId) && (
                       <span className="ml-2 text-xs">
                         (filtered: {filters.sourceType !== "all" && filters.sourceType}{" "}
                         {filters.dateRange !== "all" && filters.dateRange}{" "}
-                        {filters.speaker !== "all" && filters.speaker})
+                        {filters.speaker !== "all" && filters.speaker}{" "}
+                        {filters.language !== "all" && filters.language}{" "}
+                        {filters.topicId && `topic:${activeTopicName}`})
                       </span>
                     )}
                   </p>
@@ -284,6 +337,11 @@ export default function SearchPane({
                           </Badge>
                           {result.source_name && (
                             <Badge variant="secondary" className="text-xs">{result.source_name}</Badge>
+                          )}
+                          {result.language && result.language !== "en" && (
+                            <Badge variant="outline" className="text-xs">
+                              {result.language === "zh" ? "中文" : String(result.language).toUpperCase()}
+                            </Badge>
                           )}
                           {result.confidence !== undefined && (
                             <ConfidenceBadge confidence={result.confidence} className="text-xs" />
@@ -344,8 +402,23 @@ export default function SearchPane({
                               key={idx} 
                               variant="outline"
                               className="text-xs bg-background hover:bg-accent transition-colors cursor-pointer"
+                              onClick={() => {
+                                // If the topic looks like a topic ID (topic-*), filter by topicId.
+                                // Otherwise (e.g., Flask policies are names), fall back to keyword search.
+                                const isTopicId = typeof topic === "string" && topic.startsWith("topic-")
+                                if (isTopicId) {
+                                  const updated = { ...filters, topicId: topic }
+                                  setFilters(updated)
+                                  onSearch(searchQuery, updated)
+                                } else {
+                                  const updated = { ...filters, topicId: "" }
+                                  setFilters(updated)
+                                  if (searchRef.current) searchRef.current.value = topic
+                                  onSearch(topic, updated)
+                                }
+                              }}
                             >
-                              {topic}
+                              {topicsById?.[topic]?.name || topic}
                             </Badge>
                           ))}
                         </div>
@@ -402,7 +475,7 @@ export default function SearchPane({
               ))}
               </div>
             )}
-            {!isSearching && searchQuery && searchResults.length === 0 && (
+            {!isSearching && hasActiveSearch && searchResults.length === 0 && (
               <EmptyState
                 icon={Search}
                 title="No results found"
@@ -412,13 +485,21 @@ export default function SearchPane({
                   onClick: () => {
                     if (searchRef.current) {
                       searchRef.current.value = ""
-                      onSearch("")
+                      const reset = {
+                        sourceType: "all",
+                        dateRange: "all",
+                        speaker: "all",
+                        language: "all",
+                        topicId: "",
+                      }
+                      setFilters(reset)
+                      onSearch("", reset)
                     }
                   }
                 }}
               />
             )}
-            {!searchQuery && (
+            {!hasActiveSearch && (
               <EmptyState
                 icon={Search}
                 title="Search Parliamentary Data"
@@ -470,6 +551,20 @@ export default function SearchPane({
                 <SelectItem value="all">All Speakers</SelectItem>
                 <SelectItem value="ministers">Ministers Only</SelectItem>
                 <SelectItem value="mps">MPs Only</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <label className="text-sm font-medium mb-2 block">Language</label>
+            <Select value={filters.language} onValueChange={(value) => handleFilterChange("language", value)}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Languages</SelectItem>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="zh">Chinese (中文)</SelectItem>
+                <SelectItem value="mixed">Mixed</SelectItem>
               </SelectContent>
             </Select>
           </div>
