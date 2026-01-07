@@ -1,18 +1,21 @@
 import csv
+import os
 from typing import List, Dict
 
 CSV_PATHS = [
     "../golden_dataset/full_hansard_master.csv",
     "../golden_dataset/full_cna_articles.csv",
     "../golden_dataset/full_straits_times_articles.csv",
-    "../golden_dataset/full_lawgaz_master.csv"
+    "../golden_dataset/full_lawgaz_master.csv",
+    "../golden_dataset/full_lianhezaobao_articles.csv",
 ]
 
 HEADERS_MAP = {
     "full_hansard_master.csv": ["source", "Date", "content", "names", "policies"],
     "full_cna_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
     "full_straits_times_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
-    "full_lawgaz_master.csv": ["source", "headline", "url" , "date", "content", "names", "policies"]
+    "full_lawgaz_master.csv": ["source", "headline", "url" , "date", "content", "names", "policies"],
+    "full_lianhezaobao_articles.csv": ["source", "headline", "url", "date", "raw_text", "names", "policies"],
 }
 
 class PolicySearchService:
@@ -24,7 +27,11 @@ class PolicySearchService:
         for path in paths:
             file_key = path.split("/")[-1]
             headers = HEADERS_MAP[file_key] if file_key in HEADERS_MAP else []
-            with open(path, encoding="utf-8") as fin:
+            if not os.path.exists(path):
+                # Allow optional datasets (e.g., additional sources) without breaking the server
+                continue
+            # utf-8-sig handles BOM-prefixed CSVs gracefully
+            with open(path, encoding="utf-8-sig") as fin:
                 reader = csv.DictReader(fin)
                 for row in reader:
                     row_standard = {}
@@ -77,12 +84,18 @@ class PolicySearchService:
             "names": row['names'],
             "policies": row['policies']
         }
-        if row['source'] and row['source'].lower() in ['straitstimes', 'cna', 'straits_times', 'straits times', 'lawgazette'] and row.get('url'):
+        if row['source'] and row['source'].lower() in [
+            'straitstimes',
+            'cna',
+            'straits_times',
+            'straits times',
+            'lawgazette',
+            'zaobao',
+            'lianhezaobao',
+            'lianhe zaobao',
+        ] and row.get('url'):
             result["url"] = row["url"]
         return result
 
 # Singleton instance
 policy_search_service = PolicySearchService()
-for row in policy_search_service.data:
-    if row.get('url'):
-        print(row)
