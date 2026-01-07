@@ -41,6 +41,8 @@ import { Input } from "../ui/input"
 import { formatDateLong, formatDateShort, getSourceTypeColor, buildCitation, formatConfidence } from "@/lib/formatters"
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs"
+import DocumentTimeline from "./DocumentTimeline"
 
 export default function DocumentViewer({ document, onBack }) {
   const [selectedText, setSelectedText] = useState("")
@@ -361,135 +363,155 @@ export default function DocumentViewer({ document, onBack }) {
             </Alert>
           )}
 
-          {/* Document Content */}
-          <Card className="mb-6">
-            <CardHeader>
-              <CardTitle className="text-lg">Document Content</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div
-                className="prose prose-sm max-w-none leading-relaxed text-pretty whitespace-pre-wrap"
-                onMouseUp={handleTextSelection}
-                style={{ userSelect: "text", lineHeight: "1.75" }}
-              >
-                {formatDocumentContent(document.content)}
-              </div>
-
-              {selectedText && (
-                <div className="mt-4 p-3 bg-muted rounded-lg border">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Selected Text:</span>
-                    <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() =>
-                          copyToClipboard(`"${selectedText}" - ${buildCitation({
-                            speaker: document.speaker,
-                            role: document.role,
-                            publishedAt: document.publishedAt,
-                            source_name: document.source_name,
-                            url: document.url,
-                            documentId: document.id
-                          })}`)
-                      }
-                    >
-                      <Copy className="h-3 w-3 mr-1" />
-                      Copy Quote
-                    </Button>
-                      {/* P1.1: Add to Evidence Bundle button */}
-                      <Dialog open={showBundleDialog} onOpenChange={setShowBundleDialog}>
-                        <DialogTrigger asChild>
-                          <Button variant="default" size="sm">
-                            <BookmarkPlus className="h-3 w-3 mr-1" />
-                            Add to Bundle
-                          </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Add to Evidence Bundle</DialogTitle>
-                            <DialogDescription>
-                              Select a matter or create a new one to add this quote to your evidence bundle.
-                            </DialogDescription>
-                          </DialogHeader>
-                          <div className="space-y-4">
-                            <div>
-                              <label className="text-sm font-medium mb-2 block">Selected Quote</label>
-                              <p className="text-sm italic bg-muted p-2 rounded">"{selectedText}"</p>
-                            </div>
-
-                            <div>
-                              <label className="text-sm font-medium mb-2 block">Matter</label>
-                              <Select value={selectedMatterId} onValueChange={setSelectedMatterId}>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="Select a matter or create new" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  {matters.map((matter) => (
-                                    <SelectItem key={matter.id} value={matter.id}>
-                                      {matter.name}
-                                    </SelectItem>
-                                  ))}
-                                  <SelectItem value="__new__">+ Create New Matter</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            </div>
-
-                            {selectedMatterId === "__new__" && (
-                              <div className="space-y-2 p-3 bg-muted rounded-lg">
-                                <Input
-                                  placeholder="Matter name (required)"
-                                  value={newMatterName}
-                                  onChange={(e) => setNewMatterName(e.target.value)}
-                                />
-                                <Textarea
-                                  placeholder="Description (optional)"
-                                  value={newMatterDescription}
-                                  onChange={(e) => setNewMatterDescription(e.target.value)}
-                                  className="min-h-[80px]"
-                                />
-                                <Button
-                                  onClick={createMatter}
-                                  disabled={!newMatterName.trim() || isCreatingMatter}
-                                  size="sm"
-                                >
-                                  <Plus className="h-3 w-3 mr-1" />
-                                  {isCreatingMatter ? "Creating..." : "Create Matter"}
-                                </Button>
-                              </div>
-                            )}
-
-                            <div>
-                              <label className="text-sm font-medium mb-2 block">Note (optional)</label>
-                              <Textarea
-                                placeholder="Add a note about this quote..."
-                                value={userNote}
-                                onChange={(e) => setUserNote(e.target.value)}
-                                className="min-h-[80px]"
-                              />
-                            </div>
-
-                            <div className="flex gap-2 justify-end">
-                              <Button variant="outline" onClick={() => setShowBundleDialog(false)}>
-                                Cancel
-                              </Button>
-                              <Button
-                                onClick={addToEvidenceBundle}
-                                disabled={!selectedMatterId || selectedMatterId === "__new__" || isAddingEvidence}
-                              >
-                                {isAddingEvidence ? "Adding..." : "Add to Bundle"}
-                              </Button>
-                            </div>
-                          </div>
-                        </DialogContent>
-                      </Dialog>
-                    </div>
+          {/* Document Content and Timeline Tabs */}
+          <Tabs defaultValue="content" className="mb-6">
+            <TabsList className="mb-4">
+              <TabsTrigger value="content">Content</TabsTrigger>
+              <TabsTrigger value="timeline">Policy Timeline</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="content">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Document Content</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div
+                    className="prose prose-sm max-w-none leading-relaxed text-pretty whitespace-pre-wrap"
+                    onMouseUp={handleTextSelection}
+                    style={{ userSelect: "text", lineHeight: "1.75" }}
+                  >
+                    {formatDocumentContent(document.content)}
                   </div>
-                  <p className="text-sm italic">"{selectedText}"</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+
+                  {selectedText && (
+                    <div className="mt-4 p-3 bg-muted rounded-lg border">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">Selected Text:</span>
+                        <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() =>
+                              copyToClipboard(`"${selectedText}" - ${buildCitation({
+                                speaker: document.speaker,
+                                role: document.role,
+                                publishedAt: document.publishedAt,
+                                source_name: document.source_name,
+                                url: document.url,
+                                documentId: document.id
+                              })}`)
+                          }
+                        >
+                          <Copy className="h-3 w-3 mr-1" />
+                          Copy Quote
+                        </Button>
+                          {/* P1.1: Add to Evidence Bundle button */}
+                          <Dialog open={showBundleDialog} onOpenChange={setShowBundleDialog}>
+                            <DialogTrigger asChild>
+                              <Button variant="default" size="sm">
+                                <BookmarkPlus className="h-3 w-3 mr-1" />
+                                Add to Bundle
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Add to Evidence Bundle</DialogTitle>
+                                <DialogDescription>
+                                  Select a matter or create a new one to add this quote to your evidence bundle.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <label className="text-sm font-medium mb-2 block">Selected Quote</label>
+                                  <p className="text-sm italic bg-muted p-2 rounded">"{selectedText}"</p>
+                                </div>
+
+                                <div>
+                                  <label className="text-sm font-medium mb-2 block">Matter</label>
+                                  <Select value={selectedMatterId} onValueChange={setSelectedMatterId}>
+                                    <SelectTrigger>
+                                      <SelectValue placeholder="Select a matter or create new" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {matters.map((matter) => (
+                                        <SelectItem key={matter.id} value={matter.id}>
+                                          {matter.name}
+                                        </SelectItem>
+                                      ))}
+                                      <SelectItem value="__new__">+ Create New Matter</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+
+                                {selectedMatterId === "__new__" && (
+                                  <div className="space-y-2 p-3 bg-muted rounded-lg">
+                                    <Input
+                                      placeholder="Matter name (required)"
+                                      value={newMatterName}
+                                      onChange={(e) => setNewMatterName(e.target.value)}
+                                    />
+                                    <Textarea
+                                      placeholder="Description (optional)"
+                                      value={newMatterDescription}
+                                      onChange={(e) => setNewMatterDescription(e.target.value)}
+                                      className="min-h-[80px]"
+                                    />
+                                    <Button
+                                      onClick={createMatter}
+                                      disabled={!newMatterName.trim() || isCreatingMatter}
+                                      size="sm"
+                                    >
+                                      <Plus className="h-3 w-3 mr-1" />
+                                      {isCreatingMatter ? "Creating..." : "Create Matter"}
+                                    </Button>
+                                  </div>
+                                )}
+
+                                <div>
+                                  <label className="text-sm font-medium mb-2 block">Note (optional)</label>
+                                  <Textarea
+                                    placeholder="Add a note about this quote..."
+                                    value={userNote}
+                                    onChange={(e) => setUserNote(e.target.value)}
+                                    className="min-h-[80px]"
+                                  />
+                                </div>
+
+                                <div className="flex gap-2 justify-end">
+                                  <Button variant="outline" onClick={() => setShowBundleDialog(false)}>
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    onClick={addToEvidenceBundle}
+                                    disabled={!selectedMatterId || selectedMatterId === "__new__" || isAddingEvidence}
+                                  >
+                                    {isAddingEvidence ? "Adding..." : "Add to Bundle"}
+                                  </Button>
+                                </div>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+                      </div>
+                      <p className="text-sm italic">"{selectedText}"</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="timeline">
+              <DocumentTimeline 
+                documentId={document.id} 
+                onViewDocument={(docId) => {
+                  // Navigate to the related document
+                  // For now, we'll just log it - you might want to implement navigation
+                  console.log("View document:", docId)
+                }}
+              />
+            </TabsContent>
+          </Tabs>
 
           {/* Metadata */}
           <div className="grid md:grid-cols-2 gap-6">
