@@ -96,12 +96,6 @@ export class RAGService {
           level_2: { precision: 0, recall: 0, f1: 0 },
           level_3: { precision: 0, recall: 0, f1: 0 },
           level_4: { precision: 0, recall: 0, f1: 0 }
-        },
-        metadata: {
-          execution_time_ms: executionTime,
-          retrieval_time_ms: retrievalResult.executionTimeMs,
-          documents_retrieved: retrievalResult.documents.length,
-          citations_count: llmResponse.citations.length
         }
       };
     } catch (error: any) {
