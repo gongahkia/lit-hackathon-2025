@@ -1,6 +1,6 @@
 "use client"
 import React, { useRef, useState } from "react"
-import { Paperclip, Search, CheckCircle, Clock, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
+import { Paperclip, Search, CheckCircle, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
 import { formatDateShort, getSourceTypeColor, truncateText, normalizeConfidence } from "@/lib/formatters"
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
@@ -200,16 +200,19 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
     if (e.key === "Enter") handleSearch(e)
   }
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
+    <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150 overflow-hidden">
     <div className={`w-full transition-all duration-300
-      ${searchResults.length > 0 ? 'max-w-5xl' : 'max-w-2xl'}
-      p-8 md:p-10 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-6`}>
+      ${searchResults.length > 0 || ragResponse ? 'max-w-5xl' : 'max-w-2xl'}
+      p-8 md:p-10 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-6 overflow-hidden`}>
 
         {/* --- POFMan Bot Header --- */}
         <div className="flex flex-col items-center mb-4">
           <POFManIcon />
           <div className="text-xl font-bold text-center tracking-tight mb-1">POFMan</div>
           <div className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Semantic Deep Search Assistant</div>
+          <div className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 text-center max-w-md">
+            Ask complex questions and get AI-powered answers with citations from parliamentary documents
+          </div>
         </div>
         {/* --- Search bar and attachment --- */}
         <form
@@ -300,7 +303,9 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
         {/* --- RAG Response (P2) - Future implementation --- */}
         {/* P2: RAG Response View - Hierarchical RAG implementation */}
         {!isSearching && ragResponse && (
-          <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />
+          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh-300px)] pr-2">
+            <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />
+          </div>
         )}
 
         {/* --- Search Results (Current implementation) --- */}

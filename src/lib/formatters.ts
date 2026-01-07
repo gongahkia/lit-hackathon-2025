@@ -87,10 +87,9 @@ export function buildCitation(citation: CitationData): string {
     parts.push(sourceName)
   }
 
-  // URL or document ID
-  if (citation.url) {
-    parts.push(citation.url)
-  } else if (citation.documentId) {
+  // Note: URLs are NOT included in legal citations - they should be displayed separately
+  // Document ID can be included if no other identifier is available
+  if (!citation.url && citation.documentId) {
     parts.push(`Document ID: ${citation.documentId}`)
   }
 

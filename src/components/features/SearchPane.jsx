@@ -242,15 +242,20 @@ export default function SearchPane({
         {/* Search Header */}
         <div className="border-b border-border bg-card/50 p-6">
           <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl font-semibold mb-4 text-balance">
-              Search Verified Sources
-            </h1>
+            <div className="mb-2">
+              <h1 className="text-2xl font-semibold mb-1 text-balance">
+                Trending Search
+              </h1>
+              <p className="text-sm text-muted-foreground">
+                Browse popular topics and search through verified parliamentary documents, ministerial releases, and news sources
+              </p>
+            </div>
             <form onSubmit={handleSearchForm} className="flex gap-3 mb-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground"/>
                 <Input
                   ref={searchRef}
-                  placeholder="Search for policies, statements, or speakers... (Cmd+K)"
+                  placeholder="Search by keyword, topic, speaker, or date... (Cmd+K)"
                   className="pl-10 h-12 text-base"
                   defaultValue={searchQuery}
                 />
