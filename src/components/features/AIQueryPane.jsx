@@ -117,7 +117,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           // Also populate searchResults for backward compatibility
           if (ragData.citations && ragData.citations.length > 0) {
             setSearchResults(ragData.citations.map((citation, idx) => ({
-              id: citation.document_id,
+              id: `${citation.document_id}-${idx}`,
               title: citation.document_title,
               content: citation.quote,
               speaker: "",
@@ -168,7 +168,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           : "#")
         
         return {
-          id: row.id || `result-${idx}`,
+          id: row.id ? `${row.id}-${idx}` : `result-${idx}`,
           title: row.title || (row.policies ? row.policies.join(", ") : "Untitled"),
           content: row.content || "",
           speaker: row.speaker || (row.names ? row.names.join(", ") : ""),
