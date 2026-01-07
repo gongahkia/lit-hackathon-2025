@@ -10,6 +10,7 @@ CREATE TABLE sources (
   name TEXT NOT NULL,
   url TEXT NOT NULL,
   type TEXT NOT NULL,
+  language TEXT DEFAULT 'en',
   last_updated TIMESTAMPTZ,
   status TEXT DEFAULT 'active',
   created_at TIMESTAMPTZ DEFAULT NOW()
@@ -35,7 +36,8 @@ CREATE TABLE documents (
   confidence DECIMAL(3,2) DEFAULT 0.75,
   contradictions TEXT[] DEFAULT '{}',
   url TEXT,
-  topics TEXT[] DEFAULT '{}'
+  topics TEXT[] DEFAULT '{}',
+  language TEXT DEFAULT 'en'
 );
 
 -- Topics table
@@ -66,8 +68,10 @@ CREATE INDEX idx_documents_speaker ON documents(speaker);
 CREATE INDEX idx_documents_created_at ON documents(created_at);
 
 -- Create full-text search indexes
-CREATE INDEX idx_documents_content_search ON documents USING gin(to_tsvector('english', content));
-CREATE INDEX idx_documents_title_search ON documents USING gin(to_tsvector('english', title));
+-- Note: PostgreSQL full-text search has limited support for Chinese tokenization by default.
+-- We use the 'simple' configuration to avoid English-only stemming, and rely on ILIKE for Chinese.
+CREATE INDEX idx_documents_content_search ON documents USING gin(to_tsvector('simple', content));
+CREATE INDEX idx_documents_title_search ON documents USING gin(to_tsvector('simple', title));
 
 -- Create indexes for frontend-required columns
 CREATE INDEX idx_documents_published_at ON documents(published_at);
@@ -75,6 +79,7 @@ CREATE INDEX idx_documents_source_type ON documents(source_type);
 CREATE INDEX idx_documents_verified ON documents(verified);
 CREATE INDEX idx_documents_confidence ON documents(confidence);
 CREATE INDEX idx_documents_url ON documents(url);
+CREATE INDEX idx_documents_language ON documents(language);
 
 -- Create GIN indexes for arrays
 CREATE INDEX idx_documents_topics ON documents USING gin(topics);
@@ -102,10 +107,12 @@ SELECT
   d.contradictions,
   d.url,
   d.topics,
+  d.language,
   -- Source information
   s.name as source_name,
   s.url as source_url,
-  s.type as source_category
+  s.type as source_category,
+  s.language as source_language
 FROM documents d
 LEFT JOIN sources s ON d.source_id = s.id;
 
@@ -128,6 +135,7 @@ SELECT
   s.name,
   s.url,
   s.type,
+  s.language,
   s.last_updated,
   s.status,
   s.created_at,
@@ -146,6 +154,7 @@ COMMENT ON COLUMN documents.confidence IS 'Confidence score from 0.0 to 1.0';
 COMMENT ON COLUMN documents.contradictions IS 'Array of document IDs that contradict this document';
 COMMENT ON COLUMN documents.url IS 'Original URL of the document';
 COMMENT ON COLUMN documents.topics IS 'Array of topic IDs this document belongs to';
+COMMENT ON COLUMN documents.language IS 'Document language code: en, zh, or mixed';
 
 -- Create function to update document counts in topics
 CREATE OR REPLACE FUNCTION update_topic_document_count()
