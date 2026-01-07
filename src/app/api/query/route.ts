@@ -61,8 +61,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body: QueryRequest = await request.json();
-    const query = body.query || body.q || '';
+    const rawBody: any = await request.json();
+    const body: QueryRequest = rawBody as QueryRequest;
+    const query = rawBody?.query || rawBody?.q || '';
     
     if (!query) {
       return NextResponse.json(

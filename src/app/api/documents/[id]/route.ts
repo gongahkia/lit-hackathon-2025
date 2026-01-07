@@ -3,10 +3,10 @@ import { DatabaseService } from '../../../../../lib/database';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const docId = params.id;
+    const { id: docId } = await context.params;
     
     // Get all documents and find the one with matching ID
     // TODO: Optimize this with a direct query in DatabaseService

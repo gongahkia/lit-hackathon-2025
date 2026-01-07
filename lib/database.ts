@@ -6,6 +6,7 @@ export interface Source {
   name: string
   url: string
   type: string
+  language?: string
   lastUpdated: string
   status: string
   documentCount?: number
@@ -29,9 +30,10 @@ export interface Document {
   topics: string[]
   sourceType: string
   verified: boolean
-  confidence: number
+  confidence: number | null
   contradictions: string[]
   url?: string
+  language?: string
 }
 
 export interface Topic {
@@ -58,6 +60,7 @@ export class DatabaseService {
       name: source.name,
       url: source.url,
       type: source.type,
+      language: source.language,
       lastUpdated: source.lastUpdated,
       status: source.status,
       documentCount: source.document_count
@@ -93,7 +96,8 @@ export class DatabaseService {
       verified: doc.verified,
       confidence: doc.confidence,
       contradictions: doc.contradictions || [],
-      url: doc.url
+      url: doc.url,
+      language: doc.language
     }))
   }
 
@@ -145,7 +149,8 @@ export class DatabaseService {
       verified: doc.verified,
       confidence: doc.confidence,
       contradictions: doc.contradictions || [],
-      url: doc.url
+      url: doc.url,
+      language: doc.language
     }))
   }
 
@@ -156,6 +161,8 @@ export class DatabaseService {
     dateFrom?: string
     dateTo?: string
     speakerCategory?: string
+    language?: string
+    topicId?: string
   }): Promise<Document[]> {
     let queryBuilder = supabase
       .from('documents_frontend')
@@ -170,6 +177,15 @@ export class DatabaseService {
 
     if (filters.sourceType && filters.sourceType !== 'all') {
       queryBuilder = queryBuilder.eq('source_type', filters.sourceType)
+    }
+
+    if (filters.language && filters.language !== 'all') {
+      queryBuilder = queryBuilder.eq('language', filters.language)
+    }
+
+    if (filters.topicId && filters.topicId.trim().length > 0) {
+      // `topics` is a Postgres text[] column
+      queryBuilder = queryBuilder.contains('topics', [filters.topicId.trim()])
     }
 
     if (filters.dateFrom) {
@@ -212,7 +228,8 @@ export class DatabaseService {
       verified: doc.verified,
       confidence: doc.confidence,
       contradictions: doc.contradictions || [],
-      url: doc.url
+      url: doc.url,
+      language: doc.language
     }))
   }
 }

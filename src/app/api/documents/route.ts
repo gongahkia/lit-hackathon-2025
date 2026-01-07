@@ -9,15 +9,19 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get('dateFrom')
     const dateTo = searchParams.get('dateTo')
     const speakerCategory = searchParams.get('speakerCategory')
+    const language = searchParams.get('language')
+    const topicId = searchParams.get('topicId')
     
     let documents
-    if (query || sourceType || dateFrom || dateTo || speakerCategory) {
+    if (query || sourceType || dateFrom || dateTo || speakerCategory || language || topicId) {
       documents = await DatabaseService.searchDocumentsWithFilters({
         query: query || undefined,
         sourceType: sourceType || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         speakerCategory: speakerCategory || undefined,
+        language: language || undefined,
+        topicId: topicId || undefined,
       })
     } else {
       documents = await DatabaseService.getDocuments()

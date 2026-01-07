@@ -9,10 +9,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // GET /api/matters/[id] - Get a specific matter with evidence items
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const matterId = params.id;
+    const { id: matterId } = await context.params;
 
     // Get matter
     const { data: matter, error: matterError } = await supabase
@@ -57,10 +57,10 @@ export async function GET(
 // DELETE /api/matters/[id] - Delete a matter (cascades to evidence items)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const matterId = params.id;
+    const { id: matterId } = await context.params;
 
     const { error } = await supabase
       .from('matters')

@@ -9,10 +9,10 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 // PATCH /api/evidence-items/[id] - Update an evidence item
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const itemId = params.id;
+    const { id: itemId } = await context.params;
     const body = await request.json();
     const { user_note, display_order, quote_text } = body;
 
@@ -63,10 +63,10 @@ export async function PATCH(
 // DELETE /api/evidence-items/[id] - Delete an evidence item
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const itemId = params.id;
+    const { id: itemId } = await context.params;
 
     const { error } = await supabase
       .from('evidence_items')
