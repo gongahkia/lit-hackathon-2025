@@ -63,10 +63,13 @@ console.log('')
 
 // Interface for CSV article data
 interface ArticleData {
+  source?: string
   headline: string
   url: string
   date?: string
   raw_text?: string
+  names?: string[]
+  policies?: string[]
 }
 
 // Interface for processed document data
@@ -76,10 +79,18 @@ interface ProcessedDocument {
   source_id: string
   content: string
   speaker?: string
+  role?: string | null
   date?: string
+  published_at?: string | null
   type: string
   summary?: string
   tags: string[]
+  topics?: string[]
+  source_type?: string
+  verified?: boolean
+  confidence?: number | null
+  url?: string | null
+  language?: string
 }
 
 // Interface for source data
@@ -90,6 +101,7 @@ interface SourceData {
   type: string
   last_updated: string
   status: string
+  language?: string
 }
 
 // Helper function to generate unique ID
@@ -120,7 +132,7 @@ function extractSpeaker(headline: string, content?: string): string {
     }
   }
   
-  return 'Unknown Speaker'
+  return ''
 }
 
 // Helper function to generate summary from content
@@ -138,6 +150,113 @@ function generateSummary(content: string, maxLength: number = 200): string {
   
   // Truncate if too long
   return cleaned.substring(0, maxLength).replace(/\s+\w*$/, '') + '...'
+}
+
+// Helper function to parse comma-separated lists from CSV (names/policies)
+function parseCsvList(value?: string): string[] {
+  if (!value) return []
+  // Handle JSON-ish list strings or bracketed lists
+  const cleaned = value
+    .replace(/^\s*\[|\]\s*$/g, '')
+    .replace(/^"+|"+$/g, '')
+    .trim()
+
+  if (!cleaned) return []
+
+  // Split on comma; keep Chinese phrases intact (no extra splitting)
+  return cleaned
+    .split(',')
+    .map(s => s.trim().replace(/^"+|"+$/g, ''))
+    .filter(Boolean)
+}
+
+// Detect document language (en/zh/mixed) by Unicode ranges
+function detectLanguage(text?: string): 'en' | 'zh' | 'mixed' {
+  if (!text) return 'en'
+  // CJK Unified Ideographs + extensions
+  const hasChinese = /[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/.test(text)
+  const hasEnglish = /[a-zA-Z]/.test(text)
+  if (hasChinese && hasEnglish) return 'mixed'
+  if (hasChinese) return 'zh'
+  return 'en'
+}
+
+// Extract a rough role signal from text (best-effort)
+function extractRole(text?: string): string | null {
+  if (!text) return null
+  const patterns: Array<[RegExp, string]> = [
+    [/\bPrime Minister\b|\bPM\b/i, 'Prime Minister'],
+    [/\bDeputy Prime Minister\b|\bDPM\b/i, 'Deputy Prime Minister'],
+    [/\bMinister\b/i, 'Minister'],
+    [/\bSpeaker\b/i, 'Speaker'],
+    [/\bMP\b|\bMember of Parliament\b/i, 'MP'],
+  ]
+  for (const [re, role] of patterns) {
+    if (re.test(text)) return role
+  }
+  return null
+}
+
+function safeIsoTimestampFromYyyyMmDd(date?: string): string | null {
+  if (!date) return null
+  // date already normalized to YYYY-MM-DD by parseDate()
+  const d = new Date(`${date}T00:00:00.000Z`)
+  if (Number.isNaN(d.getTime())) return null
+  return d.toISOString()
+}
+
+function normalizeUrl(url?: string): string | null {
+  if (!url) return null
+  const trimmed = url.trim()
+  if (!trimmed) return null
+  // Guard against obvious placeholders
+  if (trimmed === '#' || trimmed.toLowerCase() === 'n/a') return null
+  // Make protocol-relative or relative URLs absolute when possible (caller should handle domain)
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://')) return trimmed
+  return null
+}
+
+function buildParliamentReportUrlFromDate(date?: string): string | null {
+  if (!date) return null
+  // SPRS full report URL pattern used in the UI fallback
+  return `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${date}`
+}
+
+function calculateConfidence(params: {
+  sourceType: 'parliamentary' | 'ministerial' | 'news'
+  verified: boolean
+  date?: string
+  contentLength: number
+  hasUrl: boolean
+}): number {
+  let score = 0.5
+
+  // Source-type boost
+  if (params.sourceType === 'parliamentary') score += 0.3
+  if (params.sourceType === 'ministerial') score += 0.25
+  if (params.sourceType === 'news') score += 0.15
+
+  // Verified boost
+  if (params.verified) score += 0.1
+
+  // Date recency boost (within last year)
+  if (params.date) {
+    const ts = Date.parse(`${params.date}T00:00:00.000Z`)
+    if (!Number.isNaN(ts)) {
+      const oneYearMs = 365 * 24 * 60 * 60 * 1000
+      if (Date.now() - ts <= oneYearMs) score += 0.05
+    }
+  }
+
+  // Content quality boost
+  if (params.contentLength > 500) score += 0.05
+
+  // URL presence (helps provenance)
+  if (params.hasUrl) score += 0.03
+
+  // Clamp 0..1 and round to 2dp
+  score = Math.max(0, Math.min(1, score))
+  return Math.round(score * 100) / 100
 }
 
 // Helper function to extract tags from content
@@ -190,6 +309,27 @@ function extractTags(headline: string, content?: string): string[] {
   }
   
   return [...new Set(tags)] // Remove duplicates
+}
+
+function getSourceTypeFromSourceId(sourceId: string): 'parliamentary' | 'ministerial' | 'news' {
+  if (sourceId === 'hansard' || sourceId === 'parliament-gov') return 'parliamentary'
+  if (sourceId === 'lawgazette') return 'ministerial'
+  return 'news'
+}
+
+function topicIdFromName(name: string): string {
+  const trimmed = name.trim()
+  if (!trimmed) return ''
+  // Prefer human-readable slug ids for ASCII; fall back to hash for non-ASCII (Chinese)
+  const isAscii = /^[\x00-\x7F]+$/.test(trimmed)
+  if (isAscii) {
+    const slug = trimmed
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+    return slug ? `topic-${slug}` : generateId('topic', trimmed)
+  }
+  return generateId('topic', trimmed)
 }
 
 // Helper function to determine document type
@@ -245,12 +385,18 @@ async function processCSVFile(filePath: string): Promise<ArticleData[]> {
         const url = row.url || ''
         const date = row.date || row.Date || undefined
         const raw_text = row.raw_text || row.content || headline
+        const source = row.source || fileName
+        const names = parseCsvList(row.names)
+        const policies = parseCsvList(row.policies)
         
         articles.push({
+          source,
           headline: headline,
           url: url,
           date: date,
-          raw_text: raw_text
+          raw_text: raw_text,
+          names,
+          policies
         })
       })
       .on('end', () => {
@@ -272,7 +418,8 @@ async function createSources(): Promise<Map<string, string>> {
       url: "https://www.parliament.gov.sg",
       type: "official",
       last_updated: "2024-01-15T10:00:00.000Z",
-      status: "active"
+      status: "active",
+      language: "en"
     },
     {
       id: "cna",
@@ -280,7 +427,8 @@ async function createSources(): Promise<Map<string, string>> {
       url: "https://www.channelnewsasia.com",
       type: "news",
       last_updated: "2024-01-15T10:00:00.000Z",
-      status: "active"
+      status: "active",
+      language: "en"
     }, 
     { 
       id: "straitstimes",
@@ -288,23 +436,35 @@ async function createSources(): Promise<Map<string, string>> {
       url: "https://www.straitstimes.com",
       type: "news",
       last_updated: "2024-01-15T10:00:00.000Z",
-      status: "active"
+      status: "active",
+      language: "en"
     }, 
     { 
       id: "hansard",
       name: "Hansard",
-      url: "https://hansard.parliament.sg",
-      type: "news",
+      url: "https://sprs.parl.gov.sg/search/",
+      type: "official",
       last_updated: "2024-01-15T10:00:00.000Z",
-      status: "active"
+      status: "active",
+      language: "en"
     }, 
     {
       id: "lawgazette",
       name: "Singapore Law Gazette",
       url: "https://www.lawgazette.gov.sg",
+      type: "official",
+      last_updated: "2024-01-15T10:00:00.000Z",
+      status: "active",
+      language: "en"
+    },
+    {
+      id: "lianhezaobao",
+      name: "Lianhe Zaobao (联合早报)",
+      url: "https://www.zaobao.com.sg",
       type: "news",
       last_updated: "2024-01-15T10:00:00.000Z",
-      status: "active"
+      status: "active",
+      language: "zh"
     }
   ]
   
@@ -336,7 +496,13 @@ async function createSources(): Promise<Map<string, string>> {
 }
 
 // Process and insert documents
-async function processDocuments(articles: ArticleData[], sourceMap: Map<string, string>): Promise<void> {
+async function processDocuments(
+  articles: ArticleData[],
+  sourceMap: Map<string, string>
+): Promise<{
+  documents: ProcessedDocument[]
+  topicMetaById: Map<string, { id: string; name: string; description: string }>
+}> {
   console.log('📄 Processing documents...')
   
   // Verify sources exist in database before proceeding
@@ -355,7 +521,7 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
   existingSources?.forEach(s => console.log(`   - "${s.id}" (${s.name})`))
   
   // Verify all expected sources exist
-  const expectedSources = ['parliament-gov', 'cna', 'straitstimes', 'hansard', 'lawgazette']
+  const expectedSources = ['parliament-gov', 'cna', 'straitstimes', 'hansard', 'lawgazette', 'lianhezaobao']
   const missingSources = expectedSources.filter(id => !existingSourceIds.has(id))
   if (missingSources.length > 0) {
     console.error(`❌ Missing sources in database: ${missingSources.join(', ')}`)
@@ -364,18 +530,45 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
   }
   
   const documents: ProcessedDocument[] = []
+  const topicMetaById = new Map<string, { id: string; name: string; description: string }>()
   
   for (const article of articles) {
     // Determine source - must match the IDs created in createSources()
-    let sourceId = 'cna' // default - matches source ID "cna"
-    if (article.url.includes('straitstimes.com')) {
-      sourceId = 'straitstimes' // matches source ID "straitstimes"
-    } else if (article.url.includes('parliament.gov.sg') || article.url.includes('hansard')) {
-      sourceId = 'parliament-gov' // matches source ID "parliament-gov"
-    } else if (article.url.includes('lawgazette')) {
-      sourceId = 'lawgazette' // matches source ID "lawgazette"
-    } else if (article.url.includes('channelnewsasia.com') || article.url.includes('cna')) {
-      sourceId = 'cna' // matches source ID "cna"
+    const urlLower = (article.url || '').toLowerCase()
+    const sourceLower = (article.source || '').toLowerCase()
+
+    let sourceId = 'cna' // default
+
+    // Prefer explicit CSV source label when present
+    if (sourceLower) {
+      if (sourceLower.includes('zaobao') || sourceLower.includes('lianhe')) {
+        sourceId = 'lianhezaobao'
+      } else if (sourceLower.includes('straits') || sourceLower.includes('st')) {
+        sourceId = 'straitstimes'
+      } else if (sourceLower.includes('cna') || sourceLower.includes('channel news')) {
+        sourceId = 'cna'
+      } else if (sourceLower.includes('lawgaz')) {
+        sourceId = 'lawgazette'
+      } else if (sourceLower.includes('hansard')) {
+        sourceId = 'hansard'
+      } else if (sourceLower.includes('parliament') || sourceLower.includes('sprs')) {
+        sourceId = 'parliament-gov'
+      }
+    }
+
+    // Fallback to URL-based detection
+    if (urlLower.includes('zaobao.com.sg')) {
+      sourceId = 'lianhezaobao'
+    } else if (urlLower.includes('straitstimes.com')) {
+      sourceId = 'straitstimes'
+    } else if (urlLower.includes('channelnewsasia.com') || urlLower.includes('cna')) {
+      sourceId = 'cna'
+    } else if (urlLower.includes('lawgazette')) {
+      sourceId = 'lawgazette'
+    } else if (urlLower.includes('sprs.parl.gov.sg')) {
+      sourceId = 'hansard'
+    } else if (urlLower.includes('parliament.gov.sg') || urlLower.includes('parl.gov.sg')) {
+      sourceId = 'parliament-gov'
     }
     
     // Verify source exists in database
@@ -387,11 +580,36 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
       continue
     }
     
-    // Generate document ID
-    const docId = generateId('doc', article.headline + article.url)
+    // Parse date
+    const date = parseDate(article.date)
+
+    // Determine document language (en/zh/mixed)
+    const language = detectLanguage(article.raw_text || article.headline)
+
+    // Determine source type (parliamentary / ministerial / news)
+    const source_type = getSourceTypeFromSourceId(sourceId)
+
+    // Verified by default for official sources
+    const verified = source_type !== 'news'
+
+    // Normalize URL (and generate for parliamentary reports if missing)
+    let rawUrl = (article.url || '').trim()
+    if (rawUrl.startsWith('/')) {
+      if (sourceId === 'lianhezaobao') rawUrl = `https://www.zaobao.com.sg${rawUrl}`
+      if (sourceId === 'cna') rawUrl = `https://www.channelnewsasia.com${rawUrl}`
+    }
+    let url = normalizeUrl(rawUrl)
+    if (!url && source_type === 'parliamentary') {
+      url = buildParliamentReportUrlFromDate(date)
+    }
+
+    // Generate document ID (include source + date for stability even when url missing)
+    const docId = generateId('doc', `${sourceId}|${date || ''}|${article.headline}|${url || ''}`)
     
     // Extract speaker
-    const speaker = extractSpeaker(article.headline, article.raw_text)
+    const speaker =
+      extractSpeaker(article.headline, article.raw_text) ||
+      (article.names && article.names.length > 0 ? article.names[0] : '')
     
     // Generate summary
     const summary = generateSummary(article.raw_text || article.headline)
@@ -402,8 +620,47 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
     // Determine document type
     const type = getDocumentType(article.headline, article.raw_text)
     
-    // Parse date
-    const date = parseDate(article.date)
+    // Role (best effort)
+    const role = extractRole(`${article.headline}\n${article.raw_text || ''}`)
+
+    // Topics: prefer policies from CSV; fallback to tags (limit to keep UI tidy)
+    const topicNames =
+      article.policies && article.policies.length > 0 ? article.policies : tags
+
+    const topicPairs = (topicNames || [])
+      .map(name => (name || '').toString().trim())
+      .filter(Boolean)
+      .map(name => ({ name, id: topicIdFromName(name) }))
+      .filter(pair => Boolean(pair.id))
+
+    const topics = Array.from(new Set(topicPairs.map(p => p.id))).slice(0, 8)
+
+    // Register topic metadata for later upsert into `topics` table
+    for (const pair of topicPairs) {
+      if (!topics.includes(pair.id)) continue
+      if (topicMetaById.has(pair.id)) continue
+      const displayName =
+        /^[\x00-\x7F]+$/.test(pair.name) && pair.name.length > 1
+          ? pair.name.charAt(0).toUpperCase() + pair.name.slice(1)
+          : pair.name
+      topicMetaById.set(pair.id, {
+        id: pair.id,
+        name: displayName,
+        description: `Documents related to ${displayName}`,
+      })
+    }
+
+    // published_at (TIMESTAMPTZ) from date when available
+    const published_at = safeIsoTimestampFromYyyyMmDd(date)
+
+    // Confidence (heuristic)
+    const confidence = calculateConfidence({
+      sourceType: source_type,
+      verified,
+      date,
+      contentLength: (article.raw_text || article.headline || '').length,
+      hasUrl: Boolean(url),
+    })
     
     documents.push({
       id: docId,
@@ -411,10 +668,18 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
       source_id: sourceId,
       content: article.raw_text || article.headline,
       speaker: speaker,
+      role: role,
       date: date,
+      published_at,
       type: type,
       summary: summary,
-      tags: tags
+      tags: tags,
+      topics,
+      source_type,
+      verified,
+      confidence,
+      url,
+      language,
     })
   }
   
@@ -557,12 +822,18 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
         source_id: testDoc.source_id,
         content: testDoc.content,
         speaker: testDoc.speaker || null,
+        role: testDoc.role || null,
         date: testDoc.date || null,
+        published_at: testDoc.published_at || null,
         type: testDoc.type,
         summary: testDoc.summary || null,
         tags: testDoc.tags || [],
-        url: null,
-        source_type: 'news'
+        topics: testDoc.topics || [],
+        url: testDoc.url || null,
+        source_type: testDoc.source_type || 'news',
+        verified: typeof testDoc.verified === 'boolean' ? testDoc.verified : null,
+        confidence: typeof testDoc.confidence === 'number' ? testDoc.confidence : null,
+        language: testDoc.language || null,
       }
       
       const { data: rpcData, error: rpcError } = await supabase
@@ -630,12 +901,18 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
           source_id: doc.source_id,
           content: doc.content,
           speaker: doc.speaker || null,
+          role: doc.role || null,
           date: doc.date || null,
+          published_at: doc.published_at || null,
           type: doc.type,
           summary: doc.summary || null,
           tags: doc.tags || [],
-          url: null,
-          source_type: 'news'
+          topics: doc.topics || [],
+          url: doc.url || null,
+          source_type: doc.source_type || 'news',
+          verified: typeof doc.verified === 'boolean' ? doc.verified : null,
+          confidence: typeof doc.confidence === 'number' ? doc.confidence : null,
+          language: doc.language || null,
         }))
         
         const { data: rpcData, error: rpcError } = await supabase
@@ -731,29 +1008,41 @@ async function processDocuments(articles: ArticleData[], sourceMap: Map<string, 
       console.error('   This suggests a transaction rollback or silent failure.')
     }
   }
+
+  return { documents, topicMetaById }
 }
 
-// Create topics based on document tags
-async function createTopics(documents: ProcessedDocument[]): Promise<void> {
+// Create topics based on extracted topic IDs in documents
+async function createTopics(
+  documents: ProcessedDocument[],
+  topicMetaById: Map<string, { id: string; name: string; description: string }>
+): Promise<void> {
   console.log('📋 Creating topics...')
   
   // Count documents per topic
   const topicCounts = new Map<string, number>()
   
   for (const doc of documents) {
-    for (const tag of doc.tags) {
-      topicCounts.set(tag, (topicCounts.get(tag) || 0) + 1)
+    for (const topicId of doc.topics || []) {
+      topicCounts.set(topicId, (topicCounts.get(topicId) || 0) + 1)
     }
   }
   
+  const nowIso = new Date().toISOString()
+
   // Create topic entries
-  const topics = Array.from(topicCounts.entries()).map(([name, count]) => ({
-    id: `topic-${name.replace(/\s+/g, '-')}`,
-    name: name.charAt(0).toUpperCase() + name.slice(1),
-    description: `Documents related to ${name}`,
-    document_count: count,
-    last_updated: new Date().toISOString()
+  const topics = Array.from(topicMetaById.values()).map(meta => ({
+    id: meta.id,
+    name: meta.name,
+    description: meta.description,
+    document_count: topicCounts.get(meta.id) || 0,
+    last_updated: nowIso
   }))
+
+  if (topics.length === 0) {
+    console.warn('⚠️  No topics generated (documents have no topics). Skipping topics upsert.')
+    return
+  }
   
   // Insert topics with better error handling
   try {
@@ -806,7 +1095,8 @@ async function ingestGoldenDataset() {
       'full_cna_articles.csv',
       'full_straits_times_articles.csv',
       'full_hansard_master.csv',
-      'full_lawgaz_master.csv'
+      'full_lawgaz_master.csv',
+      'full_lianhezaobao_articles.csv'
     ]
     
     let allArticles: ArticleData[] = []
@@ -827,41 +1117,15 @@ async function ingestGoldenDataset() {
     }
     
     // Process and insert documents
-    await processDocuments(allArticles, sourceMap)
+    const { documents, topicMetaById } = await processDocuments(allArticles, sourceMap)
     
     // Create topics
-    const documents: ProcessedDocument[] = allArticles.map(article => {
-      // Determine source - must match the IDs created in createSources()
-      let sourceId = 'cna' // default
-      if (article.url.includes('straitstimes.com')) {
-        sourceId = 'straitstimes'
-      } else if (article.url.includes('parliament.gov.sg') || article.url.includes('hansard')) {
-        sourceId = 'parliament-gov'
-      } else if (article.url.includes('lawgazette')) {
-        sourceId = 'lawgazette'
-      } else if (article.url.includes('channelnewsasia.com') || article.url.includes('cna')) {
-        sourceId = 'cna'
-      }
-      
-      return {
-        id: generateId('doc', article.headline + article.url),
-        title: article.headline,
-        source_id: sourceId,
-        content: article.raw_text || article.headline,
-        speaker: extractSpeaker(article.headline, article.raw_text),
-        date: parseDate(article.date),
-        type: getDocumentType(article.headline, article.raw_text),
-        summary: generateSummary(article.raw_text || article.headline),
-        tags: extractTags(article.headline, article.raw_text)
-      }
-    })
-    
-    await createTopics(documents)
+    await createTopics(documents, topicMetaById)
     
     console.log('🎉 Golden dataset ingestion completed successfully!')
     console.log(`📊 Summary:`)
     console.log(`   - Articles processed: ${allArticles.length}`)
-    console.log(`   - Documents created: ${documents.length}`)
+    console.log(`   - Documents prepared: ${documents.length}`)
     console.log(`   - Sources: ${sourceMap.size}`)
     
   } catch (error) {
