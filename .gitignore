@@ -21,6 +21,9 @@ out/
 build/
 dist/
 
+# Webpack cache (can cause issues on Windows)
+.next/cache/
+
 # Production builds
 *.tgz
 *.tar.gz
