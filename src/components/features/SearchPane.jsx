@@ -1,12 +1,12 @@
 "use client"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { Search, Filter, ExternalLink, Clock, User, AlertCircle, CheckCircle } from "lucide-react"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Badge } from "../ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
-import { formatDateShort, getSourceTypeColor, truncateText } from "@/lib/formatters"
+import { formatDateShort, getSourceTypeColor, truncateText, normalizeConfidence } from "@/lib/formatters"
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
@@ -64,6 +64,44 @@ export default function SearchPane({
     dateRange: "all",
     speaker: "all",
   })
+  const [trendingTopics, setTrendingTopics] = useState([])
+  const [isLoadingTrending, setIsLoadingTrending] = useState(false)
+
+  // Fetch trending topics on component mount
+  useEffect(() => {
+    async function fetchTrendingTopics() {
+      setIsLoadingTrending(true)
+      try {
+        const res = await fetch('/api/topics')
+        const data = await res.json()
+        if (data.success && data.data) {
+          // Sort by documentCount (descending) or lastUpdated (recent), take top 8-10
+          const sorted = data.data
+            .sort((a, b) => {
+              // Primary sort: documentCount (descending)
+              if (b.documentCount !== a.documentCount) {
+                return (b.documentCount || 0) - (a.documentCount || 0)
+              }
+              // Secondary sort: lastUpdated (recent first)
+              const dateA = a.lastUpdated ? new Date(a.lastUpdated).getTime() : 0
+              const dateB = b.lastUpdated ? new Date(b.lastUpdated).getTime() : 0
+              return dateB - dateA
+            })
+            .slice(0, 10)
+            .map(topic => topic.name)
+          setTrendingTopics(sorted)
+        }
+      } catch (err) {
+        console.error("Error fetching trending topics:", err)
+        // Fallback to empty array on error
+        setTrendingTopics([])
+      } finally {
+        setIsLoadingTrending(false)
+      }
+    }
+    fetchTrendingTopics()
+  }, [])
+
   // Unified search using Supabase API with filters (P1.2)
   async function onSearch(query) {
     setIsSearching(true)
@@ -96,14 +134,14 @@ export default function SearchPane({
             title: row.policies ? row.policies.join(", ") : row.title || "Untitled",
             content: row.content || "",
             speaker: row.names ? row.names.join(", ") : row.speaker || "",
-            publishedAt: row.date || new Date().toISOString(),
+            publishedAt: row.date || row.published_at || null,
             sourceType: row.source_type || "parliamentary",
             verified: true,
             topics: row.policies || [],
             url: row.url || "#",
             contradictions: [],
             source: row.source || "",
-            confidence: 0.75,
+            confidence: normalizeConfidence(row.confidence),
             role: row.role || "",
             tags: row.tags || [],
             summary: row.summary || ""
@@ -135,6 +173,31 @@ export default function SearchPane({
       return updated
     })
   }
+  // Fetch trending topics on mount
+  useEffect(() => {
+    const fetchTrendingTopics = async () => {
+      setIsLoadingTrending(true)
+      try {
+        const res = await fetch("/api/topics")
+        const data = await res.json()
+        if (data.success && data.data) {
+          // Sort by documentCount (descending) and take top 8-10
+          const sorted = [...data.data]
+            .sort((a, b) => (b.documentCount || 0) - (a.documentCount || 0))
+            .slice(0, 10)
+            .map(topic => topic.name)
+          setTrendingTopics(sorted)
+        }
+      } catch (err) {
+        console.error("Error fetching trending topics:", err)
+        // Fallback to empty array on error
+        setTrendingTopics([])
+      } finally {
+        setIsLoadingTrending(false)
+      }
+    }
+    fetchTrendingTopics()
+  }, [])
   return (
     <div className="flex h-full">
       <div className="flex-1 flex flex-col">
@@ -158,26 +221,29 @@ export default function SearchPane({
                 Search
               </Button>
             </form>
-            {/* Quick Examples */}
-            <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-muted-foreground">Trending:</span>
-              {["housing policy", "covid-19", "tracetogether", "straitstimes", "cna", "hansard", "climate change", "GST increase"].map((example) => (
-                <Button
-                  key={example}
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    if (searchRef.current) {
-                      searchRef.current.value = example
-                      onSearch(example)
-                    }
-                  }}
-                  className="text-xs"
-                >
-                  <i>{example}</i>
-                </Button>
-              ))}
-            </div>
+            {/* Trending Topics */}
+            {trendingTopics.length > 0 && (
+              <div className="flex flex-wrap gap-2">
+                <span className="text-sm text-muted-foreground">Trending:</span>
+                {trendingTopics.map((topic) => (
+                  <Button
+                    key={topic}
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      if (searchRef.current) {
+                        searchRef.current.value = topic
+                        onSearch(topic)
+                      }
+                    }}
+                    className="text-xs"
+                    disabled={isLoadingTrending}
+                  >
+                    <i>{topic}</i>
+                  </Button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         {/* Search Results */}

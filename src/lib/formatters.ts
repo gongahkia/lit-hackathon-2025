@@ -98,13 +98,28 @@ export function buildCitation(citation: CitationData): string {
 }
 
 /**
+ * Normalize confidence score to 0-1 range
+ * Handles both 0-1 and 0-100 ranges gracefully
+ */
+export function normalizeConfidence(confidence: number | null | undefined): number | null {
+  if (confidence === null || confidence === undefined) return null
+  // If confidence is > 1, assume it's in 0-100 range and normalize
+  if (confidence > 1) {
+    return Math.max(0, Math.min(1, confidence / 100))
+  }
+  // Already in 0-1 range
+  return Math.max(0, Math.min(1, confidence))
+}
+
+/**
  * Format confidence score as percentage
- * Input: 0.0 - 1.0
+ * Input: 0.0 - 1.0 (or 0-100, will be normalized)
  * Output: "85%" or "N/A"
  */
 export function formatConfidence(confidence: number | null | undefined): string {
-  if (confidence === null || confidence === undefined) return "N/A"
-  return `${Math.round(confidence * 100)}%`
+  const normalized = normalizeConfidence(confidence)
+  if (normalized === null) return "N/A"
+  return `${Math.round(normalized * 100)}%`
 }
 
 /**

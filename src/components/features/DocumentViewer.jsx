@@ -77,6 +77,56 @@ export default function DocumentViewer({ document, onBack }) {
     }
   }
 
+  // Format document content with proper paragraphs, lists, and structure
+  const formatDocumentContent = (content) => {
+    if (!content) return ""
+    
+    // Split by double newlines to create paragraphs
+    const paragraphs = content.split(/\n\s*\n/).filter(p => p.trim().length > 0)
+    
+    // Process each paragraph
+    return paragraphs.map(para => {
+      const trimmed = para.trim()
+      
+      // Detect and format numbered lists (1. 2. 3. or 1) 2) 3))
+      if (/^\d+[\.\)]\s/.test(trimmed) || /^\d+[\.\)]\s/.test(trimmed.split('\n')[0])) {
+        return trimmed
+          .split('\n')
+          .map(line => {
+            const listMatch = line.match(/^(\d+[\.\)])\s*(.+)/)
+            if (listMatch) {
+              return `${listMatch[1]} ${listMatch[2].trim()}`
+            }
+            return line.trim()
+          })
+          .filter(line => line.length > 0)
+          .join('\n')
+      }
+      
+      // Detect and format bullet lists (- * •)
+      if (/^[-*•]\s/.test(trimmed) || /^[-*•]\s/.test(trimmed.split('\n')[0])) {
+        return trimmed
+          .split('\n')
+          .map(line => {
+            const bulletMatch = line.match(/^([-*•])\s*(.+)/)
+            if (bulletMatch) {
+              return `• ${bulletMatch[2].trim()}`
+            }
+            return line.trim()
+          })
+          .filter(line => line.length > 0)
+          .join('\n')
+      }
+      
+      // Regular paragraph: clean up whitespace but preserve structure
+      return trimmed
+        .split(/\n/)
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .join(' ')
+    }).join('\n\n')
+  }
+
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
     // You could add a toast notification here
@@ -296,11 +346,11 @@ export default function DocumentViewer({ document, onBack }) {
             </CardHeader>
             <CardContent>
               <div
-                className="prose prose-sm max-w-none leading-relaxed text-pretty"
+                className="prose prose-sm max-w-none leading-relaxed text-pretty whitespace-pre-wrap"
                 onMouseUp={handleTextSelection}
-                style={{ userSelect: "text" }}
+                style={{ userSelect: "text", lineHeight: "1.75" }}
               >
-                {document.content}
+                {formatDocumentContent(document.content)}
               </div>
 
               {selectedText && (
@@ -473,23 +523,23 @@ export default function DocumentViewer({ document, onBack }) {
                       {document.url || "N/A"}
                     </code>
                     {document.url && (
-                      <Button variant="ghost" size="sm" onClick={() => copyToClipboard(document.url)}>
-                        <Copy className="h-3 w-3" />
-                      </Button>
+                    <Button variant="ghost" size="sm" onClick={() => copyToClipboard(document.url)}>
+                      <Copy className="h-3 w-3" />
+                    </Button>
                     )}
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
+                <div>
                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
                       Document ID
                     </label>
                     <p className="text-sm font-mono bg-muted px-2 py-1 rounded border border-border">
                       {document.id}
                     </p>
-                  </div>
-                  <div>
+                </div>
+                <div>
                     <label className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1 block">
                       Last Verified
                     </label>
@@ -521,8 +571,8 @@ export default function DocumentViewer({ document, onBack }) {
                             variant="outline" 
                             className="text-xs bg-background hover:bg-accent transition-colors"
                           >
-                            {topic}
-                          </Badge>
+                          {topic}
+                        </Badge>
                         ))
                       ) : (
                         <span className="text-sm text-muted-foreground italic">No topics assigned</span>
@@ -539,12 +589,12 @@ export default function DocumentViewer({ document, onBack }) {
                     <div className="flex items-center gap-3">
                       <ConfidenceBadge confidence={document.confidence} showLabel />
                       {document.confidence !== undefined && (
-                        <div className="flex-1 bg-muted rounded-full h-2">
-                          <div
+                      <div className="flex-1 bg-muted rounded-full h-2">
+                        <div
                             className="bg-primary h-2 rounded-full transition-all duration-300"
                             style={{ width: `${(document.confidence || 0) * 100}%` }}
-                          />
-                        </div>
+                        />
+                      </div>
                       )}
                     </div>
                   </div>
