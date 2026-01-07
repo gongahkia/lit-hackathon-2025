@@ -1,16 +1,16 @@
 "use client"
 import React, { useRef, useState } from "react"
 import { Paperclip, Search, CheckCircle, Clock, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
-import { formatDateShort, getSourceTypeColor, truncateText } from "@/lib/formatters"
+import { formatDateShort, getSourceTypeColor, truncateText, normalizeConfidence } from "@/lib/formatters"
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-// P2: Uncomment when implementing hierarchical RAG
-// import { RAGResponseView } from "./RAGResponseView"
-// import { QueryResponse } from "@/lib/types/query"
+// P2: Hierarchical RAG implementation
+import { RAGResponseView } from "./RAGResponseView"
+import { QueryResponse } from "@/lib/types/query"
 // --- POFMan bot SVG (minimal, replace with your brand asset as needed) ---
 function POFManIcon() {
   return (
@@ -55,7 +55,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
   const [query, setQuery] = useState("")
   const [file, setFile] = useState(null)
   const [searchResults, setSearchResults] = useState([])
-  const [ragResponse, setRagResponse] = useState(null) // P2: For future RAG responses
+  const [ragResponse, setRagResponse] = useState(null) // P2: RAG responses with structured citations
   const [thinkingStep, setThinkingStep] = useState(-1)
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState(null)
@@ -79,6 +79,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
     if (!query.trim() && !file) return
     setIsSearching(true)
     setSearchResults([])
+    setRagResponse(null) // Clear previous RAG response
     setError(null)
     setThinkingStep(-1)
     setSearchQueryLabel(query)
@@ -87,23 +88,71 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
       setThinkingStep(i)
       await delay(1600)
     }
-    // Backend search (GET)
+    // P2: Try RAG API first, fallback to document search
     try {
+      // Try RAG API (P2) - POST with structured query
+      let res = await fetch("/api/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: query,
+          options: {
+            provider: "auto",
+            max_results: 10,
+            min_confidence: 0.7,
+            enable_cross_verification: true,
+            include_audit_trail: true
+          }
+        })
+      })
+      
+      if (res.ok) {
+        const ragData = await res.json()
+        
+        // Check if this is a RAG response (has answer field)
+        if (ragData.answer !== undefined) {
+          setRagResponse(ragData)
+          // Also populate searchResults for backward compatibility
+          if (ragData.citations && ragData.citations.length > 0) {
+            setSearchResults(ragData.citations.map((citation, idx) => ({
+              id: citation.document_id,
+              title: citation.document_title,
+              content: citation.quote,
+              speaker: "",
+              role: "",
+              publishedAt: citation.published_at || citation.date || null,
+              sourceType: citation.source_name || "parliamentary",
+              source_name: citation.source_name,
+              newsSource: null,
+              verified: true,
+              topics: [],
+              url: citation.source_url,
+              contradictions: [],
+              rank: idx + 1,
+              confidence: normalizeConfidence(citation.relevance_score)
+            })))
+          }
+          return
+        }
+      }
+      
+      // Fallback to document search (P1.2)
       const params = new URLSearchParams()
       params.append("q", query)
-      // Try Supabase API first (P1.2), fallback to Flask
-      let res = await fetch(`/api/documents?q=${encodeURIComponent(query)}`, {
+      let res2 = await fetch(`/api/documents?q=${encodeURIComponent(query)}`, {
         method: "GET",
       })
-      let data = await res.json()
+      let data = await res2.json()
       
       // If Supabase fails, try Flask API
       if (!data.success || !data.data) {
-        res = await fetch(`/api/search?${params.toString()}`, {
+        res2 = await fetch(`/api/search?${params.toString()}`, {
         method: "GET",
       })
-      if (!res.ok) throw new Error("Search failed.")
-        data = await res.json()
+      if (!res2.ok) throw new Error("Search failed.")
+        data = await res2.json()
       }
       
       // Transform results to consistent format
@@ -118,18 +167,13 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           ? `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` 
           : "#")
         
-        // Confidence: use from Supabase if available, otherwise calculate
-        let confidence = typeof row.confidence === "number"
-          ? row.confidence
-          : (typeof row.confidence === "number" && row.confidence <= 1 ? row.confidence : Math.max(0.97 - idx * 0.02, 0.6))
-        
         return {
           id: row.id || `result-${idx}`,
           title: row.title || (row.policies ? row.policies.join(", ") : "Untitled"),
           content: row.content || "",
           speaker: row.speaker || (row.names ? row.names.join(", ") : ""),
           role: row.role || "",
-          publishedAt: row.published_at || row.publishedAt || row.date || new Date().toISOString(),
+          publishedAt: row.published_at || row.publishedAt || row.date || null,
           sourceType,
           source_name: row.source_name || newsSource,
           newsSource,
@@ -138,7 +182,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           url,
           contradictions: row.contradictions || [],
           rank: idx + 1,
-          confidence: confidence, // As 0-1 value
+          confidence: normalizeConfidence(row.confidence), // Normalized to 0-1 range
         }
       }))
     } catch (err) {
@@ -156,17 +200,17 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
     <div className="flex h-screen w-full items-center justify-center bg-zinc-50 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-150">
     <div className={`w-full transition-all duration-300
       ${searchResults.length > 0 ? 'max-w-5xl' : 'max-w-2xl'}
-      p-8 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-8`}>
+      p-8 md:p-10 rounded-xl shadow-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 flex flex-col gap-6`}>
 
         {/* --- POFMan Bot Header --- */}
-        <div className="flex flex-col items-center mb-2">
+        <div className="flex flex-col items-center mb-4">
           <POFManIcon />
-          <div className="text-lg font-bold text-center tracking-tight">POFMan</div>
-          <div className="text-xs text-zinc-400 font-medium mb-1">Semantic Deep Search Assistant</div>
+          <div className="text-xl font-bold text-center tracking-tight mb-1">POFMan</div>
+          <div className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Semantic Deep Search Assistant</div>
         </div>
         {/* --- Search bar and attachment --- */}
         <form
-          className="flex items-center space-x-3"
+          className="flex items-center space-x-3 mb-2"
           onSubmit={handleSearch}
         >
           <button
@@ -186,7 +230,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           </button>
           <input
             type="text"
-            className="flex-1 p-3 border rounded focus:outline-none text-base bg-zinc-100 dark:bg-zinc-800"
+            className="flex-1 p-4 border border-zinc-300 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-base bg-white dark:bg-zinc-800 transition-all"
             placeholder="Enter your search query…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -251,43 +295,43 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           </div>
         )}
         {/* --- RAG Response (P2) - Future implementation --- */}
-        {/* Note: RAGResponseView will be used when P2 is implemented */}
-        {/* {!isSearching && ragResponse && (
+        {/* P2: RAG Response View - Hierarchical RAG implementation */}
+        {!isSearching && ragResponse && (
           <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />
-        )} */}
+        )}
 
         {/* --- Search Results (Current implementation) --- */}
         {!isSearching && searchResults.length > 0 && (
-          <div className="flex flex-col gap-4 max-h-[28rem] overflow-y-auto pr-1">
-            <div className="flex items-center justify-between mb-2 sticky top-0 bg-white dark:bg-zinc-900 z-10">
-              <p className="text-sm text-zinc-500">
-                Found {searchResults.length} results for
-                <span className="font-semibold ml-1">&quot;{searchQueryLabel}&quot;</span>
+          <div className="flex flex-col gap-5 max-h-[32rem] overflow-y-auto pr-2">
+            <div className="flex items-center justify-between mb-1 sticky top-0 bg-white dark:bg-zinc-900 z-10 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                Found <span className="font-bold text-primary">{searchResults.length}</span> result{searchResults.length === 1 ? '' : 's'} for
+                <span className="font-semibold ml-1 text-zinc-900 dark:text-zinc-100">&quot;{searchQueryLabel}&quot;</span>
               </p>
-              <button type="button" className="px-2 py-1 flex items-center gap-1 rounded border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-700 dark:text-zinc-200 bg-zinc-100 dark:bg-zinc-900 hover:bg-zinc-200 dark:hover:bg-zinc-800">
-                <Filter className="h-3 w-3" />
+              <button type="button" className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+                <Filter className="h-3.5 w-3.5" />
                 Filters
               </button>
             </div>
             {searchResults.map((result) => (
               <div 
                 key={result.id} 
-                className="group relative rounded-xl border bg-card border-border p-5 hover:shadow-lg transition-all duration-300 overflow-hidden"
+                className="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 hover:shadow-xl hover:border-primary/20 transition-all duration-300 overflow-hidden"
               >
                 {/* Accent border on hover */}
                 <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all duration-300 group-hover:w-1.5" />
                 
                 {/* Rank badge - Improved */}
-                <div className="absolute left-[-1.5rem] top-4 bg-primary text-primary-foreground text-xs font-bold rounded-full h-8 w-8 flex items-center justify-center shadow-lg border-2 border-background">
+                <div className="absolute left-[-1rem] top-5 bg-primary text-primary-foreground text-xs font-bold rounded-full h-9 w-9 flex items-center justify-center shadow-md border-3 border-background z-10">
                   {result.rank}
                 </div>
                 
                 {/* Confidence badge - Top right */}
-                <div className="absolute right-3 top-3">
-                  <ConfidenceBadge confidence={result.confidence / 100} className="text-xs" />
+                <div className="absolute right-4 top-4 z-10">
+                  <ConfidenceBadge confidence={result.confidence} className="text-xs shadow-sm" />
                 </div>
                 
-                <div className="pl-6 pr-20 space-y-3">
+                <div className="pl-8 pr-24 space-y-4">
                   {/* Header */}
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1 space-y-2">
@@ -313,12 +357,12 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
                       </div>
                       
                       {/* Title */}
-                      <h3 className="text-lg font-semibold leading-tight group-hover:text-primary transition-colors duration-200">
+                      <h3 className="text-xl font-semibold leading-tight group-hover:text-primary transition-colors duration-200 mb-1">
                         {result.title || "Untitled"}
                       </h3>
                       
                       {/* Metadata */}
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground flex-wrap">
+                      <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400 flex-wrap">
                         {result.speaker && (
                           <div className="flex items-center gap-1.5">
                             <User className="h-4 w-4" />
@@ -337,8 +381,8 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
                   </div>
                   
                   {/* Content Preview */}
-                  <p className="text-sm leading-relaxed text-muted-foreground line-clamp-3">
-                    {truncateText(result.content, 220)}
+                  <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-3">
+                    {truncateText(result.content, 250)}
                   </p>
                   
                   {/* Topics */}
@@ -367,7 +411,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
                   )}
                   
                   {/* Actions */}
-                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-border">
+                  <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
                     {onViewDocument && result.id ? (
                       <Button
                         variant="default"
