@@ -1,4 +1,8 @@
 # scraped_policies_timeline_service.py
+"""
+Timeline service for policy changes tracking
+Builds timeline from hardcoded data and can be extended to pull from database
+"""
 
 timeline = [
     {
@@ -108,4 +112,23 @@ timeline = [
 ]
 
 def get_policy_timeline():
-    return timeline
+    """
+    Get policy timeline data
+    
+    Returns:
+        list: List of policy timeline entries with creation, amendments, and dissolution events
+        
+    Note: Currently returns hardcoded timeline data. Can be extended to:
+    - Pull from Supabase documents table grouped by topics/policies
+    - Generate timeline dynamically from document dates and topics
+    - Merge hardcoded data with database data
+    """
+    try:
+        # Return hardcoded timeline for now
+        # TODO: Enhance to pull from database when documents are available
+        # This could group documents by topics and create timeline events based on dates
+        return timeline
+    except Exception as e:
+        # Log error but return empty list to prevent frontend crashes
+        print(f"Error generating timeline: {str(e)}")
+        return []
