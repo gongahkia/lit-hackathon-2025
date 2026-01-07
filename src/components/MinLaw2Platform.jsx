@@ -133,8 +133,8 @@ export default function MinLaw2Platform() {
     }
     
     if (doc) {
-      setSelectedDocument(doc)
-      setActiveView("document")
+    setSelectedDocument(doc)
+    setActiveView("document")
     } else {
       console.error("Document not found:", docId)
       alert("Document not found. Please try searching again.")
