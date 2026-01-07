@@ -3,7 +3,7 @@
  * P2: Multi-provider LLM support with structured output
  */
 
-import { Citation } from "@/lib/types/query";
+import { Citation } from "../../types/query";
 
 export interface LLMProviderConfig {
   provider: 'gemini' | 'anthropic' | 'openai';

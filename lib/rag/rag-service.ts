@@ -4,9 +4,9 @@
  */
 
 import { SimpleRetriever, RetrievalResult } from './simple-retriever';
-import { LLMRouter, RouterOptions } from '@/lib/llm/router';
-import { LLMResponse } from '@/lib/llm/providers/base';
-import { QueryResponse, Citation } from '@/lib/types/query';
+import { LLMRouter, RouterOptions } from '../llm/router';
+import { LLMResponse } from '../llm/providers/base';
+import { QueryResponse, Citation } from '../types/query';
 
 export interface RAGOptions extends RouterOptions {
   maxRetrievalResults?: number;
@@ -96,12 +96,6 @@ export class RAGService {
           level_2: { precision: 0, recall: 0, f1: 0 },
           level_3: { precision: 0, recall: 0, f1: 0 },
           level_4: { precision: 0, recall: 0, f1: 0 }
-        },
-        metadata: {
-          execution_time_ms: executionTime,
-          retrieval_time_ms: retrievalResult.executionTimeMs,
-          documents_retrieved: retrievalResult.documents.length,
-          citations_count: llmResponse.citations.length
         }
       };
     } catch (error: any) {

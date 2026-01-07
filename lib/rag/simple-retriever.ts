@@ -4,8 +4,8 @@
  * Uses vector similarity search on documents table
  */
 
-import { getSupabaseAdmin } from '@/lib/supabase';
-import { Document } from '@/lib/llm/providers/base';
+import { getSupabaseAdmin } from '../supabase';
+import { Document } from '../llm/providers/base';
 
 export interface RetrievalOptions {
   maxResults?: number;

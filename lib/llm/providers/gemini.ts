@@ -3,7 +3,7 @@
  * P2: Google Gemini 3.0 integration with structured output
  */
 
-import { LLMProvider, LLMProviderConfig, LLMResponse, GenerateOptions, Document, ValidationResult } from '@/lib/llm/providers/base';
+import { LLMProvider, LLMProviderConfig, LLMResponse, GenerateOptions, Document, ValidationResult } from './base';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export class GeminiProvider extends LLMProvider {
