@@ -217,6 +217,8 @@ def process_query(data):
 - Build comprehensive audit trails
 - Add validation system
 
+**Note:** Full hierarchical RAG (4-level hierarchy) is designed for future implementation when the dataset scales to 10k+ documents. The current dataset (300+ documents) uses RAG-lite approach, which is more efficient and appropriate for smaller datasets. Hierarchical RAG will be implemented when dataset scales to meet the minimum requirement of 10k+ documents where the hierarchical approach provides significant performance and accuracy benefits.
+
 ---
 
 ## 5. Why This Order?
@@ -321,15 +323,21 @@ def process_query(data):
 
 ### Week 3+: Advanced RAG (Richard P2)
 
-- [ ] **Week 3**: RAG-lite (Gabriel P2.6)
-  - [ ] Simple RAG with single provider
-  - [ ] Structured output with citations
+- [x] **Week 3**: RAG-lite (Gabriel P2.6) ✅ FOUNDATION COMPLETE
+  - [x] Simple RAG with single provider (Gemini)
+  - [x] Structured output with citations
+  - [x] Database schema extensions
+  - [x] Multi-provider LLM abstraction (Gemini implemented)
+  - [x] API integration
+  - [x] Frontend integration
 
 - [ ] **Week 4-7**: Full Hierarchical RAG (Richard)
-  - [ ] Database schema extensions
-  - [ ] Hierarchical retriever
-  - [ ] Multi-provider LLM
-  - [ ] Audit trails
+  - [ ] Hierarchical retriever (4-level: 50k → 200 → 200 → 200 → final)
+  - [ ] Vector similarity search with embeddings
+  - [ ] Document compression/summarization
+  - [ ] Full audit trail storage
+  - [ ] Advanced validation system
+  - [ ] Anthropic and OpenAI providers
 
 ---
 
