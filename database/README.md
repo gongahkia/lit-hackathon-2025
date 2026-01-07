@@ -2,81 +2,88 @@
 
 ## Quick Start
 
-### 1. Install Dependencies
-```bash
-npm install @supabase/supabase-js
-```
+**Note:** Supabase is already hosted and configured. The database schema is set up and data is populated. You only need to add your credentials to `.env.local`.
 
-### 2. Set up Environment Variables
-Create `.env.local` with your Supabase credentials:
+### 1. Environment Variables
+
+Create `.env.local` in the project root with your Supabase credentials:
+
 ```bash
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 ```
 
-### 3. Create Database Schema
-1. Go to your Supabase dashboard
-2. Navigate to SQL Editor
-3. Copy and paste the contents of `schema.sql`
-4. Run the SQL script
+**Get Supabase credentials:**
+1. Go to your Supabase project dashboard
+2. Settings → API
+3. Copy the Project URL and anon/public key
+4. Copy the service_role key (keep this secret!)
 
-### 3.5. Fix RLS for Seeding (IMPORTANT!)
-**If you get "UPDATE requires a WHERE clause" or RLS restrictions when seeding:**
+### 2. Database Schema
 
-This error occurs because PostgREST checks RLS policies even with the service role key. You need to run the RLS fix SQL:
+The database schema is already set up in the hosted Supabase instance. The schema includes:
 
-1. **In Supabase SQL Editor, run `fix-rls-service-role.sql`**
-   - Copy and paste the contents of `database/fix-rls-service-role.sql`
-   - This recreates all RLS policies to allow INSERT/UPDATE/DELETE operations
-   - **Why:** Even with service role key, PostgREST requires explicit RLS policies
-
-2. **Verify policies were created:**
-   - After running the SQL, check the output to see all policies listed
-   - You should see policies for SELECT, INSERT, UPDATE, and DELETE on all three tables
-
-3. **If still not working:**
-   - Check that you're using `SUPABASE_SERVICE_ROLE_KEY` (not `SUPABASE_ANON_KEY`)
-   - Verify the key is from Supabase Dashboard → Settings → API → service_role (legacy) or secret key (new)
-   - Try temporarily disabling RLS for testing (see comments in the SQL file)
-
-**Note:** Supabase now uses "secret" API keys (not JWT tokens). Both formats work, but make sure you're using the service role key, not the anon key.
-
-### 4. Seed Database
-```bash
-npm run seed-db
-```
-
-### 5. Test Connection
-```bash
-npm run test-db
-```
-
-## Database Schema
-
-### Tables
 - **sources**: Data sources (Parliament, Ministries, News)
 - **documents**: Individual documents/statements
-- **topics**: Policy topics for categorization
+- **topics**: Policy topics and categories
+- **matters**: Evidence bundle matters
+- **evidence_items**: Evidence items linked to matters
 
-### Multilingual support
-- `sources.language` and `documents.language` are included (default `en`), to support Chinese (`zh`) and mixed-language (`mixed`) content.
+If you need to view or modify the schema, see `database/schema.sql`.
 
-### Features
-- Row Level Security (RLS) enabled
-- Full-text search indexes
-- Prepared for Phase 2 vector search
-- Fallback to mock data if database unavailable
+### 3. Data Status
 
-## API Endpoints
+The database is already populated with:
+- Parliamentary documents (Hansard)
+- Ministerial releases
+- News articles (CNA, Straits Times, Lianhe Zaobao)
+- Topics and classifications
 
-- `GET /api/test-db` - Test database connection
-- Database service functions in `lib/database.ts`
-- Data service with fallback in `lib/dataService.ts`
+**No reseeding is required** - the data is already in place.
 
-## Next Steps
+## Database Schema Overview
 
-1. Test the database connection
-2. Update frontend components to use `DataService`
-3. Prepare for scraper team integration
-4. Add vector search for Phase 2
+### Tables
+
+- **sources**: Data sources (Parliament, Ministries, News)
+- **documents**: Individual documents/statements with full-text search support
+- **topics**: Policy topics and categories
+- **matters**: Evidence bundle matters
+- **evidence_items**: Evidence items linked to matters
+
+### Key Features
+
+- Full-text search with PostgreSQL `tsvector`
+- Multilingual support (English, Chinese, Mixed)
+- Confidence scoring and verification status
+- Document hierarchies for RAG (future)
+- Vector embeddings support (when populated)
+
+## Troubleshooting
+
+### Connection Issues
+
+If you encounter connection errors:
+1. Verify your `.env.local` file has correct credentials
+2. Check that Supabase project is active
+3. Ensure service role key is used (not anon key) for server-side operations
+
+### RLS (Row Level Security)
+
+Row Level Security is enabled but configured to allow public read access. All tables have policies that allow:
+- SELECT operations for all users
+- INSERT/UPDATE/DELETE for service role (server-side only)
+
+If you need to modify RLS policies, see `database/schema.sql` for the policy definitions.
+
+## Migration Notes
+
+If you need to apply schema changes:
+
+1. Go to Supabase SQL Editor
+2. Copy the relevant SQL from `database/schema.sql`
+3. Execute in the SQL Editor
+4. Verify changes in the Table Editor
+
+**Important:** Always backup before making schema changes in production.

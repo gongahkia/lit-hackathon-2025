@@ -1,6 +1,6 @@
 {
   "name": "pofact",
-  "version": "1.0.0",
+  "version": "2.1.0",
   "description": "A modern Next.js application for fast, verifiable access to parliamentary statements, ministerial releases, and government communications",
   "keywords": [
     "parliament",
