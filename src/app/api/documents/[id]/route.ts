@@ -9,7 +9,6 @@ export async function GET(
     const { id: docId } = await context.params;
     
     // Get all documents and find the one with matching ID
-    // TODO: Optimize this with a direct query in DatabaseService
     const documents = await DatabaseService.getDocuments();
     const document = documents.find((doc) => doc.id === docId);
     

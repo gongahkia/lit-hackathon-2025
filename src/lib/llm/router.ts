@@ -48,8 +48,6 @@ export class LLMRouter {
       this.providers.set('gemini', geminiProvider);
     }
     
-    // TODO: Initialize Anthropic provider when API key is available
-    // TODO: Initialize OpenAI provider when API key is available
   }
   
   /**

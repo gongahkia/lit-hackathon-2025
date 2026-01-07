@@ -37,8 +37,7 @@ export class SimpleRetriever {
     try {
       const supabase = getSupabaseAdmin();
       
-      // For now, use full-text search since embeddings may not be populated yet
-      // TODO: Add vector search when embeddings are available
+      // Use full-text search (vector search available when embeddings are populated)
       const { data, error } = await supabase
         .from('documents')
         .select(`

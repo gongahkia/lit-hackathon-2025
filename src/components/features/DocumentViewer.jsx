@@ -48,7 +48,6 @@ export default function DocumentViewer({ document, onBack }) {
   const [selectedText, setSelectedText] = useState("")
   const [showReportForm, setShowReportForm] = useState(false)
   const [reportReason, setReportReason] = useState("")
-  // P1.1: Evidence Bundle state
   const [matters, setMatters] = useState([])
   const [selectedMatterId, setSelectedMatterId] = useState("")
   const [showBundleDialog, setShowBundleDialog] = useState(false)
@@ -156,7 +155,6 @@ export default function DocumentViewer({ document, onBack }) {
     setReportReason("")
   }
 
-  // P1.1: Fetch matters on mount
   useEffect(() => {
     const fetchMatters = async () => {
       try {
@@ -188,7 +186,6 @@ export default function DocumentViewer({ document, onBack }) {
     fetchTopics()
   }, [])
 
-  // P1.1: Create new matter
   const createMatter = async () => {
     if (!newMatterName.trim()) return
 
@@ -216,7 +213,6 @@ export default function DocumentViewer({ document, onBack }) {
     }
   }
 
-  // P1.1: Add evidence item to bundle
   const addToEvidenceBundle = async () => {
     if (!selectedMatterId || !selectedText.trim()) return
 
@@ -406,7 +402,6 @@ export default function DocumentViewer({ document, onBack }) {
                           <Copy className="h-3 w-3 mr-1" />
                           Copy Quote
                         </Button>
-                          {/* P1.1: Add to Evidence Bundle button */}
                           <Dialog open={showBundleDialog} onOpenChange={setShowBundleDialog}>
                             <DialogTrigger asChild>
                               <Button variant="default" size="sm">

@@ -8,7 +8,6 @@ import { LoadingState } from "../ui/LoadingState"
 import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
-// P2: Hierarchical RAG implementation
 import { RAGResponseView } from "./RAGResponseView"
 import { QueryResponse } from "@/lib/types/query"
 // --- POFMan bot SVG (minimal, replace with your brand asset as needed) ---
@@ -55,7 +54,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
   const [query, setQuery] = useState("")
   const [file, setFile] = useState(null)
   const [searchResults, setSearchResults] = useState([])
-  const [ragResponse, setRagResponse] = useState(null) // P2: RAG responses with structured citations
+  const [ragResponse, setRagResponse] = useState(null)
   const [thinkingStep, setThinkingStep] = useState(-1)
   const [isSearching, setIsSearching] = useState(false)
   const [error, setError] = useState(null)
@@ -88,9 +87,8 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
       setThinkingStep(i)
       await delay(1600)
     }
-    // P2: Try RAG API first, fallback to document search
     try {
-      // Try RAG API (P2) - POST with structured query
+      // Try RAG API first, fallback to document search
       let res = await fetch("/api/query", {
         method: "POST",
         headers: {
@@ -300,8 +298,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
             {error}
           </div>
         )}
-        {/* --- RAG Response (P2) - Future implementation --- */}
-        {/* P2: RAG Response View - Hierarchical RAG implementation */}
+        {/* RAG Response View */}
         {!isSearching && ragResponse && (
           <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh-300px)] pr-2">
             <RAGResponseView response={ragResponse} onViewDocument={onViewDocument} />

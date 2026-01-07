@@ -6,7 +6,6 @@ const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PU
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// GET /api/evidence-items?matter_id=xxx - Get evidence items for a matter
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;

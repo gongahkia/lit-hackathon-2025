@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // P2: Use RAG service if enabled, otherwise fallback to Flask
+    // Use RAG service if enabled, otherwise fallback to Flask
     if (USE_RAG) {
       try {
         const ragService = new RAGService();

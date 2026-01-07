@@ -18,7 +18,6 @@ interface RAGResponseViewProps {
 
 /**
  * Component to display RAG-style query responses with structured citations
- * Improved formatting with better spacing, typography, and visual hierarchy
  */
 export function RAGResponseView({ response, onViewDocument }: RAGResponseViewProps) {
   if (!response.success) {
