@@ -147,7 +147,7 @@ export const DataService = {
 
 **Implementation:**
 1. Enable Supabase connection in `lib/dataService.ts`
-2. Run `scripts/ingest-golden-dataset.ts` to populate Supabase
+2. Run `scripts/ingest-golden-dataset.ts` to populate Supabase (including `url`, `source_type`, `verified`, heuristic `confidence`, `topics`, and `language`)
 3. Verify data flows: UI → Next API → Supabase
 4. Remove mock data fallback (or make it explicit via env flag)
 

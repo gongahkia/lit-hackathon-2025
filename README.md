@@ -69,3 +69,31 @@ source .venv/bin/activate
 pip install -r requirements.txt && cd backend && python3 app.py
 npm install && npm run dev
 ```
+
+## Data ingestion (Supabase)
+
+1. **Create / update schema** in Supabase SQL Editor using `database/schema.sql` (includes `language` columns for multilingual docs).
+2. **Set up `.env.local`**:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+3. **Ingest the golden dataset into Supabase**:
+
+```console
+npm run ingest-data
+```
+
+## Add Chinese source (联合早报 / Lianhe Zaobao)
+
+This repo includes a scraper to generate a new golden dataset CSV:
+
+```console
+python scrapers/lianhezaobaoscrape.py --max-articles 50 --output golden_dataset/full_lianhezaobao_articles.csv
+```
+
+After generating the CSV, re-run:
+
+```console
+npm run ingest-data
+```
+
+The UI supports filtering by **Language** (English / Chinese / Mixed) once data is ingested.

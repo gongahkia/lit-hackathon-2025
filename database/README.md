@@ -59,6 +59,9 @@ npm run test-db
 - **documents**: Individual documents/statements
 - **topics**: Policy topics for categorization
 
+### Multilingual support
+- `sources.language` and `documents.language` are included (default `en`), to support Chinese (`zh`) and mixed-language (`mixed`) content.
+
 ### Features
 - Row Level Security (RLS) enabled
 - Full-text search indexes
