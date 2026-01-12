@@ -9,37 +9,71 @@ import { Badge } from "./badge"
 import { Separator } from "./separator"
 import { formatDateShort } from "@/lib/formatters"
 
+const STORAGE_KEY = 'notifications_v2'
+
 const INITIAL_NOTIFICATIONS = [
   {
     id: "n1",
-    type: "alert",
-    title: "New Contradiction Detected",
-    message: "Potential conflict found between Ministry of Health statement and recent press release.",
-    time: new Date(Date.now() - 1000 * 60 * 30).toISOString(), // 30 mins ago
+    type: "document",
+    title: "New Budget 2026 Documents",
+    message: "6 new documents from Parliament and news sources about Budget 2026 have been ingested and indexed.",
+    time: new Date(Date.now() - 1000 * 60 * 45).toISOString(), // 45 mins ago
     read: false,
   },
   {
     id: "n2",
-    type: "info",
-    title: "Database Updated",
-    message: "Successfully ingested 15 new parliamentary documents from yesterday's sitting.",
-    time: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(), // 2 hours ago
+    type: "alert",
+    title: "Source Update: TODAY",
+    message: "TODAY has been successfully added to your sources. 156 documents are now available for search.",
+    time: new Date(Date.now() - 1000 * 60 * 60 * 3).toISOString(), // 3 hours ago
     read: false,
   },
   {
     id: "n3",
+    type: "info",
+    title: "Topic Updated: Education Policy",
+    message: "2 new documents added to Education Policy topic. Total documents: 31.",
+    time: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(), // 5 hours ago
+    read: false,
+  },
+  {
+    id: "n4",
     type: "document",
-    title: "Evidence Bundle Ready",
-    message: "Your 'Healthcare Policy 2024' bundle has been generated and is ready for download.",
+    title: "Evidence Bundle: Green Plan 2030 Progress Brief",
+    message: "Your evidence bundle has been updated with 3 new citations from recent parliamentary statements.",
+    time: new Date(Date.now() - 1000 * 60 * 60 * 18).toISOString(), // 18 hours ago
+    read: true,
+  },
+  {
+    id: "n5",
+    type: "info",
+    title: "Parliament Documents Synced",
+    message: "Successfully ingested 12 documents from Parliament of Singapore sitting on 10 Jan 2026.",
     time: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(), // 1 day ago
     read: true,
   },
   {
-    id: "n4",
-    type: "info",
-    title: "System Maintenance",
-    message: "Scheduled maintenance completed successfully. All systems operational.",
+    id: "n6",
+    type: "alert",
+    title: "High Confidence Match",
+    message: "Found ministerial statement matching your query on Progressive Wage Model expansion (confidence: 98%).",
+    time: new Date(Date.now() - 1000 * 60 * 60 * 36).toISOString(), // 1.5 days ago
+    read: true,
+  },
+  {
+    id: "n7",
+    type: "document",
+    title: "Matter Created: Budget 2026 Analysis",
+    message: "New research matter created with 4 linked documents and 2 evidence items.",
     time: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(), // 2 days ago
+    read: true,
+  },
+  {
+    id: "n8",
+    type: "info",
+    title: "Source Verification Complete",
+    message: "All 9 sources have been verified and are actively syncing. Next update in 6 hours.",
+    time: new Date(Date.now() - 1000 * 60 * 60 * 72).toISOString(), // 3 days ago
     read: true,
   }
 ]
@@ -47,27 +81,32 @@ const INITIAL_NOTIFICATIONS = [
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
   const [open, setOpen] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false)
 
   // Load from localStorage on mount
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('notifications')
+      const saved = localStorage.getItem(STORAGE_KEY)
       if (saved) {
         setNotifications(JSON.parse(saved))
       }
     } catch (e) {
       console.error("Failed to load notifications", e)
+    } finally {
+      setIsLoaded(true)
     }
   }, [])
 
   // Save to localStorage whenever notifications change
   useEffect(() => {
+    if (!isLoaded) return // Don't overwrite with initial state before loading
+    
     try {
-      localStorage.setItem('notifications', JSON.stringify(notifications))
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications))
     } catch (e) {
       console.error("Failed to save notifications", e)
     }
-  }, [notifications])
+  }, [notifications, isLoaded])
 
   const unreadCount = notifications.filter(n => !n.read).length
 
