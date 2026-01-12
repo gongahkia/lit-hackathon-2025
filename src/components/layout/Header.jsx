@@ -68,7 +68,15 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
           <Bell className="h-4 w-4" />
         </GhostIconButton>
 
-        <GhostIconButton label="Help">
+        <GhostIconButton 
+          label="Help" 
+          onClick={() => {
+            if (confirm("Restart the onboarding tour?")) {
+              localStorage.removeItem("pofact-onboarding-completed")
+              window.location.reload()
+            }
+          }}
+        >
           <HelpCircle className="h-4 w-4" />
         </GhostIconButton>
 

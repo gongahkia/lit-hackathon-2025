@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DatabaseService } from '../../../../lib/database'
+import { DataService } from '../../../../lib/dataService'
 
 export async function GET(request: NextRequest) {
   try {
-    const sources = await DatabaseService.getSources()
+    const sources = await DataService.getSources()
     return NextResponse.json({ success: true, data: sources })
   } catch (error: any) {
     console.error('Error fetching sources:', error)

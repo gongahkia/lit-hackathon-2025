@@ -1,30 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DatabaseService } from '../../../../lib/database'
+import { DataService } from '../../../../lib/dataService'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const query = searchParams.get('q')
-    const sourceType = searchParams.get('sourceType')
-    const dateFrom = searchParams.get('dateFrom')
-    const dateTo = searchParams.get('dateTo')
-    const speakerCategory = searchParams.get('speakerCategory')
-    const language = searchParams.get('language')
-    const topicId = searchParams.get('topicId')
     
+    // For MVP with file storage fallback, we mainly support text search
+    // The DataService.searchDocuments handles the fallback logic
     let documents
-    if (query || sourceType || dateFrom || dateTo || speakerCategory || language || topicId) {
-      documents = await DatabaseService.searchDocumentsWithFilters({
-        query: query || undefined,
-        sourceType: sourceType || undefined,
-        dateFrom: dateFrom || undefined,
-        dateTo: dateTo || undefined,
-        speakerCategory: speakerCategory || undefined,
-        language: language || undefined,
-        topicId: topicId || undefined,
-      })
+    if (query) {
+      documents = await DataService.searchDocuments(query)
     } else {
-      documents = await DatabaseService.getDocuments()
+      documents = await DataService.getDocuments()
     }
     
     return NextResponse.json({ success: true, data: documents })

@@ -11,9 +11,9 @@ import ContradictionDetector from "./features/ContradictionDetector"
 import AdminDashboard from "./features/AdminDashboard"
 import AIQueryPane from "./features/AIQueryPane"
 import EvidenceBundleView from "./features/EvidenceBundleView"
+import OnboardingModal from "./features/OnboardingModal"
 import GhostIconButton from "./ui/GhostIconButton"
 import ThemeToggle from "./ui/ThemeToggle"
-import { DataService } from "../../lib/dataService"
 
 export default function MinLaw2Platform() {
   // Simplified theme management to prevent hydration issues
@@ -49,22 +49,29 @@ export default function MinLaw2Platform() {
 
   const searchRef = useRef(null)
 
-  // Load data from database on component mount
+  // Load data from API on component mount
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true)
-        const [sourcesData, documentsData, topicsData] = await Promise.all([
-          DataService.getSources(),
-          DataService.getDocuments(),
-          DataService.getTopics()
+        const [sourcesRes, documentsRes, topicsRes] = await Promise.all([
+          fetch('/api/sources'),
+          fetch('/api/documents'),
+          fetch('/api/topics')
         ])
-        setSources(sourcesData)
-        setDocuments(documentsData)
-        setTopics(topicsData)
+        
+        const [sourcesData, documentsData, topicsData] = await Promise.all([
+          sourcesRes.json(),
+          documentsRes.json(),
+          topicsRes.json()
+        ])
+        
+        if (sourcesData.success) setSources(sourcesData.data)
+        if (documentsData.success) setDocuments(documentsData.data)
+        if (topicsData.success) setTopics(topicsData.data)
+        
       } catch (error) {
         console.error('Error loading data:', error)
-        // DataService will fallback to mock data automatically
       } finally {
         setIsLoading(false)
       }
@@ -96,8 +103,14 @@ export default function MinLaw2Platform() {
     setSearchQuery(query)
 
     try {
-      const results = await DataService.searchDocuments(query)
-      setSearchResults(results.slice(0, 10))
+      const res = await fetch(`/api/documents?q=${encodeURIComponent(query)}`)
+      const data = await res.json()
+      
+      if (data.success && Array.isArray(data.data)) {
+        setSearchResults(data.data.slice(0, 10))
+      } else {
+        setSearchResults([])
+      }
     } catch (error) {
       console.error('Search error:', error)
       // Fallback to client-side search
@@ -167,6 +180,7 @@ export default function MinLaw2Platform() {
 
   return (
     <div className="h-screen w-full bg-background text-foreground">
+      <OnboardingModal />
       <div className="md:hidden sticky top-0 z-40 flex items-center gap-2 border-b border-border bg-card/80 px-3 py-2 backdrop-blur">
         <div className="ml-1 flex items-center gap-2 text-sm font-semibold tracking-tight">
           <span className="inline-flex h-4 w-4 items-center justify-center text-primary">⚖</span>
