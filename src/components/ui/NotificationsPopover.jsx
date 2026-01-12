@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Bell, Check, Info, AlertTriangle, FileText, X } from "lucide-react"
 import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 import { Button } from "./button"
@@ -47,6 +47,27 @@ const INITIAL_NOTIFICATIONS = [
 export default function NotificationsPopover() {
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS)
   const [open, setOpen] = useState(false)
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('notifications')
+      if (saved) {
+        setNotifications(JSON.parse(saved))
+      }
+    } catch (e) {
+      console.error("Failed to load notifications", e)
+    }
+  }, [])
+
+  // Save to localStorage whenever notifications change
+  useEffect(() => {
+    try {
+      localStorage.setItem('notifications', JSON.stringify(notifications))
+    } catch (e) {
+      console.error("Failed to save notifications", e)
+    }
+  }, [notifications])
 
   const unreadCount = notifications.filter(n => !n.read).length
 
