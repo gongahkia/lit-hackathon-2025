@@ -5,9 +5,10 @@
 
 import { LLMProvider, LLMProviderConfig, LLMResponse, GenerateOptions, Document } from './providers/base';
 import { GeminiProvider } from './providers/gemini';
+import { MockProvider } from './providers/mock';
 
 export interface RouterOptions extends GenerateOptions {
-  provider?: 'gemini' | 'anthropic' | 'openai' | 'auto';
+  provider?: 'gemini' | 'anthropic' | 'openai' | 'mock' | 'auto';
   fallback?: boolean;
   consensus?: boolean;
   consensusProviders?: string[];
@@ -27,7 +28,7 @@ export class LLMRouter {
   
   constructor() {
     this.providers = new Map();
-    this.defaultProvider = 'gemini'; // Default to Gemini for now
+    this.defaultProvider = 'mock'; // Default to mock initially
     this.initializeProviders();
   }
   
@@ -37,17 +38,28 @@ export class LLMRouter {
   private initializeProviders() {
     // Initialize Gemini if API key is available
     const geminiKey = process.env.GOOGLE_GEN_AI_API_KEY || process.env.GEMINI_API_KEY;
-    if (geminiKey) {
+    const isDummyKey = geminiKey === 'dummy-key'; // Check for our explicit dummy key
+
+    if (geminiKey && !isDummyKey) {
       const geminiProvider = new GeminiProvider({
         provider: 'gemini',
-        model: 'gemini-3-flash-preview', // Using gemini-1.5-pro (latest stable) - can be changed to gemini-2.5-pro when available
+        model: 'gemini-3-flash-preview', 
         apiKey: geminiKey,
         temperature: 0.3,
         maxTokens: 2048
       });
       this.providers.set('gemini', geminiProvider);
+      this.defaultProvider = 'gemini';
+    } else {
+        // Fallback or explicit Mock provider
+        const mockProvider = new MockProvider({
+            provider: 'mock',
+            model: 'local-deterministic',
+            apiKey: 'none'
+        });
+        this.providers.set('mock', mockProvider);
+        this.defaultProvider = 'mock';
     }
-    
   }
   
   /**
@@ -135,7 +147,7 @@ export class LLMRouter {
     failedProvider: string,
     options?: RouterOptions
   ): Promise<LLMResponse> {
-    const fallbackOrder = ['gemini', 'anthropic', 'openai'];
+    const fallbackOrder = ['gemini', 'anthropic', 'openai', 'mock'];
     const failedIndex = fallbackOrder.indexOf(failedProvider);
     
     for (let i = failedIndex + 1; i < fallbackOrder.length; i++) {

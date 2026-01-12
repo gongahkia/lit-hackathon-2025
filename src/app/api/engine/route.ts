@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-const ENGINE_SERVICE_URL =
-  process.env.ENGINE_SERVICE_URL || 'http://localhost:6000/query';
+const ENGINE_SERVICE_URL = process.env.ENGINE_SERVICE_URL;
 
 export async function GET(request: NextRequest) {
+  if (!ENGINE_SERVICE_URL) {
+    return NextResponse.json(
+      { error: 'Engine service not configured' },
+      { status: 503 }
+    );
+  }
   try {
     // Forward any query params to the backend engine via GET
     const url = new URL(request.url);
@@ -30,6 +35,12 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  if (!ENGINE_SERVICE_URL) {
+    return NextResponse.json(
+      { error: 'Engine service not configured' },
+      { status: 503 }
+    );
+  }
   try {
     const body = await request.json();
     // Send POST body to external engine service

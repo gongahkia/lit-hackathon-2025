@@ -1,0 +1,5259 @@
+{
+  "sources": [
+    {
+      "id": "parliament-gov",
+      "name": "Parliament of Singapore",
+      "url": "https://www.parliament.gov.sg",
+      "type": "official",
+      "lastUpdated": "2024-01-15T10:00:00.000Z",
+      "status": "active",
+      "document_count": 120
+    },
+    {
+      "id": "cna",
+      "name": "Channel News Asia",
+      "url": "https://www.channelnewsasia.com",
+      "type": "news",
+      "lastUpdated": "2024-01-15T10:00:00.000Z",
+      "status": "active",
+      "document_count": 45
+    },
+    {
+      "id": "straitstimes",
+      "name": "The Straits Times",
+      "url": "https://www.straitstimes.com",
+      "type": "news",
+      "lastUpdated": "2024-01-15T10:00:00.000Z",
+      "status": "active",
+      "document_count": 35
+    }
+  ],
+  "topics": [
+    {
+      "id": "topic-1",
+      "name": "Healthcare Policy",
+      "description": "Healthcare and medical policy discussions",
+      "documentCount": 65,
+      "lastUpdated": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "topic-2",
+      "name": "Economic Development",
+      "description": "Economic growth and development initiatives",
+      "documentCount": 80,
+      "lastUpdated": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "id": "topic-3",
+      "name": "Education Reform",
+      "description": "Educational system improvements and reforms",
+      "documentCount": 55,
+      "lastUpdated": "2024-01-15T10:00:00.000Z"
+    }
+  ],
+  "documents": [
+    {
+      "id": "doc-1",
+      "title": "Parliamentary Statement on Healthcare 2030",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-15",
+      "published_at": "2024-01-15T09:00:00Z",
+      "type": "statement",
+      "content": "Minister of Health presented the comprehensive Healthcare 2030 masterplan...",
+      "summary": "Masterplan for healthcare infrastructure and subsidy enhancements.",
+      "speaker": "Minister of Health",
+      "role": "Minister",
+      "tags": [
+        "healthcare",
+        "masterplan"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://www.parliament.gov.sg/hansard/1",
+      "language": "en"
+    },
+    {
+      "id": "doc-2",
+      "title": "Budget 2024 Debate: Economic Resilience",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-02-18",
+      "published_at": "2024-02-18T10:30:00Z",
+      "type": "debate",
+      "content": "Members debated the resilience package introduced in Budget 2024...",
+      "summary": "Debate on economic resilience measures.",
+      "speaker": "Leader of the House",
+      "role": "Minister",
+      "tags": [
+        "economy",
+        "budget"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.95,
+      "contradictions": [],
+      "url": "https://www.parliament.gov.sg/hansard/2",
+      "language": "en"
+    },
+    {
+      "id": "doc-3",
+      "title": "New Syllabus for Primary Schools",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-03-01",
+      "published_at": "2024-03-01T14:15:00Z",
+      "type": "news",
+      "content": "MOE announces changes to the primary school science syllabus starting next year...",
+      "summary": "Update on primary school science curriculum.",
+      "speaker": "MOE Spokesperson",
+      "role": "Civil Servant",
+      "tags": [
+        "education",
+        "schools"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://www.channelnewsasia.com/news/3",
+      "language": "en"
+    },
+    {
+      "id": "doc-4",
+      "title": "Generated Document Title 4 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-24T12:42:51.406Z",
+      "type": "press_release",
+      "content": "This is the content for document 4. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 4",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-4",
+      "language": "en"
+    },
+    {
+      "id": "doc-5",
+      "title": "Generated Document Title 5 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-18T08:10:36.195Z",
+      "type": "press_release",
+      "content": "This is the content for document 5. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 5",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-5",
+      "language": "en"
+    },
+    {
+      "id": "doc-6",
+      "title": "Generated Document Title 6 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-25T16:22:54.385Z",
+      "type": "statement",
+      "content": "This is the content for document 6. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 6",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-6",
+      "language": "en"
+    },
+    {
+      "id": "doc-7",
+      "title": "Generated Document Title 7 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-29T03:45:18.259Z",
+      "type": "statement",
+      "content": "This is the content for document 7. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 7",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.75,
+      "contradictions": [],
+      "url": "https://example.com/doc-7",
+      "language": "en"
+    },
+    {
+      "id": "doc-8",
+      "title": "Generated Document Title 8 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-03T08:56:50.403Z",
+      "type": "statement",
+      "content": "This is the content for document 8. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 8",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 1,
+      "contradictions": [],
+      "url": "https://example.com/doc-8",
+      "language": "en"
+    },
+    {
+      "id": "doc-9",
+      "title": "Generated Document Title 9 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-07T14:31:22.159Z",
+      "type": "debate",
+      "content": "This is the content for document 9. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 9",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-9",
+      "language": "en"
+    },
+    {
+      "id": "doc-10",
+      "title": "Generated Document Title 10 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-09T04:11:09.970Z",
+      "type": "statement",
+      "content": "This is the content for document 10. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 10",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-10",
+      "language": "en"
+    },
+    {
+      "id": "doc-11",
+      "title": "Generated Document Title 11 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-29T08:50:48.916Z",
+      "type": "news",
+      "content": "This is the content for document 11. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 11",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-11",
+      "language": "en"
+    },
+    {
+      "id": "doc-12",
+      "title": "Generated Document Title 12 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-21T08:20:10.177Z",
+      "type": "news",
+      "content": "This is the content for document 12. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 12",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-12",
+      "language": "en"
+    },
+    {
+      "id": "doc-13",
+      "title": "Generated Document Title 13 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-30T10:26:44.416Z",
+      "type": "news",
+      "content": "This is the content for document 13. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 13",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 1,
+      "contradictions": [],
+      "url": "https://example.com/doc-13",
+      "language": "en"
+    },
+    {
+      "id": "doc-14",
+      "title": "Generated Document Title 14 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-11T08:52:20.623Z",
+      "type": "statement",
+      "content": "This is the content for document 14. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 14",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-14",
+      "language": "en"
+    },
+    {
+      "id": "doc-15",
+      "title": "Generated Document Title 15 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-24T09:21:37.057Z",
+      "type": "statement",
+      "content": "This is the content for document 15. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 15",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-15",
+      "language": "en"
+    },
+    {
+      "id": "doc-16",
+      "title": "Generated Document Title 16 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T20:52:45.392Z",
+      "type": "debate",
+      "content": "This is the content for document 16. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 16",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-16",
+      "language": "en"
+    },
+    {
+      "id": "doc-17",
+      "title": "Generated Document Title 17 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-31T04:42:56.586Z",
+      "type": "debate",
+      "content": "This is the content for document 17. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 17",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-17",
+      "language": "en"
+    },
+    {
+      "id": "doc-18",
+      "title": "Generated Document Title 18 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-08T22:34:04.541Z",
+      "type": "press_release",
+      "content": "This is the content for document 18. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 18",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-18",
+      "language": "en"
+    },
+    {
+      "id": "doc-19",
+      "title": "Generated Document Title 19 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-21T09:27:55.359Z",
+      "type": "statement",
+      "content": "This is the content for document 19. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 19",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.92,
+      "contradictions": [],
+      "url": "https://example.com/doc-19",
+      "language": "en"
+    },
+    {
+      "id": "doc-20",
+      "title": "Generated Document Title 20 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T07:23:51.152Z",
+      "type": "news",
+      "content": "This is the content for document 20. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 20",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-20",
+      "language": "en"
+    },
+    {
+      "id": "doc-21",
+      "title": "Generated Document Title 21 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-28T04:37:58.662Z",
+      "type": "statement",
+      "content": "This is the content for document 21. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 21",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-21",
+      "language": "en"
+    },
+    {
+      "id": "doc-22",
+      "title": "Generated Document Title 22 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-23T18:14:55.178Z",
+      "type": "debate",
+      "content": "This is the content for document 22. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 22",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-22",
+      "language": "en"
+    },
+    {
+      "id": "doc-23",
+      "title": "Generated Document Title 23 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-27T14:28:54.906Z",
+      "type": "news",
+      "content": "This is the content for document 23. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 23",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-23",
+      "language": "en"
+    },
+    {
+      "id": "doc-24",
+      "title": "Generated Document Title 24 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-18T15:03:37.176Z",
+      "type": "press_release",
+      "content": "This is the content for document 24. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 24",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-24",
+      "language": "en"
+    },
+    {
+      "id": "doc-25",
+      "title": "Generated Document Title 25 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-26T04:05:41.747Z",
+      "type": "press_release",
+      "content": "This is the content for document 25. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 25",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-25",
+      "language": "en"
+    },
+    {
+      "id": "doc-26",
+      "title": "Generated Document Title 26 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-13T13:39:47.296Z",
+      "type": "statement",
+      "content": "This is the content for document 26. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 26",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-26",
+      "language": "en"
+    },
+    {
+      "id": "doc-27",
+      "title": "Generated Document Title 27 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-03T20:37:25.822Z",
+      "type": "news",
+      "content": "This is the content for document 27. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 27",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-27",
+      "language": "en"
+    },
+    {
+      "id": "doc-28",
+      "title": "Generated Document Title 28 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-18T03:55:50.875Z",
+      "type": "press_release",
+      "content": "This is the content for document 28. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 28",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-28",
+      "language": "en"
+    },
+    {
+      "id": "doc-29",
+      "title": "Generated Document Title 29 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-02T04:46:01.343Z",
+      "type": "debate",
+      "content": "This is the content for document 29. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 29",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-29",
+      "language": "en"
+    },
+    {
+      "id": "doc-30",
+      "title": "Generated Document Title 30 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-11T19:02:26.236Z",
+      "type": "debate",
+      "content": "This is the content for document 30. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 30",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-30",
+      "language": "en"
+    },
+    {
+      "id": "doc-31",
+      "title": "Generated Document Title 31 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-28T02:17:50.446Z",
+      "type": "statement",
+      "content": "This is the content for document 31. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 31",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-31",
+      "language": "en"
+    },
+    {
+      "id": "doc-32",
+      "title": "Generated Document Title 32 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-08T12:34:27.455Z",
+      "type": "press_release",
+      "content": "This is the content for document 32. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 32",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.7,
+      "contradictions": [],
+      "url": "https://example.com/doc-32",
+      "language": "en"
+    },
+    {
+      "id": "doc-33",
+      "title": "Generated Document Title 33 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-14T11:09:07.999Z",
+      "type": "press_release",
+      "content": "This is the content for document 33. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 33",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-33",
+      "language": "en"
+    },
+    {
+      "id": "doc-34",
+      "title": "Generated Document Title 34 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-25T00:08:30.052Z",
+      "type": "press_release",
+      "content": "This is the content for document 34. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 34",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-34",
+      "language": "en"
+    },
+    {
+      "id": "doc-35",
+      "title": "Generated Document Title 35 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-12T14:19:24.642Z",
+      "type": "press_release",
+      "content": "This is the content for document 35. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 35",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-35",
+      "language": "en"
+    },
+    {
+      "id": "doc-36",
+      "title": "Generated Document Title 36 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-09-28T14:51:55.029Z",
+      "type": "news",
+      "content": "This is the content for document 36. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 36",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.82,
+      "contradictions": [],
+      "url": "https://example.com/doc-36",
+      "language": "en"
+    },
+    {
+      "id": "doc-37",
+      "title": "Generated Document Title 37 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-19T01:44:45.632Z",
+      "type": "statement",
+      "content": "This is the content for document 37. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 37",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-37",
+      "language": "en"
+    },
+    {
+      "id": "doc-38",
+      "title": "Generated Document Title 38 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-22T06:19:35.975Z",
+      "type": "debate",
+      "content": "This is the content for document 38. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 38",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-38",
+      "language": "en"
+    },
+    {
+      "id": "doc-39",
+      "title": "Generated Document Title 39 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-25T16:13:51.673Z",
+      "type": "debate",
+      "content": "This is the content for document 39. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 39",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-39",
+      "language": "en"
+    },
+    {
+      "id": "doc-40",
+      "title": "Generated Document Title 40 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-13T04:35:45.549Z",
+      "type": "debate",
+      "content": "This is the content for document 40. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 40",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-40",
+      "language": "en"
+    },
+    {
+      "id": "doc-41",
+      "title": "Generated Document Title 41 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-08T12:28:40.532Z",
+      "type": "news",
+      "content": "This is the content for document 41. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 41",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-41",
+      "language": "en"
+    },
+    {
+      "id": "doc-42",
+      "title": "Generated Document Title 42 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-13T01:10:59.917Z",
+      "type": "press_release",
+      "content": "This is the content for document 42. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 42",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-42",
+      "language": "en"
+    },
+    {
+      "id": "doc-43",
+      "title": "Generated Document Title 43 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-21T15:59:00.300Z",
+      "type": "news",
+      "content": "This is the content for document 43. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 43",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-43",
+      "language": "en"
+    },
+    {
+      "id": "doc-44",
+      "title": "Generated Document Title 44 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-02T13:58:33.237Z",
+      "type": "debate",
+      "content": "This is the content for document 44. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 44",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.95,
+      "contradictions": [],
+      "url": "https://example.com/doc-44",
+      "language": "en"
+    },
+    {
+      "id": "doc-45",
+      "title": "Generated Document Title 45 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-17T07:09:18.153Z",
+      "type": "press_release",
+      "content": "This is the content for document 45. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 45",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-45",
+      "language": "en"
+    },
+    {
+      "id": "doc-46",
+      "title": "Generated Document Title 46 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-26T06:55:56.920Z",
+      "type": "news",
+      "content": "This is the content for document 46. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 46",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.78,
+      "contradictions": [],
+      "url": "https://example.com/doc-46",
+      "language": "en"
+    },
+    {
+      "id": "doc-47",
+      "title": "Generated Document Title 47 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-04T16:27:57.557Z",
+      "type": "debate",
+      "content": "This is the content for document 47. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 47",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-47",
+      "language": "en"
+    },
+    {
+      "id": "doc-48",
+      "title": "Generated Document Title 48 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-04T05:48:24.809Z",
+      "type": "debate",
+      "content": "This is the content for document 48. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 48",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-48",
+      "language": "en"
+    },
+    {
+      "id": "doc-49",
+      "title": "Generated Document Title 49 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-22T02:21:54.925Z",
+      "type": "debate",
+      "content": "This is the content for document 49. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 49",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-49",
+      "language": "en"
+    },
+    {
+      "id": "doc-50",
+      "title": "Generated Document Title 50 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-06T15:26:19.996Z",
+      "type": "debate",
+      "content": "This is the content for document 50. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 50",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-50",
+      "language": "en"
+    },
+    {
+      "id": "doc-51",
+      "title": "Generated Document Title 51 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-15T13:58:18.093Z",
+      "type": "statement",
+      "content": "This is the content for document 51. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 51",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-51",
+      "language": "en"
+    },
+    {
+      "id": "doc-52",
+      "title": "Generated Document Title 52 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2026-01-07T22:36:57.488Z",
+      "type": "debate",
+      "content": "This is the content for document 52. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 52",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-52",
+      "language": "en"
+    },
+    {
+      "id": "doc-53",
+      "title": "Generated Document Title 53 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-30T06:00:11.724Z",
+      "type": "press_release",
+      "content": "This is the content for document 53. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 53",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-53",
+      "language": "en"
+    },
+    {
+      "id": "doc-54",
+      "title": "Generated Document Title 54 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-01T04:14:47.768Z",
+      "type": "debate",
+      "content": "This is the content for document 54. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 54",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-54",
+      "language": "en"
+    },
+    {
+      "id": "doc-55",
+      "title": "Generated Document Title 55 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-15T23:42:09.683Z",
+      "type": "statement",
+      "content": "This is the content for document 55. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 55",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.8,
+      "contradictions": [],
+      "url": "https://example.com/doc-55",
+      "language": "en"
+    },
+    {
+      "id": "doc-56",
+      "title": "Generated Document Title 56 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-21T14:19:53.244Z",
+      "type": "news",
+      "content": "This is the content for document 56. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 56",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-56",
+      "language": "en"
+    },
+    {
+      "id": "doc-57",
+      "title": "Generated Document Title 57 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-25T06:05:23.957Z",
+      "type": "debate",
+      "content": "This is the content for document 57. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 57",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-57",
+      "language": "en"
+    },
+    {
+      "id": "doc-58",
+      "title": "Generated Document Title 58 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T15:17:01.192Z",
+      "type": "press_release",
+      "content": "This is the content for document 58. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 58",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-58",
+      "language": "en"
+    },
+    {
+      "id": "doc-59",
+      "title": "Generated Document Title 59 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-12T06:23:28.977Z",
+      "type": "news",
+      "content": "This is the content for document 59. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 59",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.75,
+      "contradictions": [],
+      "url": "https://example.com/doc-59",
+      "language": "en"
+    },
+    {
+      "id": "doc-60",
+      "title": "Generated Document Title 60 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-09-25T13:40:30.358Z",
+      "type": "news",
+      "content": "This is the content for document 60. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 60",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-60",
+      "language": "en"
+    },
+    {
+      "id": "doc-61",
+      "title": "Generated Document Title 61 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-08T16:10:01.939Z",
+      "type": "press_release",
+      "content": "This is the content for document 61. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 61",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-61",
+      "language": "en"
+    },
+    {
+      "id": "doc-62",
+      "title": "Generated Document Title 62 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-10T00:00:56.956Z",
+      "type": "press_release",
+      "content": "This is the content for document 62. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 62",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.78,
+      "contradictions": [],
+      "url": "https://example.com/doc-62",
+      "language": "en"
+    },
+    {
+      "id": "doc-63",
+      "title": "Generated Document Title 63 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-14T17:03:45.302Z",
+      "type": "press_release",
+      "content": "This is the content for document 63. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 63",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-63",
+      "language": "en"
+    },
+    {
+      "id": "doc-64",
+      "title": "Generated Document Title 64 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-25T08:31:47.631Z",
+      "type": "press_release",
+      "content": "This is the content for document 64. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 64",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.7,
+      "contradictions": [],
+      "url": "https://example.com/doc-64",
+      "language": "en"
+    },
+    {
+      "id": "doc-65",
+      "title": "Generated Document Title 65 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-13T01:11:00.104Z",
+      "type": "news",
+      "content": "This is the content for document 65. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 65",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-65",
+      "language": "en"
+    },
+    {
+      "id": "doc-66",
+      "title": "Generated Document Title 66 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-15T14:31:22.139Z",
+      "type": "statement",
+      "content": "This is the content for document 66. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 66",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.92,
+      "contradictions": [],
+      "url": "https://example.com/doc-66",
+      "language": "en"
+    },
+    {
+      "id": "doc-67",
+      "title": "Generated Document Title 67 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-10T19:59:48.761Z",
+      "type": "debate",
+      "content": "This is the content for document 67. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 67",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-67",
+      "language": "en"
+    },
+    {
+      "id": "doc-68",
+      "title": "Generated Document Title 68 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-03T00:00:31.848Z",
+      "type": "statement",
+      "content": "This is the content for document 68. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 68",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.74,
+      "contradictions": [],
+      "url": "https://example.com/doc-68",
+      "language": "en"
+    },
+    {
+      "id": "doc-69",
+      "title": "Generated Document Title 69 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-19T00:27:12.580Z",
+      "type": "news",
+      "content": "This is the content for document 69. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 69",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-69",
+      "language": "en"
+    },
+    {
+      "id": "doc-70",
+      "title": "Generated Document Title 70 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-04T07:14:33.617Z",
+      "type": "debate",
+      "content": "This is the content for document 70. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 70",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-70",
+      "language": "en"
+    },
+    {
+      "id": "doc-71",
+      "title": "Generated Document Title 71 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-13T21:54:52.302Z",
+      "type": "statement",
+      "content": "This is the content for document 71. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 71",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-71",
+      "language": "en"
+    },
+    {
+      "id": "doc-72",
+      "title": "Generated Document Title 72 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T13:47:37.981Z",
+      "type": "news",
+      "content": "This is the content for document 72. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 72",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-72",
+      "language": "en"
+    },
+    {
+      "id": "doc-73",
+      "title": "Generated Document Title 73 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-06T14:20:13.834Z",
+      "type": "news",
+      "content": "This is the content for document 73. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 73",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.84,
+      "contradictions": [],
+      "url": "https://example.com/doc-73",
+      "language": "en"
+    },
+    {
+      "id": "doc-74",
+      "title": "Generated Document Title 74 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-01T00:02:26.724Z",
+      "type": "statement",
+      "content": "This is the content for document 74. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 74",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.82,
+      "contradictions": [],
+      "url": "https://example.com/doc-74",
+      "language": "en"
+    },
+    {
+      "id": "doc-75",
+      "title": "Generated Document Title 75 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-28T18:33:37.229Z",
+      "type": "news",
+      "content": "This is the content for document 75. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 75",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-75",
+      "language": "en"
+    },
+    {
+      "id": "doc-76",
+      "title": "Generated Document Title 76 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-09T19:17:17.155Z",
+      "type": "news",
+      "content": "This is the content for document 76. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 76",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-76",
+      "language": "en"
+    },
+    {
+      "id": "doc-77",
+      "title": "Generated Document Title 77 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-11T22:34:14.256Z",
+      "type": "news",
+      "content": "This is the content for document 77. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 77",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.74,
+      "contradictions": [],
+      "url": "https://example.com/doc-77",
+      "language": "en"
+    },
+    {
+      "id": "doc-78",
+      "title": "Generated Document Title 78 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-23T22:14:35.722Z",
+      "type": "debate",
+      "content": "This is the content for document 78. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 78",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-78",
+      "language": "en"
+    },
+    {
+      "id": "doc-79",
+      "title": "Generated Document Title 79 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-15T17:30:35.154Z",
+      "type": "press_release",
+      "content": "This is the content for document 79. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 79",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-79",
+      "language": "en"
+    },
+    {
+      "id": "doc-80",
+      "title": "Generated Document Title 80 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-02T01:12:53.725Z",
+      "type": "news",
+      "content": "This is the content for document 80. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 80",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-80",
+      "language": "en"
+    },
+    {
+      "id": "doc-81",
+      "title": "Generated Document Title 81 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-14T16:23:15.499Z",
+      "type": "statement",
+      "content": "This is the content for document 81. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 81",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-81",
+      "language": "en"
+    },
+    {
+      "id": "doc-82",
+      "title": "Generated Document Title 82 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-09T11:52:36.076Z",
+      "type": "press_release",
+      "content": "This is the content for document 82. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 82",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-82",
+      "language": "en"
+    },
+    {
+      "id": "doc-83",
+      "title": "Generated Document Title 83 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-08T15:40:55.720Z",
+      "type": "press_release",
+      "content": "This is the content for document 83. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 83",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.92,
+      "contradictions": [],
+      "url": "https://example.com/doc-83",
+      "language": "en"
+    },
+    {
+      "id": "doc-84",
+      "title": "Generated Document Title 84 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-02T09:54:02.849Z",
+      "type": "debate",
+      "content": "This is the content for document 84. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 84",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-84",
+      "language": "en"
+    },
+    {
+      "id": "doc-85",
+      "title": "Generated Document Title 85 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-10T01:55:35.409Z",
+      "type": "debate",
+      "content": "This is the content for document 85. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 85",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-85",
+      "language": "en"
+    },
+    {
+      "id": "doc-86",
+      "title": "Generated Document Title 86 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-30T06:11:46.636Z",
+      "type": "press_release",
+      "content": "This is the content for document 86. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 86",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-86",
+      "language": "en"
+    },
+    {
+      "id": "doc-87",
+      "title": "Generated Document Title 87 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-06T13:19:54.851Z",
+      "type": "news",
+      "content": "This is the content for document 87. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 87",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-87",
+      "language": "en"
+    },
+    {
+      "id": "doc-88",
+      "title": "Generated Document Title 88 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-18T04:21:45.751Z",
+      "type": "debate",
+      "content": "This is the content for document 88. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 88",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-88",
+      "language": "en"
+    },
+    {
+      "id": "doc-89",
+      "title": "Generated Document Title 89 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-02T07:42:47.226Z",
+      "type": "news",
+      "content": "This is the content for document 89. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 89",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-89",
+      "language": "en"
+    },
+    {
+      "id": "doc-90",
+      "title": "Generated Document Title 90 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-07T02:30:26.878Z",
+      "type": "statement",
+      "content": "This is the content for document 90. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 90",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-90",
+      "language": "en"
+    },
+    {
+      "id": "doc-91",
+      "title": "Generated Document Title 91 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-14T02:40:09.578Z",
+      "type": "debate",
+      "content": "This is the content for document 91. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 91",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-91",
+      "language": "en"
+    },
+    {
+      "id": "doc-92",
+      "title": "Generated Document Title 92 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-07T10:17:33.284Z",
+      "type": "debate",
+      "content": "This is the content for document 92. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 92",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.74,
+      "contradictions": [],
+      "url": "https://example.com/doc-92",
+      "language": "en"
+    },
+    {
+      "id": "doc-93",
+      "title": "Generated Document Title 93 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-21T01:00:54.486Z",
+      "type": "statement",
+      "content": "This is the content for document 93. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 93",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-93",
+      "language": "en"
+    },
+    {
+      "id": "doc-94",
+      "title": "Generated Document Title 94 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-05T20:08:39.642Z",
+      "type": "debate",
+      "content": "This is the content for document 94. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 94",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-94",
+      "language": "en"
+    },
+    {
+      "id": "doc-95",
+      "title": "Generated Document Title 95 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-03T21:40:01.183Z",
+      "type": "press_release",
+      "content": "This is the content for document 95. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 95",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 1,
+      "contradictions": [],
+      "url": "https://example.com/doc-95",
+      "language": "en"
+    },
+    {
+      "id": "doc-96",
+      "title": "Generated Document Title 96 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-04T12:29:01.599Z",
+      "type": "press_release",
+      "content": "This is the content for document 96. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 96",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-96",
+      "language": "en"
+    },
+    {
+      "id": "doc-97",
+      "title": "Generated Document Title 97 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-02T08:16:22.863Z",
+      "type": "news",
+      "content": "This is the content for document 97. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 97",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-97",
+      "language": "en"
+    },
+    {
+      "id": "doc-98",
+      "title": "Generated Document Title 98 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-20T17:18:11.786Z",
+      "type": "news",
+      "content": "This is the content for document 98. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 98",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-98",
+      "language": "en"
+    },
+    {
+      "id": "doc-99",
+      "title": "Generated Document Title 99 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T16:49:13.578Z",
+      "type": "debate",
+      "content": "This is the content for document 99. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 99",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.77,
+      "contradictions": [],
+      "url": "https://example.com/doc-99",
+      "language": "en"
+    },
+    {
+      "id": "doc-100",
+      "title": "Generated Document Title 100 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-14T11:00:28.976Z",
+      "type": "statement",
+      "content": "This is the content for document 100. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 100",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-100",
+      "language": "en"
+    },
+    {
+      "id": "doc-101",
+      "title": "Generated Document Title 101 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-01T02:15:17.104Z",
+      "type": "press_release",
+      "content": "This is the content for document 101. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 101",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-101",
+      "language": "en"
+    },
+    {
+      "id": "doc-102",
+      "title": "Generated Document Title 102 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-14T05:51:38.159Z",
+      "type": "press_release",
+      "content": "This is the content for document 102. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 102",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-102",
+      "language": "en"
+    },
+    {
+      "id": "doc-103",
+      "title": "Generated Document Title 103 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-01T03:14:32.854Z",
+      "type": "debate",
+      "content": "This is the content for document 103. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 103",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-103",
+      "language": "en"
+    },
+    {
+      "id": "doc-104",
+      "title": "Generated Document Title 104 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-18T13:31:54.053Z",
+      "type": "press_release",
+      "content": "This is the content for document 104. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 104",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-104",
+      "language": "en"
+    },
+    {
+      "id": "doc-105",
+      "title": "Generated Document Title 105 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-09T09:22:21.371Z",
+      "type": "news",
+      "content": "This is the content for document 105. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 105",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-105",
+      "language": "en"
+    },
+    {
+      "id": "doc-106",
+      "title": "Generated Document Title 106 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-25T01:03:20.272Z",
+      "type": "debate",
+      "content": "This is the content for document 106. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 106",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-106",
+      "language": "en"
+    },
+    {
+      "id": "doc-107",
+      "title": "Generated Document Title 107 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-02T05:59:48.880Z",
+      "type": "news",
+      "content": "This is the content for document 107. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 107",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-107",
+      "language": "en"
+    },
+    {
+      "id": "doc-108",
+      "title": "Generated Document Title 108 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-11T07:19:40.274Z",
+      "type": "statement",
+      "content": "This is the content for document 108. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 108",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-108",
+      "language": "en"
+    },
+    {
+      "id": "doc-109",
+      "title": "Generated Document Title 109 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-11T02:26:41.693Z",
+      "type": "debate",
+      "content": "This is the content for document 109. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 109",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.74,
+      "contradictions": [],
+      "url": "https://example.com/doc-109",
+      "language": "en"
+    },
+    {
+      "id": "doc-110",
+      "title": "Generated Document Title 110 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-20T16:50:05.940Z",
+      "type": "debate",
+      "content": "This is the content for document 110. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 110",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": false,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-110",
+      "language": "en"
+    },
+    {
+      "id": "doc-111",
+      "title": "Generated Document Title 111 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-25T10:20:59.431Z",
+      "type": "press_release",
+      "content": "This is the content for document 111. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 111",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-111",
+      "language": "en"
+    },
+    {
+      "id": "doc-112",
+      "title": "Generated Document Title 112 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-29T12:38:54.818Z",
+      "type": "press_release",
+      "content": "This is the content for document 112. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 112",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.75,
+      "contradictions": [],
+      "url": "https://example.com/doc-112",
+      "language": "en"
+    },
+    {
+      "id": "doc-113",
+      "title": "Generated Document Title 113 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-04T13:07:57.645Z",
+      "type": "press_release",
+      "content": "This is the content for document 113. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 113",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.77,
+      "contradictions": [],
+      "url": "https://example.com/doc-113",
+      "language": "en"
+    },
+    {
+      "id": "doc-114",
+      "title": "Generated Document Title 114 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-13T09:26:25.195Z",
+      "type": "press_release",
+      "content": "This is the content for document 114. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 114",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-114",
+      "language": "en"
+    },
+    {
+      "id": "doc-115",
+      "title": "Generated Document Title 115 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-03T01:05:55.260Z",
+      "type": "press_release",
+      "content": "This is the content for document 115. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 115",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-115",
+      "language": "en"
+    },
+    {
+      "id": "doc-116",
+      "title": "Generated Document Title 116 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2026-01-10T04:25:52.316Z",
+      "type": "press_release",
+      "content": "This is the content for document 116. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 116",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-116",
+      "language": "en"
+    },
+    {
+      "id": "doc-117",
+      "title": "Generated Document Title 117 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-11T12:29:44.677Z",
+      "type": "statement",
+      "content": "This is the content for document 117. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 117",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.77,
+      "contradictions": [],
+      "url": "https://example.com/doc-117",
+      "language": "en"
+    },
+    {
+      "id": "doc-118",
+      "title": "Generated Document Title 118 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-04T01:15:35.797Z",
+      "type": "news",
+      "content": "This is the content for document 118. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 118",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-118",
+      "language": "en"
+    },
+    {
+      "id": "doc-119",
+      "title": "Generated Document Title 119 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-12T00:00:48.889Z",
+      "type": "statement",
+      "content": "This is the content for document 119. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 119",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-119",
+      "language": "en"
+    },
+    {
+      "id": "doc-120",
+      "title": "Generated Document Title 120 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-25T17:28:33.712Z",
+      "type": "debate",
+      "content": "This is the content for document 120. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 120",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-120",
+      "language": "en"
+    },
+    {
+      "id": "doc-121",
+      "title": "Generated Document Title 121 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-02T13:42:07.486Z",
+      "type": "news",
+      "content": "This is the content for document 121. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 121",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-121",
+      "language": "en"
+    },
+    {
+      "id": "doc-122",
+      "title": "Generated Document Title 122 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-05T00:15:20.303Z",
+      "type": "press_release",
+      "content": "This is the content for document 122. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 122",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-122",
+      "language": "en"
+    },
+    {
+      "id": "doc-123",
+      "title": "Generated Document Title 123 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-07T06:44:47.223Z",
+      "type": "statement",
+      "content": "This is the content for document 123. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 123",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-123",
+      "language": "en"
+    },
+    {
+      "id": "doc-124",
+      "title": "Generated Document Title 124 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2026-01-11T02:06:18.570Z",
+      "type": "statement",
+      "content": "This is the content for document 124. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 124",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-124",
+      "language": "en"
+    },
+    {
+      "id": "doc-125",
+      "title": "Generated Document Title 125 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-05T04:41:41.162Z",
+      "type": "news",
+      "content": "This is the content for document 125. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 125",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-125",
+      "language": "en"
+    },
+    {
+      "id": "doc-126",
+      "title": "Generated Document Title 126 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-02T08:38:12.311Z",
+      "type": "debate",
+      "content": "This is the content for document 126. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 126",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-126",
+      "language": "en"
+    },
+    {
+      "id": "doc-127",
+      "title": "Generated Document Title 127 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-08T07:54:43.074Z",
+      "type": "press_release",
+      "content": "This is the content for document 127. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 127",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-127",
+      "language": "en"
+    },
+    {
+      "id": "doc-128",
+      "title": "Generated Document Title 128 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-07T01:24:35.376Z",
+      "type": "statement",
+      "content": "This is the content for document 128. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 128",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-128",
+      "language": "en"
+    },
+    {
+      "id": "doc-129",
+      "title": "Generated Document Title 129 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-03T09:37:36.456Z",
+      "type": "news",
+      "content": "This is the content for document 129. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 129",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.95,
+      "contradictions": [],
+      "url": "https://example.com/doc-129",
+      "language": "en"
+    },
+    {
+      "id": "doc-130",
+      "title": "Generated Document Title 130 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-15T20:42:46.810Z",
+      "type": "press_release",
+      "content": "This is the content for document 130. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 130",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.82,
+      "contradictions": [],
+      "url": "https://example.com/doc-130",
+      "language": "en"
+    },
+    {
+      "id": "doc-131",
+      "title": "Generated Document Title 131 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-19T03:47:46.427Z",
+      "type": "statement",
+      "content": "This is the content for document 131. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 131",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.78,
+      "contradictions": [],
+      "url": "https://example.com/doc-131",
+      "language": "en"
+    },
+    {
+      "id": "doc-132",
+      "title": "Generated Document Title 132 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-01T06:53:22.520Z",
+      "type": "statement",
+      "content": "This is the content for document 132. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 132",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.92,
+      "contradictions": [],
+      "url": "https://example.com/doc-132",
+      "language": "en"
+    },
+    {
+      "id": "doc-133",
+      "title": "Generated Document Title 133 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-19T11:01:51.566Z",
+      "type": "news",
+      "content": "This is the content for document 133. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 133",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.76,
+      "contradictions": [],
+      "url": "https://example.com/doc-133",
+      "language": "en"
+    },
+    {
+      "id": "doc-134",
+      "title": "Generated Document Title 134 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-13T09:30:19.487Z",
+      "type": "news",
+      "content": "This is the content for document 134. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 134",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-134",
+      "language": "en"
+    },
+    {
+      "id": "doc-135",
+      "title": "Generated Document Title 135 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-06T08:24:06.269Z",
+      "type": "press_release",
+      "content": "This is the content for document 135. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 135",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": false,
+      "confidence": 0.81,
+      "contradictions": [],
+      "url": "https://example.com/doc-135",
+      "language": "en"
+    },
+    {
+      "id": "doc-136",
+      "title": "Generated Document Title 136 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-18T09:52:28.640Z",
+      "type": "press_release",
+      "content": "This is the content for document 136. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 136",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-136",
+      "language": "en"
+    },
+    {
+      "id": "doc-137",
+      "title": "Generated Document Title 137 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-09-29T11:29:41.458Z",
+      "type": "news",
+      "content": "This is the content for document 137. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 137",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-137",
+      "language": "en"
+    },
+    {
+      "id": "doc-138",
+      "title": "Generated Document Title 138 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-29T23:04:47.120Z",
+      "type": "press_release",
+      "content": "This is the content for document 138. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 138",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.84,
+      "contradictions": [],
+      "url": "https://example.com/doc-138",
+      "language": "en"
+    },
+    {
+      "id": "doc-139",
+      "title": "Generated Document Title 139 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-17T01:10:52.779Z",
+      "type": "press_release",
+      "content": "This is the content for document 139. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 139",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-139",
+      "language": "en"
+    },
+    {
+      "id": "doc-140",
+      "title": "Generated Document Title 140 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-08T09:23:52.948Z",
+      "type": "press_release",
+      "content": "This is the content for document 140. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 140",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-140",
+      "language": "en"
+    },
+    {
+      "id": "doc-141",
+      "title": "Generated Document Title 141 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-28T18:35:40.235Z",
+      "type": "debate",
+      "content": "This is the content for document 141. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 141",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-141",
+      "language": "en"
+    },
+    {
+      "id": "doc-142",
+      "title": "Generated Document Title 142 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-28T19:29:59.823Z",
+      "type": "debate",
+      "content": "This is the content for document 142. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 142",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-142",
+      "language": "en"
+    },
+    {
+      "id": "doc-143",
+      "title": "Generated Document Title 143 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-11T19:53:32.576Z",
+      "type": "debate",
+      "content": "This is the content for document 143. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 143",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-143",
+      "language": "en"
+    },
+    {
+      "id": "doc-144",
+      "title": "Generated Document Title 144 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-09T12:29:13.710Z",
+      "type": "news",
+      "content": "This is the content for document 144. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 144",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-144",
+      "language": "en"
+    },
+    {
+      "id": "doc-145",
+      "title": "Generated Document Title 145 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-29T10:04:58.241Z",
+      "type": "statement",
+      "content": "This is the content for document 145. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 145",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.84,
+      "contradictions": [],
+      "url": "https://example.com/doc-145",
+      "language": "en"
+    },
+    {
+      "id": "doc-146",
+      "title": "Generated Document Title 146 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2026-01-02T21:23:25.722Z",
+      "type": "news",
+      "content": "This is the content for document 146. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 146",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-146",
+      "language": "en"
+    },
+    {
+      "id": "doc-147",
+      "title": "Generated Document Title 147 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-02T17:21:14.726Z",
+      "type": "debate",
+      "content": "This is the content for document 147. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 147",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-147",
+      "language": "en"
+    },
+    {
+      "id": "doc-148",
+      "title": "Generated Document Title 148 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-09T01:31:44.571Z",
+      "type": "statement",
+      "content": "This is the content for document 148. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 148",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-148",
+      "language": "en"
+    },
+    {
+      "id": "doc-149",
+      "title": "Generated Document Title 149 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-23T10:52:31.657Z",
+      "type": "debate",
+      "content": "This is the content for document 149. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 149",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.73,
+      "contradictions": [],
+      "url": "https://example.com/doc-149",
+      "language": "en"
+    },
+    {
+      "id": "doc-150",
+      "title": "Generated Document Title 150 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-08T02:19:54.409Z",
+      "type": "statement",
+      "content": "This is the content for document 150. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 150",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.97,
+      "contradictions": [],
+      "url": "https://example.com/doc-150",
+      "language": "en"
+    },
+    {
+      "id": "doc-151",
+      "title": "Generated Document Title 151 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-01T01:35:56.587Z",
+      "type": "debate",
+      "content": "This is the content for document 151. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 151",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-151",
+      "language": "en"
+    },
+    {
+      "id": "doc-152",
+      "title": "Generated Document Title 152 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2026-01-01T19:08:33.520Z",
+      "type": "news",
+      "content": "This is the content for document 152. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 152",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-152",
+      "language": "en"
+    },
+    {
+      "id": "doc-153",
+      "title": "Generated Document Title 153 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-05T22:27:40.614Z",
+      "type": "news",
+      "content": "This is the content for document 153. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 153",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-153",
+      "language": "en"
+    },
+    {
+      "id": "doc-154",
+      "title": "Generated Document Title 154 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-26T15:27:25.381Z",
+      "type": "statement",
+      "content": "This is the content for document 154. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 154",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.75,
+      "contradictions": [],
+      "url": "https://example.com/doc-154",
+      "language": "en"
+    },
+    {
+      "id": "doc-155",
+      "title": "Generated Document Title 155 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-20T19:43:51.970Z",
+      "type": "press_release",
+      "content": "This is the content for document 155. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 155",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-155",
+      "language": "en"
+    },
+    {
+      "id": "doc-156",
+      "title": "Generated Document Title 156 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-27T01:15:34.696Z",
+      "type": "news",
+      "content": "This is the content for document 156. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 156",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-156",
+      "language": "en"
+    },
+    {
+      "id": "doc-157",
+      "title": "Generated Document Title 157 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-09-24T06:01:40.411Z",
+      "type": "statement",
+      "content": "This is the content for document 157. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 157",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": false,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-157",
+      "language": "en"
+    },
+    {
+      "id": "doc-158",
+      "title": "Generated Document Title 158 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-25T00:27:37.507Z",
+      "type": "debate",
+      "content": "This is the content for document 158. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 158",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-158",
+      "language": "en"
+    },
+    {
+      "id": "doc-159",
+      "title": "Generated Document Title 159 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-14T02:56:12.386Z",
+      "type": "news",
+      "content": "This is the content for document 159. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 159",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.83,
+      "contradictions": [],
+      "url": "https://example.com/doc-159",
+      "language": "en"
+    },
+    {
+      "id": "doc-160",
+      "title": "Generated Document Title 160 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-26T13:50:05.525Z",
+      "type": "debate",
+      "content": "This is the content for document 160. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 160",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.77,
+      "contradictions": [],
+      "url": "https://example.com/doc-160",
+      "language": "en"
+    },
+    {
+      "id": "doc-161",
+      "title": "Generated Document Title 161 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-09-30T14:09:07.600Z",
+      "type": "statement",
+      "content": "This is the content for document 161. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 161",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-161",
+      "language": "en"
+    },
+    {
+      "id": "doc-162",
+      "title": "Generated Document Title 162 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-17T08:38:36.529Z",
+      "type": "press_release",
+      "content": "This is the content for document 162. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 162",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-162",
+      "language": "en"
+    },
+    {
+      "id": "doc-163",
+      "title": "Generated Document Title 163 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-02T04:33:50.058Z",
+      "type": "news",
+      "content": "This is the content for document 163. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 163",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-163",
+      "language": "en"
+    },
+    {
+      "id": "doc-164",
+      "title": "Generated Document Title 164 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-21T04:58:46.670Z",
+      "type": "press_release",
+      "content": "This is the content for document 164. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 164",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.81,
+      "contradictions": [],
+      "url": "https://example.com/doc-164",
+      "language": "en"
+    },
+    {
+      "id": "doc-165",
+      "title": "Generated Document Title 165 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-21T19:59:00.267Z",
+      "type": "statement",
+      "content": "This is the content for document 165. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 165",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.8,
+      "contradictions": [],
+      "url": "https://example.com/doc-165",
+      "language": "en"
+    },
+    {
+      "id": "doc-166",
+      "title": "Generated Document Title 166 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-12T07:23:52.413Z",
+      "type": "statement",
+      "content": "This is the content for document 166. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 166",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-166",
+      "language": "en"
+    },
+    {
+      "id": "doc-167",
+      "title": "Generated Document Title 167 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-27T08:32:29.672Z",
+      "type": "debate",
+      "content": "This is the content for document 167. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 167",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-167",
+      "language": "en"
+    },
+    {
+      "id": "doc-168",
+      "title": "Generated Document Title 168 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-28T16:05:23.859Z",
+      "type": "news",
+      "content": "This is the content for document 168. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 168",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.72,
+      "contradictions": [],
+      "url": "https://example.com/doc-168",
+      "language": "en"
+    },
+    {
+      "id": "doc-169",
+      "title": "Generated Document Title 169 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-19T03:03:11.917Z",
+      "type": "news",
+      "content": "This is the content for document 169. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 169",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-169",
+      "language": "en"
+    },
+    {
+      "id": "doc-170",
+      "title": "Generated Document Title 170 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-09-24T15:17:48.021Z",
+      "type": "press_release",
+      "content": "This is the content for document 170. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 170",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-170",
+      "language": "en"
+    },
+    {
+      "id": "doc-171",
+      "title": "Generated Document Title 171 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-27T22:42:41.144Z",
+      "type": "press_release",
+      "content": "This is the content for document 171. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 171",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.92,
+      "contradictions": [],
+      "url": "https://example.com/doc-171",
+      "language": "en"
+    },
+    {
+      "id": "doc-172",
+      "title": "Generated Document Title 172 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-05T14:28:29.814Z",
+      "type": "debate",
+      "content": "This is the content for document 172. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 172",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.8,
+      "contradictions": [],
+      "url": "https://example.com/doc-172",
+      "language": "en"
+    },
+    {
+      "id": "doc-173",
+      "title": "Generated Document Title 173 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-25T19:55:30.039Z",
+      "type": "news",
+      "content": "This is the content for document 173. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 173",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.86,
+      "contradictions": [],
+      "url": "https://example.com/doc-173",
+      "language": "en"
+    },
+    {
+      "id": "doc-174",
+      "title": "Generated Document Title 174 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-14T15:19:35.356Z",
+      "type": "press_release",
+      "content": "This is the content for document 174. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 174",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-174",
+      "language": "en"
+    },
+    {
+      "id": "doc-175",
+      "title": "Generated Document Title 175 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-19T13:51:39.518Z",
+      "type": "press_release",
+      "content": "This is the content for document 175. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 175",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.95,
+      "contradictions": [],
+      "url": "https://example.com/doc-175",
+      "language": "en"
+    },
+    {
+      "id": "doc-176",
+      "title": "Generated Document Title 176 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2026-01-05T23:45:21.408Z",
+      "type": "press_release",
+      "content": "This is the content for document 176. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 176",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.99,
+      "contradictions": [],
+      "url": "https://example.com/doc-176",
+      "language": "en"
+    },
+    {
+      "id": "doc-177",
+      "title": "Generated Document Title 177 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-10T12:15:58.735Z",
+      "type": "news",
+      "content": "This is the content for document 177. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 177",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-177",
+      "language": "en"
+    },
+    {
+      "id": "doc-178",
+      "title": "Generated Document Title 178 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-11-27T19:23:09.053Z",
+      "type": "news",
+      "content": "This is the content for document 178. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 178",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.93,
+      "contradictions": [],
+      "url": "https://example.com/doc-178",
+      "language": "en"
+    },
+    {
+      "id": "doc-179",
+      "title": "Generated Document Title 179 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-22T07:31:38.496Z",
+      "type": "statement",
+      "content": "This is the content for document 179. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 179",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.8,
+      "contradictions": [],
+      "url": "https://example.com/doc-179",
+      "language": "en"
+    },
+    {
+      "id": "doc-180",
+      "title": "Generated Document Title 180 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-12-26T12:39:34.118Z",
+      "type": "press_release",
+      "content": "This is the content for document 180. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 180",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-180",
+      "language": "en"
+    },
+    {
+      "id": "doc-181",
+      "title": "Generated Document Title 181 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-12-07T18:50:24.341Z",
+      "type": "press_release",
+      "content": "This is the content for document 181. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 181",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.78,
+      "contradictions": [],
+      "url": "https://example.com/doc-181",
+      "language": "en"
+    },
+    {
+      "id": "doc-182",
+      "title": "Generated Document Title 182 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-27T10:48:36.217Z",
+      "type": "news",
+      "content": "This is the content for document 182. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 182",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.71,
+      "contradictions": [],
+      "url": "https://example.com/doc-182",
+      "language": "en"
+    },
+    {
+      "id": "doc-183",
+      "title": "Generated Document Title 183 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-01T05:46:15.039Z",
+      "type": "news",
+      "content": "This is the content for document 183. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 183",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-183",
+      "language": "en"
+    },
+    {
+      "id": "doc-184",
+      "title": "Generated Document Title 184 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-25T00:34:37.361Z",
+      "type": "debate",
+      "content": "This is the content for document 184. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 184",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.82,
+      "contradictions": [],
+      "url": "https://example.com/doc-184",
+      "language": "en"
+    },
+    {
+      "id": "doc-185",
+      "title": "Generated Document Title 185 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-22T00:08:37.216Z",
+      "type": "debate",
+      "content": "This is the content for document 185. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 185",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.8,
+      "contradictions": [],
+      "url": "https://example.com/doc-185",
+      "language": "en"
+    },
+    {
+      "id": "doc-186",
+      "title": "Generated Document Title 186 - topic-2",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-10-14T19:55:36.814Z",
+      "type": "news",
+      "content": "This is the content for document 186. It discusses important matters regarding topic-2 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 186",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.89,
+      "contradictions": [],
+      "url": "https://example.com/doc-186",
+      "language": "en"
+    },
+    {
+      "id": "doc-187",
+      "title": "Generated Document Title 187 - topic-1",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-21T23:15:43.672Z",
+      "type": "debate",
+      "content": "This is the content for document 187. It discusses important matters regarding topic-1 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 187",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.85,
+      "contradictions": [],
+      "url": "https://example.com/doc-187",
+      "language": "en"
+    },
+    {
+      "id": "doc-188",
+      "title": "Generated Document Title 188 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2025-12-12T00:52:52.298Z",
+      "type": "debate",
+      "content": "This is the content for document 188. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 188",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": false,
+      "confidence": 0.96,
+      "contradictions": [],
+      "url": "https://example.com/doc-188",
+      "language": "en"
+    },
+    {
+      "id": "doc-189",
+      "title": "Generated Document Title 189 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-07T11:09:03.434Z",
+      "type": "debate",
+      "content": "This is the content for document 189. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 189",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-189",
+      "language": "en"
+    },
+    {
+      "id": "doc-190",
+      "title": "Generated Document Title 190 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-10-25T20:52:32.137Z",
+      "type": "press_release",
+      "content": "This is the content for document 190. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 190",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.81,
+      "contradictions": [],
+      "url": "https://example.com/doc-190",
+      "language": "en"
+    },
+    {
+      "id": "doc-191",
+      "title": "Generated Document Title 191 - topic-2",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-18T16:58:38.471Z",
+      "type": "news",
+      "content": "This is the content for document 191. It discusses important matters regarding topic-2 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 191",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.79,
+      "contradictions": [],
+      "url": "https://example.com/doc-191",
+      "language": "en"
+    },
+    {
+      "id": "doc-192",
+      "title": "Generated Document Title 192 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-18T01:35:20.148Z",
+      "type": "statement",
+      "content": "This is the content for document 192. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 192",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": false,
+      "confidence": 0.88,
+      "contradictions": [],
+      "url": "https://example.com/doc-192",
+      "language": "en"
+    },
+    {
+      "id": "doc-193",
+      "title": "Generated Document Title 193 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-26T04:28:39.222Z",
+      "type": "debate",
+      "content": "This is the content for document 193. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 193",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.94,
+      "contradictions": [],
+      "url": "https://example.com/doc-193",
+      "language": "en"
+    },
+    {
+      "id": "doc-194",
+      "title": "Generated Document Title 194 - topic-1",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-11T16:04:38.915Z",
+      "type": "statement",
+      "content": "This is the content for document 194. It discusses important matters regarding topic-1 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 194",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.9,
+      "contradictions": [],
+      "url": "https://example.com/doc-194",
+      "language": "en"
+    },
+    {
+      "id": "doc-195",
+      "title": "Generated Document Title 195 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-09-30T21:42:25.830Z",
+      "type": "statement",
+      "content": "This is the content for document 195. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 195",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-195",
+      "language": "en"
+    },
+    {
+      "id": "doc-196",
+      "title": "Generated Document Title 196 - topic-3",
+      "source_id": "parliament-gov",
+      "source_name": "Parliament of Singapore",
+      "date": "2024-01-01",
+      "published_at": "2025-11-08T23:31:16.359Z",
+      "type": "debate",
+      "content": "This is the content for document 196. It discusses important matters regarding topic-3 and is sourced from Parliament of Singapore. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 196",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "parliamentary",
+      "verified": true,
+      "confidence": 0.75,
+      "contradictions": [],
+      "url": "https://example.com/doc-196",
+      "language": "en"
+    },
+    {
+      "id": "doc-197",
+      "title": "Generated Document Title 197 - topic-1",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-04T01:00:29.739Z",
+      "type": "press_release",
+      "content": "This is the content for document 197. It discusses important matters regarding topic-1 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 197",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-1"
+      ],
+      "topics": [
+        "topic-1"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.91,
+      "contradictions": [],
+      "url": "https://example.com/doc-197",
+      "language": "en"
+    },
+    {
+      "id": "doc-198",
+      "title": "Generated Document Title 198 - topic-3",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-10-11T07:27:33.399Z",
+      "type": "statement",
+      "content": "This is the content for document 198. It discusses important matters regarding topic-3 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 198",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.98,
+      "contradictions": [],
+      "url": "https://example.com/doc-198",
+      "language": "en"
+    },
+    {
+      "id": "doc-199",
+      "title": "Generated Document Title 199 - topic-3",
+      "source_id": "straitstimes",
+      "source_name": "The Straits Times",
+      "date": "2024-01-01",
+      "published_at": "2026-01-10T10:26:33.008Z",
+      "type": "press_release",
+      "content": "This is the content for document 199. It discusses important matters regarding topic-3 and is sourced from The Straits Times. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 199",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-3"
+      ],
+      "topics": [
+        "topic-3"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.87,
+      "contradictions": [],
+      "url": "https://example.com/doc-199",
+      "language": "en"
+    },
+    {
+      "id": "doc-200",
+      "title": "Generated Document Title 200 - topic-2",
+      "source_id": "cna",
+      "source_name": "Channel News Asia",
+      "date": "2024-01-01",
+      "published_at": "2025-11-22T14:27:27.847Z",
+      "type": "debate",
+      "content": "This is the content for document 200. It discusses important matters regarding topic-2 and is sourced from Channel News Asia. The quick brown fox jumps over the lazy dog.",
+      "summary": "Summary for document 200",
+      "speaker": "Generic Speaker",
+      "role": "MP",
+      "tags": [
+        "generated",
+        "topic-2"
+      ],
+      "topics": [
+        "topic-2"
+      ],
+      "source_type": "news",
+      "verified": true,
+      "confidence": 0.78,
+      "contradictions": [],
+      "url": "https://example.com/doc-200",
+      "language": "en"
+    }
+  ],
+  "conversations": [],
+  "templates": [],
+  "folders": []
+}

@@ -6,7 +6,7 @@
 import { Citation } from "@/lib/types/query";
 
 export interface LLMProviderConfig {
-  provider: 'gemini' | 'anthropic' | 'openai';
+  provider: 'gemini' | 'anthropic' | 'openai' | 'mock';
   model: string;
   apiKey: string;
   temperature?: number;

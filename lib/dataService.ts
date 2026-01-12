@@ -1,5 +1,5 @@
 import { DatabaseService } from './database'
-import { INITIAL_SOURCES, INITIAL_DOCUMENTS, INITIAL_TOPICS } from '../src/lib/mockData'
+import { FileStorage } from '../src/lib/file-storage'
 
 // Environment variable to control mock data fallback
 // Set USE_MOCK_DATA_FALLBACK=true to allow fallback to mock data on database errors
@@ -22,8 +22,8 @@ export const DataService = {
       console.error('Database error in getSources:', error)
       
       if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Database unavailable, using mock data fallback')
-        return INITIAL_SOURCES
+        console.warn('Database unavailable, using local file storage fallback')
+        return FileStorage.getSources()
       }
       
       // Fail fast - don't silently fallback in production
@@ -38,8 +38,8 @@ export const DataService = {
       console.error('Database error in getDocuments:', error)
       
       if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Database unavailable, using mock data fallback')
-        return INITIAL_DOCUMENTS
+        console.warn('Database unavailable, using local file storage fallback')
+        return FileStorage.getDocuments()
       }
       
       // Fail fast - don't silently fallback in production
@@ -54,8 +54,8 @@ export const DataService = {
       console.error('Database error in getTopics:', error)
       
       if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Database unavailable, using mock data fallback')
-        return INITIAL_TOPICS
+        console.warn('Database unavailable, using local file storage fallback')
+        return FileStorage.getTopics()
       }
       
       // Fail fast - don't silently fallback in production
@@ -70,12 +70,8 @@ export const DataService = {
       console.error('Database error in searchDocuments:', error)
       
       if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Database unavailable, using mock search fallback')
-        return INITIAL_DOCUMENTS.filter(doc =>
-          doc.title.toLowerCase().includes(query.toLowerCase()) ||
-          doc.content.toLowerCase().includes(query.toLowerCase()) ||
-          doc.speaker.toLowerCase().includes(query.toLowerCase())
-        )
+        console.warn('Database unavailable, using local file storage search fallback')
+        return FileStorage.searchDocuments(query)
       }
       
       // Fail fast - don't silently fallback in production

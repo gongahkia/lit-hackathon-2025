@@ -160,14 +160,24 @@ export default function SearchPane({
       // If Supabase has no results and we're querying keywords (common when Supabase isn't populated yet),
       // fall back to Flask CSV search. Flask does not support topicId/language filters, so we only fall back
       // for plain keyword searches.
+      // FORCE FALLBACK for now since Supabase is likely empty/mocked in this local setup
       const canFallbackToFlask = Boolean(query?.trim()) && !activeFilters.topicId
+      
+      if (supabaseHasResults) {
+          setSearchResults(data.data)
+          return
+      }
+
       if (!canFallbackToFlask) {
         setSearchResults([])
         return
       }
 
       let flaskUrl = `/api/search`
-      const legacyParams = buildSearchParams(query, { sourceType: "all", dateRange: "all", speaker: "all", language: "all", topicId: "" })
+      // Pass the query as 'q'
+      const legacyParams = new URLSearchParams()
+      legacyParams.append('q', query.trim())
+      
       if (legacyParams.toString()) flaskUrl += `?${legacyParams.toString()}`
       const flaskRes = await fetch(flaskUrl)
       const flaskData = await flaskRes.json()
