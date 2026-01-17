@@ -155,112 +155,90 @@ export default function DocumentViewer({ document, onBack }) {
     setReportReason("")
   }
 
+  // LocalStorage helpers
+  const LS_MATTERS_KEY = 'demo-matters';
+  const LS_EVIDENCE_KEY = 'demo-evidence-items';
+
+  function loadMattersFromStorage() {
+    try {
+      const raw = localStorage.getItem(LS_MATTERS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function saveMattersToStorage(newMatters) {
+    localStorage.setItem(LS_MATTERS_KEY, JSON.stringify(newMatters));
+  }
+  function loadEvidenceFromStorage() {
+    try {
+      const raw = localStorage.getItem(LS_EVIDENCE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function saveEvidenceToStorage(newItems) {
+    localStorage.setItem(LS_EVIDENCE_KEY, JSON.stringify(newItems));
+  }
+
   useEffect(() => {
-    const fetchMatters = async () => {
-      try {
-        const res = await fetch("/api/matters")
-        const data = await res.json()
-        if (data.success) {
-          setMatters(data.matters || [])
-        }
-      } catch (error) {
-        console.error("Error fetching matters:", error)
-      }
-    }
-    const fetchTopics = async () => {
-      try {
-        const res = await fetch("/api/topics")
-        const data = await res.json()
-        if (data.success && Array.isArray(data.data)) {
-          const byId = data.data.reduce((acc, t) => {
-            acc[t.id] = t
-            return acc
-          }, {})
-          setTopicsById(byId)
-        }
-      } catch (error) {
-        console.error("Error fetching topics:", error)
-      }
-    }
-    fetchMatters()
-    fetchTopics()
-  }, [])
+    setMatters(loadMattersFromStorage());
+    // Optionally, load topics from local mock or skip
+  }, []);
 
-  const createMatter = async () => {
-    if (!newMatterName.trim()) return
+  const createMatter = () => {
+    if (!newMatterName.trim()) return;
+    setIsCreatingMatter(true);
+    const newMatter = {
+      id: `matter-${Date.now()}`,
+      name: newMatterName.trim(),
+      description: newMatterDescription.trim() || null,
+      created_at: new Date().toISOString(),
+    };
+    const newMatters = [...matters, newMatter];
+    setMatters(newMatters);
+    saveMattersToStorage(newMatters);
+    setSelectedMatterId(newMatter.id);
+    setNewMatterName("");
+    setNewMatterDescription("");
+    setIsCreatingMatter(false);
+  };
 
-    setIsCreatingMatter(true)
-    try {
-      const res = await fetch("/api/matters", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: newMatterName.trim(),
-          description: newMatterDescription.trim() || null,
-        }),
-      })
-      const data = await res.json()
-      if (data.success) {
-        setMatters([...matters, data.matter])
-        setSelectedMatterId(data.matter.id)
-        setNewMatterName("")
-        setNewMatterDescription("")
-      }
-    } catch (error) {
-      console.error("Error creating matter:", error)
-    } finally {
-      setIsCreatingMatter(false)
-    }
-  }
-
-  const addToEvidenceBundle = async () => {
-    if (!selectedMatterId || !selectedText.trim()) return
-
-    setIsAddingEvidence(true)
-    try {
-      // Build citation JSON
-      const citationJson = {
-        title: document.title,
-        speaker: document.speaker,
-        role: document.role,
-        date: document.date,
-        publishedAt: document.publishedAt,
-        source: document.source,
-        sourceType: document.sourceType,
-        url: document.url,
-        documentId: document.id,
-      }
-
-      const res = await fetch("/api/evidence-items", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          matter_id: selectedMatterId,
-          document_id: document.id,
-          quote_text: selectedText.trim(),
-          citation_json: citationJson,
-          user_note: userNote.trim() || null,
-        }),
-      })
-
-      const data = await res.json()
-      if (data.success) {
-        // Success - close dialog and clear selection
-        setShowBundleDialog(false)
-        setSelectedText("")
-        setUserNote("")
-        // You could add a toast notification here
-        alert("Quote added to evidence bundle!")
-      } else {
-        alert(`Error: ${data.error}`)
-      }
-    } catch (error) {
-      console.error("Error adding evidence item:", error)
-      alert("Failed to add quote to evidence bundle")
-    } finally {
-      setIsAddingEvidence(false)
-    }
-  }
+  const addToEvidenceBundle = () => {
+    if (!selectedMatterId || !selectedText.trim()) return;
+    setIsAddingEvidence(true);
+    // Build citation JSON
+    const citationJson = {
+      title: document.title,
+      speaker: document.speaker,
+      role: document.role,
+      date: document.date,
+      publishedAt: document.publishedAt,
+      source: document.source,
+      sourceType: document.sourceType,
+      url: document.url,
+      documentId: document.id,
+    };
+    const newEvidence = {
+      id: `ev-${Date.now()}`,
+      matter_id: selectedMatterId,
+      document_id: document.id,
+      quote_text: selectedText.trim(),
+      citation_json: citationJson,
+      user_note: userNote.trim() || null,
+      display_order: 1,
+      created_at: new Date().toISOString(),
+    };
+    const allEvidence = loadEvidenceFromStorage();
+    const newEvidenceArr = [...allEvidence, newEvidence];
+    saveEvidenceToStorage(newEvidenceArr);
+    setShowBundleDialog(false);
+    setSelectedText("");
+    setUserNote("");
+    setIsAddingEvidence(false);
+    alert("Quote added to evidence bundle!");
+  };
 
   return (
     <div className="h-full flex flex-col">
