@@ -1,0 +1,548 @@
+POFact Q&A - SMU LIT Hackathon 2025 (MinLaw 2)
+==============================================
+
+1. How the system ensures AI answers are accurate and trustworthy
+-----------------------------------------------------------------
+
+POFact ensures AI answer accuracy and trustworthiness through multiple layers:
+
+a) Source-Constrained Generation (RAG Architecture):
+   - The LLM is explicitly prompted to answer using ONLY the provided parliamentary
+     and ministerial sources. The system prompt states: "You are a legal fact-checking
+     assistant. Answer the question using ONLY the provided sources."
+   - Every claim must reference specific documents via citation markers [1], [2], etc.
+   - If information cannot be found in sources, the system explicitly states:
+     "I cannot find this information in the provided sources."
+
+b) Unsupported Claims Detection:
+   - The system automatically detects and flags claims that cannot be supported by
+     the retrieved documents
+   - These are displayed separately in an "Unsupported Claims" section, alerting
+     users to verify independently
+
+c) Multi-Level Confidence Scoring:
+   - Document-level confidence: Each source document has a stored confidence score
+     (0.0-1.0) based on source type and verification status
+   - LLM response confidence: Calculated based on citation count, response
+     substantiveness, and source match ratio
+   - Final RAG confidence: Composite score combining LLM confidence with retrieval
+     quality boosts (document count, citation density)
+   - Confidence is displayed as color-coded badges (Green >=80%, Yellow 60-80%,
+     Red <60%)
+
+d) Provenance Tracking:
+   - Every AI response includes a source lineage graph showing exactly which
+     documents contributed to each claim
+   - Citations include document title, source name, URL to original, and extracted
+     quote context
+   - Users can click through to verify the original source document
+
+e) Validation Infrastructure:
+   - The system validates that cited documents actually exist in the corpus
+   - Citation extraction verifies document IDs match retrieved sources
+   - Schema includes validation_results storage for comprehensive verification
+
+f) Multi-Provider Consensus (Planned):
+   - Architecture supports routing queries to multiple LLM providers (Gemini,
+     Anthropic Claude, OpenAI)
+   - Consensus scoring based on citation overlap across providers
+   - Agreement-weighted confidence for higher reliability
+
+
+2. Security measures for handling sensitive government documents
+----------------------------------------------------------------
+
+POFact implements security through multiple layers:
+
+a) Database Security (Supabase/PostgreSQL):
+   - Row Level Security (RLS) policies enabled on all tables (documents, sources,
+     topics, evidence_items, matters, query_audit_trail)
+   - Public read access for document discovery with ability to restrict per
+     authentication requirements
+   - Service role key used only server-side for write operations
+   - Anon key for client-side read operations with RLS enforcement
+
+b) API Layer Security:
+   - Next.js API routes serve as a proxy layer between browser and backend services
+   - No direct browser-to-Flask calls in production (eliminates CORS vulnerabilities)
+   - Environment variables for all sensitive configuration (API keys, service keys)
+   - Configurable backend endpoints prevent hardcoded endpoint exposure
+
+c) Credential Management:
+   - LLM provider API keys stored encrypted in database (api_key_encrypted column)
+   - Keys decrypted only at runtime on the server
+   - Supabase service role key restricted to server-side Next.js routes and scripts
+   - No credentials exposed to client-side code
+
+d) Data Access Controls:
+   - Document ingestion through controlled scripts with validation
+   - Input validation on POST requests (matter creation, evidence item creation)
+   - Foreign key checks ensure referential integrity
+
+e) Audit Trail for Compliance:
+   - query_audit_trail table logs all queries with user/session IDs
+   - Retrieval paths stored for every query (which documents were accessed)
+   - LLM responses stored (both raw and structured) for review
+   - Execution timestamps for forensic analysis
+
+f) Deployment Security:
+   - Vercel deployment with HTTPS by default
+   - Environment variable separation between development and production
+   - No localhost references in production code
+
+
+3. How the system scales from 300 to thousands of documents
+-----------------------------------------------------------
+
+POFact is architected for progressive scaling:
+
+a) Current State (300+ documents - RAG-lite):
+   - Full-text search using PostgreSQL ILIKE and to_tsvector indexes
+   - Simple retriever returns top-N matching documents
+   - Single LLM provider (Gemini) processes retrieved context
+   - Efficient for current corpus size
+
+b) Scaling Infrastructure (Already in Schema):
+   - pgvector extension enabled for vector similarity search
+   - Embedding column (vector(1536)) ready for document embeddings
+   - ivfflat index scaffolded for approximate nearest neighbor search
+   - GIN indexes on content, title, topics for fast filtering
+
+c) Hierarchical RAG (Designed for 10k+ documents):
+   - 4-level document hierarchy: Encyclopedia -> Chapter -> Section -> Paragraph
+   - Progressive retrieval: 50k -> 200 -> 200 -> 200 -> final chunks
+   - document_hierarchy table tracks parent-child relationships
+   - hierarchy_level column (1-4) enables level-aware traversal
+   - compressed_summary column for efficient high-level matching
+
+d) Database Performance Optimizations:
+   - Indexes on frequently queried columns (date, source_type, speaker,
+     published_at, verified, confidence, language)
+   - GIN indexes on array columns (topics, contradictions) for containment queries
+   - Frontend-compatible views (documents_frontend, topics_frontend) reduce
+     transformation overhead
+   - Automatic document count updates via triggers
+
+e) Multi-Provider Load Distribution:
+   - LLM router supports priority-based provider selection
+   - Rate limiting per provider (rate_limit_per_minute)
+   - Cost-aware routing (cost_per_1k_tokens tracked)
+   - Fallback chains for resilience under load
+
+f) Retrieval Metrics Monitoring:
+   - retrieval_metrics table tracks precision/recall at each hierarchy level
+   - Enables optimization of retrieval parameters as corpus grows
+   - Identifies bottlenecks in the retrieval pipeline
+
+
+4. Tracking and verifying how answers were generated
+----------------------------------------------------
+
+POFact provides comprehensive provenance tracking:
+
+a) Query Audit Trail (query_audit_trail table):
+   - query_text: The exact question asked
+   - query_params: Filter parameters used (date range, source type, etc.)
+   - user_id, session_id: User attribution
+   - retrieval_path: Array of document IDs at each retrieval level
+   - llm_provider_used: Which AI model generated the response
+   - llm_response_raw: Unprocessed LLM output for verification
+   - llm_response_structured: Parsed citations, confidence, claims
+   - validation_results: Verification outcomes for each claim
+   - execution_time_ms: Performance tracking
+
+b) Source Lineage Graph (Provenance Graph):
+   - Nodes represent documents with metadata (title, source, hierarchy level)
+   - Edges represent relationships between documents and claims
+   - Each edge includes confidence score and relationship type
+   - Enables visual tracing from answer to source documents
+
+c) Citation Tracking:
+   - Every citation includes:
+     * document_id: Unique identifier linking to source
+     * document_title: Human-readable title
+     * source_name: Parliamentary/ministerial source
+     * source_url: Direct link to original document
+     * quote: Extracted text context around citation marker
+     * relevance_score: How relevant the citation is to the claim
+     * hierarchy_level: Position in document hierarchy
+
+d) Retrieval Metrics (retrieval_metrics table):
+   - Precision, recall, F1 score at each hierarchy level
+   - Total candidates vs retrieved vs relevant counts
+   - Average similarity scores for quality assessment
+
+e) Source Compositions (source_compositions table):
+   - Tracks how multiple sources combine to support claims
+   - composition_type: combined, verified, contradicted
+   - verification_status: verified, contradicted, unverified
+   - Claim-level tracking for granular verification
+
+f) Evidence Bundles:
+   - Users can save specific quotes with full citation metadata
+   - citation_json preserves exact extraction context
+   - User notes attached to evidence items
+   - Exportable to PDF with complete audit trail
+
+
+5. Integration with existing systems and deployment requirements
+----------------------------------------------------------------
+
+a) Deployment Architecture (Production-Ready):
+   - Primary hosting: Vercel (live at lit-hackathon-2025.vercel.app)
+   - Database: Supabase-hosted PostgreSQL (cloud-managed, auto-scaling)
+   - No on-premise infrastructure required for base deployment
+   - CDN-delivered static assets through Vercel Edge Network
+
+b) API Integration Points:
+   - RESTful API endpoints through Next.js Route Handlers:
+     * GET/POST /api/documents - Document CRUD with filters
+     * GET/POST /api/matters - Evidence bundle management
+     * POST /api/query - RAG-powered Q&A
+     * GET /api/topics, /api/sources - Metadata endpoints
+   - Standard JSON request/response format
+   - CORS-handled through Next.js proxy layer
+
+c) Environment Configuration:
+   - Supabase connection: NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY,
+     SUPABASE_SERVICE_ROLE_KEY
+   - LLM provider: GOOGLE_GEN_AI_API_KEY (Gemini)
+   - Feature flags: USE_RAG, USE_MOCK_DATA_FALLBACK
+   - Optional legacy: FLASK_API_BASE for backward compatibility
+
+d) Authentication Integration (Ready):
+   - Supabase Auth infrastructure available
+   - OAuth/JWT patterns supported
+   - Row Level Security adaptable to user-based access control
+   - Session tracking via session_id in audit trails
+
+e) Data Ingestion:
+   - Script-based ingestion: npm run ingest-data
+   - CSV import from golden datasets
+   - Extensible for additional data sources
+   - Web scrapers for parliamentary/ministerial sources included
+
+f) Export Capabilities:
+   - Evidence bundles export to print-friendly PDF
+   - Markdown-formatted responses
+   - Citation metadata in JSON format
+   - Suitable for import into document management systems
+
+g) Monitoring & Observability:
+   - Execution time tracking on queries
+   - Retrieval metrics for quality monitoring
+   - Comprehensive audit logging
+   - Error tracking through structured error responses
+
+
+6. How does your product encourage respectful public conversations beyond
+   just providing facts?
+--------------------------------------------------------------------------
+
+POFact promotes respectful discourse through several design principles:
+
+a) Evidence-Based Discussion Framework:
+   - By requiring citations for every claim, POFact shifts conversations from
+     opinion-based assertions to evidence-based statements
+   - Users cannot simply claim "the government said X" without providing the
+     exact source, quote, and context
+   - This raises the bar for public discourse quality
+
+b) Transparency Through Provenance:
+   - Full source attribution creates accountability
+   - Users can verify claims independently by following source URLs
+   - Reduces misinformation spread by making false claims easily disprovable
+   - Encourages intellectual honesty when statements are traceable
+
+c) Confidence Indicators as Epistemic Humility:
+   - Confidence scores signal when claims are well-supported vs uncertain
+   - "Unsupported Claims" section acknowledges limitations explicitly
+   - Teaches users to distinguish between strong and weak evidence
+   - Models appropriate hedging in public discourse
+
+d) Contextual Understanding:
+   - Timeline views show how policies evolve over time
+   - Reduces cherry-picking by presenting chronological context
+   - Contradiction detection highlights when statements conflict
+   - Encourages nuanced understanding over simplified takes
+
+e) Matter-Centric Research:
+   - Evidence bundles encourage comprehensive research before forming opinions
+   - Multiple sources per topic prevent single-source bias
+   - Note-taking feature promotes reflective analysis
+   - Export capability enables sharing well-researched positions
+
+f) Neutral Presentation:
+   - System presents government communications without editorial commentary
+   - Users form conclusions from primary sources, not interpretations
+   - AI synthesis explicitly limited to source content
+   - Reduces algorithmic bias in information presentation
+
+g) Accessibility of Official Records:
+   - Makes parliamentary debates accessible to general public
+   - Demystifies government communications
+   - Enables informed citizen participation
+   - Reduces information asymmetry between experts and public
+
+
+7. Target audience: Legal organizations vs public users, and feature
+   differences
+------------------------------------------------------------------------
+
+POFact serves both audiences with a unified platform that has natural
+stratification:
+
+a) Legal/Professional Users (Primary Design Focus):
+   - Evidence Bundles: Matter-centric organization for cases/projects
+   - Audit Trails: Defensible provenance for compliance requirements
+   - Citation Metadata: Court-ready formatting with full attribution
+   - PDF Export: Print-friendly output for filings and memos
+   - These features exist because legal practitioners need cite-able,
+     auditable research
+
+b) Public/General Users:
+   - Same core search and discovery experience
+   - Same AI-powered Q&A with citations
+   - Same document viewing and verification
+   - Evidence bundles work equally well for personal research projects
+   - No "dumbed down" version - public gets professional-grade tools
+
+c) Why This Benefits Public Discourse:
+   - Legal-grade rigor raises quality standards for everyone
+   - Citation requirements apply universally
+   - Public users learn to expect (and provide) proper sourcing
+   - Tools developed for legal compliance serve transparency broadly
+
+d) Practical Usage Patterns:
+   - Journalists: Use audit trails to verify government claims
+   - Researchers: Use evidence bundles for academic work
+   - Citizens: Use search and Q&A to understand policy
+   - Advocates: Use timeline views to track policy changes
+   - All users benefit from the same reliability guarantees
+
+e) No Feature Gating:
+   - We do not hide "professional" features behind paywalls
+   - Audit trails improve trust for all users, not just lawyers
+   - Evidence bundles are useful for anyone organizing research
+   - The assumption is that better tools make better conversations
+
+
+8. How does Deep Search Assistant differ from existing solutions like
+   Perplexity?
+----------------------------------------------------------------------
+
+POFact's Deep Search (POFMan) differs fundamentally from Perplexity:
+
+a) Corpus Constraint (Most Critical Difference):
+   - Perplexity: Searches the open web, synthesizes from diverse sources
+   - POFact: Strictly limited to verified Singapore parliamentary and
+     ministerial documents
+   - POFact cannot "hallucinate" outside its curated corpus
+   - This is a feature, not a limitation, for legal/policy verification
+
+b) Source Verification:
+   - Perplexity: Sources are whatever the web provides (variable quality)
+   - POFact: All sources are official government records with known provenance
+   - Every POFact source has a verified boolean and confidence score
+   - No blog posts, social media, or unverified content
+
+c) Citation Granularity:
+   - Perplexity: Links to web pages
+   - POFact: Exact quotes, document IDs, speaker attribution, date, role,
+     and direct URL to official source
+   - Citation includes hierarchy level and relevance score
+   - Suitable for legal citation requirements
+
+d) Unsupported Claims Handling:
+   - Perplexity: May synthesize plausible-sounding answers
+   - POFact: Explicitly flags claims not supported by corpus
+   - System refuses to speculate beyond available evidence
+   - "Unsupported Claims" section is a first-class feature
+
+e) Audit Trail:
+   - Perplexity: Limited tracking of how answers were generated
+   - POFact: Full query audit trail with retrieval path, LLM response
+     (raw and structured), validation results, and provenance graph
+   - Every answer is forensically reproducible
+
+f) Evidence Workflow Integration:
+   - Perplexity: Read and move on
+   - POFact: Add quotes to evidence bundles, attach notes, export to PDF
+   - Designed for research workflows, not just quick answers
+
+g) Domain Specificity:
+   - Perplexity: General purpose, optimized for breadth
+   - POFact: Singapore government communications, optimized for depth
+     in legal/policy domain
+   - Timeline views, contradiction detection, policy tracking
+   - Understands parliamentary debate structure
+
+h) Confidence Semantics:
+   - Perplexity: General confidence about answer quality
+   - POFact: Multi-level confidence (document, retrieval, citation, composite)
+   - Confidence is grounded in specific source quality metrics
+   - Users can assess reliability at each layer
+
+
+9. Are the cited sources always just publicly available information, or do
+   you handle gated/restricted/paywalled materials as well?
+-------------------------------------------------------------------------
+
+Current Implementation:
+
+a) Publicly Available Sources (Current Corpus):
+   - Singapore Parliamentary Debates (Hansard) - publicly accessible
+   - Ministerial statements and press releases - publicly accessible
+   - Government agency communications - publicly accessible
+   - News sources with public reporting on government matters
+   - All current sources are freely accessible to the public
+
+b) Source URLs:
+   - Every document includes a source URL pointing to the original
+     official publication
+   - Users can verify by clicking through to the authoritative source
+   - No paywall bypass or restricted content scraping
+
+Architecture for Future Expansion:
+
+c) Extensible Source Framework:
+   - sources table tracks source metadata including type, status, and URL
+   - document ingestion is scriptable and supports new source types
+   - Scrapers can be configured for authenticated sources if authorized
+
+d) Handling Restricted Materials (If Required):
+   - Would require proper licensing/authorization agreements
+   - Row Level Security can restrict access based on user authentication
+   - Audit trails would track access to sensitive materials
+   - API keys and authentication can be configured per source
+
+e) Current Design Philosophy:
+   - Focus on official, publicly available government communications
+   - This ensures:
+     * No copyright/licensing issues
+     * Universal accessibility for all users
+     * Transparency and verifiability
+     * Alignment with open government principles
+   - Restricted materials would require partnership with MinLaw or
+     relevant agencies
+
+
+10. How is the confidence score calculated?
+-------------------------------------------
+
+POFact uses a multi-layer confidence scoring system:
+
+a) Document-Level Confidence (Stored in Database):
+   - Heuristic value (0.0-1.0) calculated during data ingestion
+   - Based on:
+     * Source type (parliamentary > ministerial > news)
+     * Verification status (verified field)
+     * Source reliability assessment
+   - Color-coded display: Green (>=0.8), Yellow (0.6-0.8), Red (<0.6)
+
+b) LLM Response Confidence (Dynamic Calculation):
+   - Base confidence: 0.5
+   - If no citations: drops to 0.3
+   - If response too short (<50 chars): capped at 0.4
+   - Citation ratio boost: +0.4 * (citations / min(context.length, 5))
+   - Maximum: 0.9 (never 1.0 to maintain humility)
+   - Formula: min(0.9, 0.5 + citationRatio * 0.4)
+
+c) Final RAG Confidence (Composite Score):
+   - Starts with LLM confidence as base
+   - Retrieval boost: +0.1 max, scaled by (documents retrieved / 20)
+   - Citation boost: +0.1 max, scaled by (citations count / 10)
+   - Final formula: min(1.0, llmConfidence + retrievalBoost + citationBoost)
+
+d) Confidence Boosting Logic:
+   - More retrieved documents = higher confidence (up to +0.1)
+   - More citations in response = higher confidence (up to +0.1)
+   - This rewards well-sourced answers from comprehensive retrieval
+
+e) Consensus Confidence (Multi-Provider Mode):
+   - Average confidence from all responding providers
+   - Multiplied by provider agreement score (0-1)
+   - Agreement measured by citation overlap across providers
+   - Penalizes responses where providers cite different sources
+
+f) Display and Interpretation:
+   - Shown as percentage (0-100%)
+   - Badge colors guide interpretation:
+     * Green (80%+): Well-supported answer
+     * Yellow (60-80%): Moderate support, verify independently
+     * Red (<60%): Weak support, treat with caution
+   - "N/A" displayed when confidence cannot be calculated
+
+
+11. How do you intend to drive adoption of this tool (and thereby actually
+    making an impact)?
+---------------------------------------------------------------------------
+
+Adoption strategy across multiple channels:
+
+a) Legal Profession Entry Points:
+   - Partnership with Singapore law firms for pilot programs
+   - Integration with legal research workflows (evidence bundles are
+     designed for this)
+   - CLE (Continuing Legal Education) demonstrations
+   - Law school curriculum integration at SMU, NUS, etc.
+   - Export formats compatible with legal document management systems
+
+b) Government and Policy Sector:
+   - Collaboration with MinLaw (problem statement sponsor)
+   - Demonstration to parliamentary staff and policy researchers
+   - Integration with government digital services initiatives
+   - Potential for official endorsement as research tool
+
+c) Media and Journalism:
+   - Pitch to Singapore press for fact-checking workflows
+   - Demonstrate value for verifying political claims
+   - Partner with media literacy organizations
+   - Tool for investigative journalists covering policy
+
+d) Academic and Research:
+   - Open access for academic researchers
+   - API availability for research projects
+   - Partnership with political science departments
+   - Dataset contribution to scholarly work
+
+e) Public Engagement:
+   - Free access to encourage civic participation
+   - Social media presence demonstrating fact-checking use cases
+   - Educational content on how to verify claims
+   - Community building around informed discourse
+
+f) Technical Excellence as Marketing:
+   - Open source components where appropriate
+   - Technical blog posts on RAG architecture
+   - Conference presentations on legal AI
+   - Developer community engagement
+
+g) Measurable Impact Metrics:
+   - Query volume and user retention
+   - Evidence bundles created and exported
+   - Citations verified through the platform
+   - User feedback on discourse quality
+   - Partnership expansion over time
+
+h) Sustainability:
+   - Initially grant-funded (hackathon context)
+   - Potential for government sponsorship as public good
+   - Premium features for legal enterprises if needed
+   - Academic partnerships for continued development
+
+i) Network Effects:
+   - Each user who shares a well-sourced claim promotes the platform
+   - Evidence bundles shared in public discourse demonstrate value
+   - Integration requests from other tools expand reach
+   - Success stories from legal cases build credibility
+
+
+=============================================================================
+End of Q&A Document
+
+Project: POFact - "Rule-based Certainty"
+Team: Gabriel Ong, Tan Le Xuan, Astin Tay, Richard Lei, Kevan Wee
+Hackathon: SMU LIT Hackathon 2025 - MinLaw 2 Problem Statement
+Live Demo: https://lit-hackathon-2025.vercel.app
+=============================================================================

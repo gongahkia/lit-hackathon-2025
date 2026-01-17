@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { FileStorage } from '../../../lib/file-storage';
+import { getMockSearchResults } from '../../../lib/mock-search-loader';
 
 const USE_MOCK_DATA_FALLBACK = process.env.USE_MOCK_DATA_FALLBACK === 'true';
 
@@ -27,12 +28,9 @@ export async function GET(request: NextRequest) {
       console.error('Flask search error:', errorText);
 
       if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Flask search failed, falling back to FileStorage');
-        const results = FileStorage.searchDocuments(query);
-        // Map to structure expected by SearchPane if needed, but standard docs usually work 
-        // because SearchPane handles both.
-        // However, SearchPane expects { results: [...] } from /api/search
-        return NextResponse.json({ success: true, results }, { status: 200 });
+        console.warn('Flask search failed, falling back to mock_search_results.json');
+        const mockResults = getMockSearchResults();
+        return NextResponse.json(mockResults, { status: 200 });
       }
 
       return NextResponse.json(
@@ -59,9 +57,9 @@ export async function GET(request: NextRequest) {
     console.error('Search proxy error:', errorMessage);
 
     if (USE_MOCK_DATA_FALLBACK) {
-      console.warn('Flask search exception, falling back to FileStorage');
-      const results = FileStorage.searchDocuments(query);
-      return NextResponse.json({ success: true, results }, { status: 200 });
+      console.warn('Flask search exception, falling back to mock_search_results.json');
+      const mockResults = getMockSearchResults();
+      return NextResponse.json(mockResults, { status: 200 });
     }
     
     return NextResponse.json(
