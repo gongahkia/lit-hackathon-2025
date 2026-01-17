@@ -18,55 +18,53 @@ export default function EvidenceBundleView() {
   const [isLoadingMatters, setIsLoadingMatters] = useState(true)
   const [isLoadingItems, setIsLoadingItems] = useState(false)
 
+  // LocalStorage helpers
+  const LS_MATTERS_KEY = 'demo-matters';
+  const LS_EVIDENCE_KEY = 'demo-evidence-items';
+
+  function loadMattersFromStorage() {
+    try {
+      const raw = localStorage.getItem(LS_MATTERS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function loadEvidenceFromStorage() {
+    try {
+      const raw = localStorage.getItem(LS_EVIDENCE_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch {
+      return [];
+    }
+  }
+  function saveEvidenceToStorage(newItems) {
+    localStorage.setItem(LS_EVIDENCE_KEY, JSON.stringify(newItems));
+  }
+
   // Load matters on mount
   useEffect(() => {
-    const loadMatters = async () => {
-      try {
-        setIsLoadingMatters(true)
-        const res = await fetch("/api/matters")
-        const data = await res.json()
-        if (data.success) {
-          setMatters(data.matters || [])
-          if (data.matters && data.matters.length > 0) {
-            setSelectedMatterId(data.matters[0].id)
-          }
-        }
-      } catch (error) {
-        console.error("Error loading matters:", error)
-      } finally {
-        setIsLoadingMatters(false)
-      }
+    setIsLoadingMatters(true);
+    const matters = loadMattersFromStorage();
+    setMatters(matters);
+    if (matters && matters.length > 0) {
+      setSelectedMatterId(matters[0].id);
     }
-
-    loadMatters()
-  }, [])
+    setIsLoadingMatters(false);
+  }, []);
 
   // Load evidence items when selected matter changes
   useEffect(() => {
-    const loadEvidenceItems = async () => {
-      if (!selectedMatterId) {
-        setEvidenceItems([])
-        return
-      }
-
-      try {
-        setIsLoadingItems(true)
-        console.log('[UI DEBUG] Fetching evidence items for matterId:', selectedMatterId)
-        const res = await fetch(`/api/evidence-items?matter_id=${encodeURIComponent(selectedMatterId)}`)
-        const data = await res.json()
-        console.log('[UI DEBUG] API response evidenceItems:', data.evidenceItems)
-        if (data.success) {
-          setEvidenceItems(data.evidenceItems || [])
-        }
-      } catch (error) {
-        console.error("Error loading evidence items:", error)
-      } finally {
-        setIsLoadingItems(false)
-      }
+    if (!selectedMatterId) {
+      setEvidenceItems([]);
+      return;
     }
-
-    loadEvidenceItems()
-  }, [selectedMatterId])
+    setIsLoadingItems(true);
+    const allEvidence = loadEvidenceFromStorage();
+    const filtered = allEvidence.filter((item) => item.matter_id === selectedMatterId);
+    setEvidenceItems(filtered);
+    setIsLoadingItems(false);
+  }, [selectedMatterId]);
 
   const selectedMatter = matters.find((m) => m.id === selectedMatterId)
 
@@ -74,21 +72,14 @@ export default function EvidenceBundleView() {
     setSelectedMatterId(matterId)
   }
 
-  const handleDeleteEvidenceItem = async (itemId) => {
-    if (!confirm("Remove this evidence item from the bundle?")) return
-
-    try {
-      const res = await fetch(`/api/evidence-items/${itemId}`, {
-        method: "DELETE",
-      })
-      const data = await res.json()
-      if (data.success) {
-        setEvidenceItems((items) => items.filter((item) => item.id !== itemId))
-      }
-    } catch (error) {
-      console.error("Error deleting evidence item:", error)
-    }
-  }
+  const handleDeleteEvidenceItem = (itemId) => {
+    if (!confirm("Remove this evidence item from the bundle?")) return;
+    const allEvidence = loadEvidenceFromStorage();
+    const newEvidence = allEvidence.filter((item) => item.id !== itemId);
+    saveEvidenceToStorage(newEvidence);
+    // Update local state for current matter
+    setEvidenceItems((items) => items.filter((item) => item.id !== itemId));
+  };
 
 
   const exportAsPdf = () => {

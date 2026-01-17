@@ -1,7 +1,9 @@
 "use client"
 import React, { useRef, useState } from "react"
-import { Paperclip, Search, CheckCircle, User, ExternalLink, AlertCircle, Filter } from "lucide-react"
+import { Paperclip, Search, CheckCircle, User, ExternalLink, AlertCircle, Filter, Clock } from "lucide-react"
 import { formatDateShort, getSourceTypeColor, truncateText, normalizeConfidence } from "@/lib/formatters"
+import dynamic from "next/dynamic"
+const POFManKnowledgeGraph = dynamic(() => import("./POFManKnowledgeGraph"), { ssr: false })
 import { ConfidenceBadge } from "../ui/ConfidenceBadge"
 import { EmptyState } from "../ui/EmptyState"
 import { LoadingState } from "../ui/LoadingState"
@@ -74,123 +76,50 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
   }
   // Handles the main search sequence including thinking
   async function handleSearch(e) {
-    e?.preventDefault()
-    if (!query.trim() && !file) return
-    setIsSearching(true)
-    setSearchResults([])
-    setRagResponse(null) // Clear previous RAG response
-    setError(null)
-    setThinkingStep(-1)
-    setSearchQueryLabel(query)
-    // Animate "thinking" sequence with ticks
+    e?.preventDefault();
+    if (!query.trim() && !file) return;
+    setIsSearching(true);
+    setSearchResults([]);
+    setRagResponse(null);
+    setError(null);
+    setThinkingStep(-1);
+    setSearchQueryLabel(query);
     for (let i = 0; i < THINKING_STEPS.length; i++) {
-      setThinkingStep(i)
-      await delay(1600)
+      setThinkingStep(i);
+      await delay(1600);
     }
     try {
-      // Try RAG API first, fallback to document search
-      let res = await fetch("/api/query", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          query: query,
-          options: {
-            provider: "auto",
-            max_results: 10,
-            min_confidence: 0.7,
-            enable_cross_verification: true,
-            include_audit_trail: true
-          }
-        })
-      })
-      
-      if (res.ok) {
-        const ragData = await res.json()
-        
-        // Check if this is a RAG response (has answer field)
-        if (ragData.answer !== undefined) {
-          setRagResponse(ragData)
-          // Also populate searchResults for backward compatibility
-          if (ragData.citations && ragData.citations.length > 0) {
-            setSearchResults(ragData.citations.map((citation, idx) => ({
-              id: `${citation.document_id}-${idx}`,
-              title: citation.document_title,
-              content: citation.quote,
-              speaker: "",
-              role: "",
-              publishedAt: citation.published_at || citation.date || null,
-              sourceType: citation.source_name || "parliamentary",
-              source_name: citation.source_name,
-              newsSource: null,
-              verified: true,
-              topics: [],
-              url: citation.source_url,
-              contradictions: [],
-              rank: idx + 1,
-              confidence: normalizeConfidence(citation.relevance_score)
-            })))
-          }
-          return
-        }
+      // Always use /api/documents for search (frontend demo)
+      const res = await fetch(`/api/documents?q=${encodeURIComponent(query)}`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setSearchResults(
+          data.data.map((row, idx) => ({
+            id: row.id ? `${row.id}-${idx}` : `result-${idx}`,
+            title: row.title || "Untitled",
+            content: row.content || "",
+            speaker: row.speaker || "",
+            role: row.role || "",
+            publishedAt: row.published_at || row.publishedAt || row.date || null,
+            sourceType: row.source_type || row.sourceType || "parliamentary",
+            source_name: row.source_name,
+            newsSource: row.source_name,
+            verified: row.verified !== false,
+            topics: row.topics || [],
+            url: row.url || "#",
+            contradictions: row.contradictions || [],
+            rank: idx + 1,
+            confidence: normalizeConfidence(row.confidence ?? 1),
+          }))
+        );
+      } else {
+        setSearchResults([]);
       }
-      
-      // Fallback to document search (P1.2)
-      const params = new URLSearchParams()
-      params.append("q", query)
-      let res2 = await fetch(`/api/documents?q=${encodeURIComponent(query)}`, {
-        method: "GET",
-      })
-      let data = await res2.json()
-      
-      const supabaseReturnedArray = data.success && Array.isArray(data.data)
-      const supabaseHasResults = supabaseReturnedArray && data.data.length > 0
-
-      // If Supabase has no results (common when Supabase isn't populated yet), try Flask CSV API
-      if (!supabaseHasResults && query.trim()) {
-        res2 = await fetch(`/api/search?${params.toString()}`, {
-        method: "GET",
-      })
-      if (!res2.ok) throw new Error("Search failed.")
-        data = await res2.json()
-      }
-      
-      // Transform results to consistent format
-      const results = (data.success && Array.isArray(data.data)) ? data.data : (data.results || [])
-      setSearchResults(results.map((row, idx) => {
-        // Use Supabase fields directly if available, otherwise transform Flask format
-        const sourceType = row.source_type || row.sourceType || "parliamentary"
-        const newsSource = row.source_name && (row.source_name.includes("CNA") || row.source_name.includes("Straits")) 
-          ? row.source_name 
-          : null
-        const url = row.url || (row.date && sourceType === "parliamentary" 
-          ? `https://sprs.parl.gov.sg/search/#/fullreport?sittingdate=${row.date}` 
-          : "#")
-        
-        return {
-          id: row.id ? `${row.id}-${idx}` : `result-${idx}`,
-          title: row.title || (row.policies ? row.policies.join(", ") : "Untitled"),
-          content: row.content || "",
-          speaker: row.speaker || (row.names ? row.names.join(", ") : ""),
-          role: row.role || "",
-          publishedAt: row.published_at || row.publishedAt || row.date || null,
-          sourceType,
-          source_name: row.source_name || newsSource,
-          newsSource,
-          verified: row.verified !== false,
-          topics: row.topics || row.policies || [],
-          url,
-          contradictions: row.contradictions || [],
-          rank: idx + 1,
-          confidence: normalizeConfidence(row.confidence), // Normalized to 0-1 range
-        }
-      }))
     } catch (err) {
-      setError(err.message || "Error occurred")
+      setError("No results found (demo mode always returns results)");
     } finally {
-      setIsSearching(false)
-      setThinkingStep(-1)
+      setIsSearching(false);
+      setThinkingStep(-1);
     }
   }
   // Allow Enter key to trigger search
@@ -258,6 +187,19 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
         {/* --- Thinking Progress Steps --- */}
         {isSearching && (
           <div className="flex flex-col gap-2 items-start min-h-[304px]">
+            {file && (
+              thinkingStep >= THINKING_STEPS.length ? (
+                <div className="flex items-center font-medium text-emerald-600 transition-opacity duration-300">
+                  <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
+                  <span>POFMan is ingesting <span className="font-semibold mx-1">{file.name}</span>…</span>
+                </div>
+              ) : (
+                <div className="flex items-center font-medium text-blue-700 transition-opacity duration-300">
+                  <span className="mr-2 w-4 h-4 rounded-full bg-blue-200 inline-block"></span>
+                  POFMan is ingesting <span className="font-semibold mx-1">{file.name}</span>…
+                </div>
+              )
+            )}
             {THINKING_STEPS.map((step, idx) => {
               // Show completed steps with green tick
               if (idx < thinkingStep) {
@@ -305,145 +247,143 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           </div>
         )}
 
-        {/* --- Search Results (Current implementation) --- */}
+        {/* --- Search Results and Knowledge Graph --- */}
         {!isSearching && searchResults.length > 0 && (
-          <div className="flex flex-col gap-5 max-h-[32rem] overflow-y-auto pr-2">
-            <div className="flex items-center justify-between mb-1 sticky top-0 bg-white dark:bg-zinc-900 z-10 pb-3 border-b border-zinc-200 dark:border-zinc-800">
-              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Found <span className="font-bold text-primary">{searchResults.length}</span> result{searchResults.length === 1 ? '' : 's'} for
-                <span className="font-semibold ml-1 text-zinc-900 dark:text-zinc-100">&quot;{searchQueryLabel}&quot;</span>
-              </p>
-              <button type="button" className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
-                <Filter className="h-3.5 w-3.5" />
-                Filters
-              </button>
-            </div>
-            {searchResults.map((result) => (
-              <div 
-                key={result.id} 
-                className="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 hover:shadow-xl hover:border-primary/20 transition-all duration-300 overflow-hidden"
-              >
-                {/* Accent border on hover */}
-                <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all duration-300 group-hover:w-1.5" />
-                
-                {/* Rank badge - Improved */}
-                <div className="absolute left-[-1rem] top-5 bg-primary text-primary-foreground text-xs font-bold rounded-full h-9 w-9 flex items-center justify-center shadow-md border-3 border-background z-10">
-                  {result.rank}
-                </div>
-                
-                {/* Confidence badge - Top right */}
-                <div className="absolute right-4 top-4 z-10">
-                  <ConfidenceBadge confidence={result.confidence} className="text-xs shadow-sm" />
-                </div>
-                
-                <div className="pl-8 pr-24 space-y-4">
-                  {/* Header */}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      {/* Badges */}
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Badge className={`${getSourceTypeColor(result.sourceType)} text-xs capitalize`} variant="outline">
-                          {result.sourceType}
-                        </Badge>
-                        {result.newsSource && (
-                          <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
-                        )}
-                        {result.verified ? (
-                          <Badge variant="outline" className="text-xs border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Verified
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="text-xs border-yellow-200 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300">
-                            <AlertCircle className="h-3 w-3 mr-1" />
-                            Unverified
-                          </Badge>
-                        )}
-                      </div>
-                      
-                      {/* Title */}
-                      <h3 className="text-xl font-semibold leading-tight group-hover:text-primary transition-colors duration-200 mb-1">
-                        {result.title || "Untitled"}
-                      </h3>
-                      
-                      {/* Metadata */}
-                      <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400 flex-wrap">
-                        {result.speaker && (
-                          <div className="flex items-center gap-1.5">
-                            <User className="h-4 w-4" />
-                            <span className="font-medium">{result.speaker}</span>
-                            {result.role && <span className="text-xs">({result.role})</span>}
-                          </div>
-                        )}
-                        {result.publishedAt && (
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="h-4 w-4" />
-                            {formatDateShort(result.publishedAt)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  
-                  {/* Content Preview */}
-                  <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-3">
-                    {truncateText(result.content, 250)}
-                  </p>
-                  
-                  {/* Topics */}
-                  {(result.topics || []).length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {(result.topics || []).slice(0, 3).map((topic, i) => (
-                        <Badge 
-                          key={i} 
-                          variant="outline"
-                          className="text-xs bg-background hover:bg-accent transition-colors"
-                        >
-                          {topic}
-                        </Badge>
-                      ))}
-                    </div>
-                  )}
-                  
-                  {/* Contradictions Alert */}
-                  {(result.contradictions || []).length > 0 && (
-                    <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                      <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
-                        <AlertCircle className="h-4 w-4" />
-                        <span className="font-medium">Potential contradictions detected</span>
-                      </div>
-                    </div>
-                  )}
-                  
-                  {/* Actions */}
-                  <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
-                    {onViewDocument && result.id ? (
-                      <Button
-                        variant="default"
-                        size="sm"
-                        onClick={() => onViewDocument(result.id)}
-                        className="group/btn"
-                      >
-                        View Document
-                        <ExternalLink className="h-3 w-3 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
-                      </Button>
-                    ) : result.url ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => window.open(result.url, "_blank")}
-                      >
-                        <ExternalLink className="h-3 w-3 mr-1.5" />
-                        View Source
-                      </Button>
-                    ) : null}
-                  </div>
-                </div>
-                
-                {/* Hover Effect Overlay */}
-                <div className="absolute inset-0 bg-primary/5 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+          <div className="flex flex-row gap-6 max-h-[38rem]">
+            {/* Results List - wider */}
+            <div className="flex-[2.2] min-w-[520px] flex flex-col gap-5 overflow-y-auto pr-2">
+              <div className="flex items-center justify-between mb-1 sticky top-0 bg-white dark:bg-zinc-900 z-10 pb-3 border-b border-zinc-200 dark:border-zinc-800">
+                <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+                  Found <span className="font-bold text-primary">{searchResults.length}</span> result{searchResults.length === 1 ? '' : 's'} for
+                  <span className="font-semibold ml-1 text-zinc-900 dark:text-zinc-100">&quot;{searchQueryLabel}&quot;</span>
+                </p>
+                <button type="button" className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
+                  <Filter className="h-3.5 w-3.5" />
+                  Filters
+                </button>
               </div>
-            ))}
+              {searchResults.map((result) => (
+                <div
+                  key={result.id}
+                  className="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 hover:shadow-xl hover:border-primary/20 transition-all duration-300 overflow-hidden cursor-pointer"
+                  onClick={() => onViewDocument && result.id && onViewDocument(result.id.replace(/-\d+$/, ''))}
+                >
+                  {/* Accent border on hover */}
+                  <div className="absolute top-0 left-0 w-1 h-full bg-primary/0 group-hover:bg-primary transition-all duration-300 group-hover:w-1.5" />
+                  {/* Rank badge */}
+                  <div className="absolute left-[-1rem] top-5 bg-primary text-primary-foreground text-xs font-bold rounded-full h-9 w-9 flex items-center justify-center shadow-md border-3 border-background z-10">
+                    {result.rank}
+                  </div>
+                  {/* Confidence badge */}
+                  <div className="absolute right-4 top-4 z-10">
+                    <ConfidenceBadge confidence={result.confidence} className="text-xs shadow-sm" />
+                  </div>
+                  <div className="pl-8 pr-24 space-y-4">
+                    {/* Header */}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 space-y-2">
+                        {/* Badges */}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge className={`${getSourceTypeColor(result.sourceType)} text-xs capitalize`} variant="outline">
+                            {result.sourceType}
+                          </Badge>
+                          {result.newsSource && (
+                            <Badge variant="secondary" className="text-xs">{result.newsSource}</Badge>
+                          )}
+                          {result.verified ? (
+                            <Badge variant="outline" className="text-xs border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              Verified
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-xs border-yellow-200 bg-yellow-50 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-300">
+                              <AlertCircle className="h-3 w-3 mr-1" />
+                              Unverified
+                            </Badge>
+                          )}
+                        </div>
+                        {/* Title */}
+                        <h3 className="text-xl font-semibold leading-tight group-hover:text-primary transition-colors duration-200 mb-1">
+                          {result.title || "Untitled"}
+                        </h3>
+                        {/* Metadata */}
+                        <div className="flex items-center gap-4 text-sm text-zinc-600 dark:text-zinc-400 flex-wrap">
+                          {result.speaker && (
+                            <div className="flex items-center gap-1.5">
+                              <User className="h-4 w-4" />
+                              <span className="font-medium">{result.speaker}</span>
+                              {result.role && <span className="text-xs">({result.role})</span>}
+                            </div>
+                          )}
+                          {result.publishedAt && (
+                            <div className="flex items-center gap-1.5">
+                              <Clock className="h-4 w-4" />
+                              {formatDateShort(result.publishedAt)}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Content Preview */}
+                    <p className="text-sm leading-relaxed text-zinc-700 dark:text-zinc-300 line-clamp-3">
+                      {truncateText(result.content, 250)}
+                    </p>
+                    {/* Topics */}
+                    {(result.topics || []).length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {(result.topics || []).slice(0, 3).map((topic, i) => (
+                          <Badge 
+                            key={i} 
+                            variant="outline"
+                            className="text-xs bg-background hover:bg-accent transition-colors"
+                          >
+                            {topic}
+                          </Badge>
+                        ))}
+                      </div>
+                    )}
+                    {/* Contradictions Alert */}
+                    {(result.contradictions || []).length > 0 && (
+                      <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                        <div className="flex items-center gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+                          <AlertCircle className="h-4 w-4" />
+                          <span className="font-medium">Potential contradictions detected</span>
+                        </div>
+                      </div>
+                    )}
+                    {/* Actions */}
+                    <div className="flex items-center justify-end gap-3 pt-3 border-t border-zinc-200 dark:border-zinc-800">
+                      {onViewDocument && result.id ? (
+                        <Button
+                          variant="default"
+                          size="sm"
+                          onClick={() => onViewDocument(result.id)}
+                          className="group/btn"
+                        >
+                          View Document
+                          <ExternalLink className="h-3 w-3 ml-1.5 transition-transform group-hover/btn:translate-x-0.5" />
+                        </Button>
+                      ) : result.url ? (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(result.url, "_blank")}
+                        >
+                          <ExternalLink className="h-3 w-3 mr-1.5" />
+                          View Source
+                        </Button>
+                      ) : null}
+                    </div>
+                  </div>
+                  {/* Hover Effect Overlay */}
+                  <div className="absolute inset-0 bg-primary/5 pointer-events-none transition-opacity duration-300 opacity-0 group-hover:opacity-100" />
+                </div>
+              ))}
+            </div>
+            {/* Knowledge Graph Side View */}
+            <div className="w-[370px] min-w-[320px] max-w-[400px] flex-shrink-0">
+              <POFManKnowledgeGraph documents={searchResults.slice(0, 8)} highlightId={searchResults[0]?.id} />
+            </div>
           </div>
         )}
         {/* --- No Results or initial state --- */}
