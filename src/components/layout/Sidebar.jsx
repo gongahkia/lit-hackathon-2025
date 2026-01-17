@@ -180,7 +180,6 @@ export default function Sidebar({
             <div className="mt-auto border-t border-sidebar-border px-3 py-3">
               <div className="flex items-center gap-2">
                 <button className="inline-flex items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-sidebar-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sidebar-ring">
-                  <Settings className="h-4 w-4" /> {!sidebarCollapsed && "Settings"}
                 </button>
                 <div className="ml-auto">
                   <ThemeToggle theme={theme} setTheme={setTheme} />

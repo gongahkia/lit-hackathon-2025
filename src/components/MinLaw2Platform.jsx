@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Search, Clock, AlertTriangle, Calculator, Settings, Menu, Bot, Folder } from "lucide-react"
+import { Search, Menu, Bot, Folder } from "lucide-react"
 import Sidebar from "./layout/Sidebar"
 import Header from "./layout/Header"
 import SearchPane from "./features/SearchPane"

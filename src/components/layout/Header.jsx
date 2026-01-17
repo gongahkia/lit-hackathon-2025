@@ -64,27 +64,6 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
       )*/}
 
       <div className="ml-auto flex items-center gap-2">
-        <GhostIconButton label="Notifications">
-          <Bell className="h-4 w-4" />
-        </GhostIconButton>
-
-        <GhostIconButton 
-          label="Help" 
-          onClick={() => {
-            if (confirm("Restart the onboarding tour?")) {
-              localStorage.removeItem("pofact-onboarding-completed")
-              window.location.reload()
-            }
-          }}
-        >
-          <HelpCircle className="h-4 w-4" />
-        </GhostIconButton>
-
-        {activeView !== "search" && (
-          <GhostIconButton label="Search" onClick={() => searchRef?.current?.focus()}>
-            <Search className="h-4 w-4" />
-          </GhostIconButton>
-        )}
       </div>
     </div>
   )
