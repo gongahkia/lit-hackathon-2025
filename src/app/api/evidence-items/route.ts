@@ -25,37 +25,10 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    if (!supabase) {
-      if (USE_MOCK_DATA_FALLBACK) {
-        const items = FileStorage.getEvidenceItems(matterId);
-        console.log(`[API DEBUG] matter_id: ${matterId}, evidenceItems found:`, items);
-        return NextResponse.json({ success: true, evidenceItems: items });
-      }
-      return NextResponse.json(
-        { success: false, error: 'Supabase configuration missing', evidenceItems: [] },
-        { status: 500 }
-      );
-    }
-
-    const { data, error } = await supabase
-      .from('evidence_items')
-      .select('*')
-      .eq('matter_id', matterId)
-      .order('display_order', { ascending: true })
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching evidence items:', error);
-      if (USE_MOCK_DATA_FALLBACK) {
-        return NextResponse.json({ success: true, evidenceItems: FileStorage.getEvidenceItems(matterId) });
-      }
-      return NextResponse.json(
-        { success: false, error: error.message, evidenceItems: [] },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, evidenceItems: data || [] });
+    // Always use file storage for frontend-only demo
+    const items = FileStorage.getEvidenceItems(matterId);
+    console.log(`[API DEBUG] matter_id: ${matterId}, evidenceItems found:`, items);
+    return NextResponse.json({ success: true, evidenceItems: items });
   } catch (error: any) {
     console.error('Unexpected error:', error);
     if (USE_MOCK_DATA_FALLBACK) {
