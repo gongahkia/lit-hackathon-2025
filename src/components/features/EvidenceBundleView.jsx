@@ -51,8 +51,10 @@ export default function EvidenceBundleView() {
 
       try {
         setIsLoadingItems(true)
+        console.log('[UI DEBUG] Fetching evidence items for matterId:', selectedMatterId)
         const res = await fetch(`/api/evidence-items?matter_id=${encodeURIComponent(selectedMatterId)}`)
         const data = await res.json()
+        console.log('[UI DEBUG] API response evidenceItems:', data.evidenceItems)
         if (data.success) {
           setEvidenceItems(data.evidenceItems || [])
         }

@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
     const matterId = searchParams.get('matter_id');
 
     if (!matterId) {
+      console.log('[API DEBUG] No matter_id provided');
       return NextResponse.json(
         { success: false, error: 'matter_id query parameter is required', evidenceItems: [] },
         { status: 400 }
@@ -26,7 +27,9 @@ export async function GET(request: NextRequest) {
 
     if (!supabase) {
       if (USE_MOCK_DATA_FALLBACK) {
-        return NextResponse.json({ success: true, evidenceItems: FileStorage.getEvidenceItems(matterId) });
+        const items = FileStorage.getEvidenceItems(matterId);
+        console.log(`[API DEBUG] matter_id: ${matterId}, evidenceItems found:`, items);
+        return NextResponse.json({ success: true, evidenceItems: items });
       }
       return NextResponse.json(
         { success: false, error: 'Supabase configuration missing', evidenceItems: [] },

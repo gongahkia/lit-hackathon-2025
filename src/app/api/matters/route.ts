@@ -15,39 +15,12 @@ if (supabaseUrl && supabaseKey) {
 // GET /api/matters - List all matters
 export async function GET(request: NextRequest) {
   try {
-    if (!supabase) {
-      if (USE_MOCK_DATA_FALLBACK) {
-        return NextResponse.json({ success: true, matters: FileStorage.getMatters() });
-      }
-      return NextResponse.json(
-        { success: false, error: 'Supabase configuration missing', matters: [] },
-        { status: 500 }
-      );
-    }
-
-    const { data, error } = await supabase
-      .from('matters')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching matters:', error);
-      if (USE_MOCK_DATA_FALLBACK) {
-        console.warn('Falling back to local file storage for matters');
-        return NextResponse.json({ success: true, matters: FileStorage.getMatters() });
-      }
-      return NextResponse.json(
-        { success: false, error: error.message, matters: [] },
-        { status: 500 }
-      );
-    }
-
-    return NextResponse.json({ success: true, matters: data || [] });
+    // Always use file storage for frontend-only demo
+    const matters = FileStorage.getMatters();
+    console.log('[API DEBUG] Returning matters:', matters);
+    return NextResponse.json({ success: true, matters });
   } catch (error: any) {
-    console.error('Unexpected error:', error);
-    if (USE_MOCK_DATA_FALLBACK) {
-       return NextResponse.json({ success: true, matters: FileStorage.getMatters() });
-    }
+    console.error('[API DEBUG] Unexpected error in /api/matters:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Internal server error', matters: [] },
       { status: 500 }
