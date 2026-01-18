@@ -250,11 +250,11 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
         {/* --- Search Results and Knowledge Graph --- */}
         {!isSearching && searchResults.length > 0 && (
           <div className="flex flex-row gap-6 max-h-[38rem]">
-            {/* Results List - wider */}
+            {/* Results List - wider - show top 3 */}
             <div className="flex-[2.2] min-w-[520px] flex flex-col gap-5 overflow-y-auto pr-2">
               <div className="flex items-center justify-between mb-1 sticky top-0 bg-white dark:bg-zinc-900 z-10 pb-3 border-b border-zinc-200 dark:border-zinc-800">
                 <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                  Found <span className="font-bold text-primary">{searchResults.length}</span> result{searchResults.length === 1 ? '' : 's'} for
+                  Showing <span className="font-bold text-primary">top 3</span> of <span className="font-bold">{searchResults.length}</span> results for
                   <span className="font-semibold ml-1 text-zinc-900 dark:text-zinc-100">&quot;{searchQueryLabel}&quot;</span>
                 </p>
                 <button type="button" className="px-3 py-1.5 flex items-center gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-700 text-xs font-medium text-zinc-700 dark:text-zinc-200 bg-white dark:bg-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-700 transition-colors">
@@ -262,7 +262,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
                   Filters
                 </button>
               </div>
-              {searchResults.map((result) => (
+              {searchResults.slice(0, 3).map((result) => (
                 <div
                   key={result.id}
                   className="group relative rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 p-6 hover:shadow-xl hover:border-primary/20 transition-all duration-300 overflow-hidden cursor-pointer"
@@ -380,9 +380,14 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
                 </div>
               ))}
             </div>
-            {/* Knowledge Graph Side View */}
-            <div className="w-[370px] min-w-[320px] max-w-[400px] flex-shrink-0">
-              <POFManKnowledgeGraph documents={searchResults.slice(0, 8)} highlightId={searchResults[0]?.id} />
+            {/* Knowledge Graph Side View - shows top 10 documents */}
+            <div className="w-[400px] min-w-[380px] max-w-[420px] flex-shrink-0">
+              <POFManKnowledgeGraph
+                documents={searchResults.slice(0, 10)}
+                highlightId={searchResults[0]?.id}
+                onNodeClick={(docId) => onViewDocument && onViewDocument(docId)}
+                relevantCount={3}
+              />
             </div>
           </div>
         )}
