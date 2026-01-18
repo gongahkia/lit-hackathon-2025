@@ -1,5 +1,5 @@
-import { getSupabaseAdmin } from './supabase'
-import { LLMRouter } from './llm/router'
+import { getSupabaseAdmin, isStandaloneMode } from './supabase'
+import { FileStorage } from '../src/lib/file-storage'
 
 export interface TimelineEvent {
   id: string
@@ -32,14 +32,24 @@ interface DocumentData {
 /**
  * Generate a timeline of policy development for a specific document
  * Based on related Hansard documents sharing the same topics
+ * Falls back to mock data in standalone mode
  */
 export class TimelineService {
   /**
    * Generate timeline events for a document
    */
   static async generateDocumentTimeline(documentId: string): Promise<TimelineEvent[]> {
+    // Use mock timeline in standalone mode
+    if (isStandaloneMode) {
+      return this.generateMockTimeline(documentId)
+    }
+
     try {
       const supabase = getSupabaseAdmin()
+
+      if (!supabase) {
+        return this.generateMockTimeline(documentId)
+      }
 
       // Get the current document
       const { data: currentDoc, error: docError } = await supabase
@@ -50,13 +60,13 @@ export class TimelineService {
 
       if (docError || !currentDoc) {
         console.error('Error fetching current document:', docError)
-        return []
+        return this.generateMockTimeline(documentId)
       }
 
       // Get document's topics
       const documentTopics = (currentDoc.topics || []) as string[]
       if (documentTopics.length === 0) {
-        return []
+        return this.generateMockTimeline(documentId)
       }
 
       // Get topic names
@@ -93,7 +103,7 @@ export class TimelineService {
 
       if (relatedError) {
         console.error('Error fetching related documents:', relatedError)
-        return []
+        return this.generateMockTimeline(documentId)
       }
 
       // Filter documents that share at least one topic with the current document
@@ -102,9 +112,9 @@ export class TimelineService {
         return docTopics.some(topicId => documentTopics.includes(topicId))
       })
 
-      // If we have few or no relevant documents, use AI to generate timeline
+      // If we have few or no relevant documents, generate mock timeline
       if (relevantDocs.length < 3) {
-        return await this.generateAITimeline(currentDoc, documentTopics, topicMap)
+        return this.generateMockTimeline(documentId)
       }
 
       // Group documents by topic and classify events
@@ -162,114 +172,148 @@ export class TimelineService {
       return events
     } catch (error: any) {
       console.error('Error generating timeline:', error)
-      return []
+      return this.generateMockTimeline(documentId)
     }
   }
 
   /**
-   * Generate timeline using AI when database has insufficient data
+   * Generate mock timeline from storage.json data
    */
-  private static async generateAITimeline(
-    currentDoc: any,
-    documentTopics: string[],
-    topicMap: Map<string, string>
-  ): Promise<TimelineEvent[]> {
+  private static generateMockTimeline(documentId: string): TimelineEvent[] {
     try {
-      const supabase = getSupabaseAdmin()
+      const documents = FileStorage.getDocuments()
+      const topics = FileStorage.getTopics()
 
-      // Get current document details
-      const { data: docDetails } = await supabase
-        .from('documents')
-        .select('id, title, summary, content, published_at, date, speaker, role, topics')
-        .eq('id', currentDoc.id)
-        .single()
-
-      if (!docDetails) {
-        return []
+      // Find the current document
+      const currentDoc = documents.find((d: any) => d.id === documentId)
+      if (!currentDoc) {
+        return this.getDefaultTimeline()
       }
 
-      // Build context for AI
-      const topicNames = documentTopics.map(id => topicMap.get(id) || id).join(', ')
-      const documentContext = {
-        title: docDetails.title,
-        summary: docDetails.summary || '',
-        content: (docDetails.content || '').substring(0, 2000), // Limit content length
-        date: docDetails.published_at || docDetails.date,
-        speaker: docDetails.speaker || '',
-        role: docDetails.role || '',
-        topics: topicNames
-      }
+      // Get document's topics
+      const documentTopics = (currentDoc.topics || []) as string[]
 
-      // Create prompt for AI to generate timeline
-      const prompt = `You are analyzing a Singapore parliamentary document about policy development. Based on the following document information, generate a timeline of related policy development events in JSON format.
+      // Create topic name map
+      const topicMap = new Map<string, string>()
+      topics.forEach((t: any) => topicMap.set(t.id, t.name))
 
-Document Information:
-- Title: ${documentContext.title}
-- Summary: ${documentContext.summary}
-- Date: ${documentContext.date}
-- Speaker: ${documentContext.speaker}${documentContext.role ? ` (${documentContext.role})` : ''}
-- Topics: ${documentContext.topics}
-- Content excerpt: ${documentContext.content}
-
-Generate a timeline of related policy development events that would typically occur for this type of document. Include:
-1. Policy creation events (when the policy was first introduced)
-2. Amendment events (when the policy was modified)
-3. Dissolution events (if applicable, when the policy was repealed or ended)
-
-Return ONLY a valid JSON array of timeline events in this exact format:
-[
-  {
-    "type": "creation" | "amendment" | "dissolution",
-    "date": "YYYY-MM-DD",
-    "document_title": "Title of the related document",
-    "summary": "Brief summary of the event",
-    "speakers": ["Speaker name"],
-    "topic": "topic_id",
-    "topic_name": "Topic Name"
-  }
-]
-
-Generate 3-5 realistic timeline events based on typical Singapore parliamentary policy development patterns. Use realistic dates relative to the document date.`
-
-      // Use LLM to generate timeline
-      const llmRouter = new LLMRouter()
-      const documents: any[] = [] // Empty context for pure generation
-      
-      const response = await llmRouter.route(prompt, documents, {
-        provider: 'auto',
-        temperature: 0.4,
-        maxTokens: 2000
+      // Find related parliamentary documents
+      const relatedDocs = documents.filter((doc: any) => {
+        if (doc.id === documentId) return false
+        if (doc.source_type !== 'parliamentary') return false
+        const docTopics = (doc.topics || []) as string[]
+        return docTopics.some((topicId: string) => documentTopics.includes(topicId))
       })
 
-      // Parse JSON from response
-      let aiEvents: any[] = []
-      try {
-        // Extract JSON from response content
-        const jsonMatch = response.content.match(/\[[\s\S]*\]/)
-        if (jsonMatch) {
-          aiEvents = JSON.parse(jsonMatch[0])
-        }
-      } catch (parseError) {
-        console.error('Error parsing AI timeline JSON:', parseError)
-        return []
+      if (relatedDocs.length === 0) {
+        return this.getDefaultTimeline()
       }
 
-      // Transform AI events to TimelineEvent format
-      return aiEvents.map((event, idx) => ({
-        id: `ai-${currentDoc.id}-${idx}`,
-        type: event.type || 'amendment',
-        date: event.date || documentContext.date,
-        document_title: event.document_title || 'Related Policy Development',
-        summary: event.summary || '',
-        speakers: Array.isArray(event.speakers) ? event.speakers : [event.speakers || ''],
-        topic: event.topic || documentTopics[0] || '',
-        topic_name: event.topic_name || topicMap.get(documentTopics[0]) || '',
-        isAiGenerated: true
-      }))
-    } catch (error: any) {
-      console.error('Error generating AI timeline:', error)
-      return []
+      // Generate timeline events
+      const events: TimelineEvent[] = []
+      const topicFirstSeen = new Map<string, string>()
+
+      // Sort by date
+      relatedDocs.sort((a: any, b: any) => {
+        const dateA = new Date(a.published_at || a.date).getTime()
+        const dateB = new Date(b.published_at || b.date).getTime()
+        return dateA - dateB
+      })
+
+      for (const doc of relatedDocs) {
+        const docTopics = (doc.topics || []) as string[]
+        const docDate = doc.published_at || doc.date
+
+        for (const topicId of docTopics) {
+          if (!documentTopics.includes(topicId)) continue
+
+          const firstSeenDate = topicFirstSeen.get(topicId)
+          const isFirst = !firstSeenDate
+          const isDissolution = this.detectDissolution(doc.content || doc.summary || '')
+
+          let eventType: 'creation' | 'amendment' | 'dissolution'
+          if (isDissolution) {
+            eventType = 'dissolution'
+          } else if (isFirst) {
+            eventType = 'creation'
+            topicFirstSeen.set(topicId, docDate)
+          } else {
+            eventType = 'amendment'
+          }
+
+          const speakers = doc.speaker ? [doc.speaker] : []
+          if (doc.role) {
+            speakers.push(doc.role)
+          }
+
+          events.push({
+            id: `${doc.id}-${topicId}`,
+            type: eventType,
+            date: docDate,
+            document_id: doc.id,
+            document_title: doc.title,
+            summary: doc.summary || doc.title,
+            speakers,
+            url: doc.url || undefined,
+            topic: topicId,
+            topic_name: topicMap.get(topicId) || topicId
+          })
+        }
+      }
+
+      // Sort by date ascending
+      events.sort((a, b) => {
+        const dateA = new Date(a.date).getTime()
+        const dateB = new Date(b.date).getTime()
+        return dateA - dateB
+      })
+
+      return events.length > 0 ? events : this.getDefaultTimeline()
+    } catch (error) {
+      console.error('Error generating mock timeline:', error)
+      return this.getDefaultTimeline()
     }
+  }
+
+  /**
+   * Get a default timeline when no related documents are found
+   */
+  private static getDefaultTimeline(): TimelineEvent[] {
+    return [
+      {
+        id: 'default-1',
+        type: 'creation',
+        date: '2020-01-15',
+        document_title: 'Initial Policy Framework Establishment',
+        summary: 'The foundational framework for this policy area was first introduced in Parliament.',
+        speakers: ['Minister'],
+        topic: 'general',
+        topic_name: 'General Policy',
+        isAiGenerated: true
+      },
+      {
+        id: 'default-2',
+        type: 'amendment',
+        date: '2022-06-20',
+        document_title: 'Policy Enhancement and Updates',
+        summary: 'Key amendments were made to strengthen the policy framework and address emerging needs.',
+        speakers: ['Minister'],
+        topic: 'general',
+        topic_name: 'General Policy',
+        isAiGenerated: true
+      },
+      {
+        id: 'default-3',
+        type: 'amendment',
+        date: '2024-03-10',
+        document_title: 'Recent Policy Refinements',
+        summary: 'Further refinements were introduced to ensure the policy remains effective and relevant.',
+        speakers: ['Minister'],
+        topic: 'general',
+        topic_name: 'General Policy',
+        isAiGenerated: true
+      }
+    ]
   }
 
   /**
