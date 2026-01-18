@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     const newMatter = FileStorage.createMatter(name.trim(), description?.trim());
     return NextResponse.json({ success: true, matter: newMatter }, { status: 201 });
 
-  } catch (error: any)
+  } catch (error: any) {
     console.error('Unexpected error:', error);
     return NextResponse.json(
       { success: false, error: error.message || 'Internal server error' },
