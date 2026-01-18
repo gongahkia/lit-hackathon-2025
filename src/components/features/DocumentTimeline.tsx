@@ -10,6 +10,7 @@ import { Badge } from "../ui/badge"
 import { Button } from "../ui/button"
 import { Separator } from "../ui/separator"
 import type { TimelineEvent } from "../../../lib/timeline-service"
+import { getDocumentTimeline } from "@/lib/actions/timeline-actions"
 
 interface DocumentTimelineProps {
   documentId: string
@@ -27,13 +28,12 @@ export default function DocumentTimeline({ documentId, onViewDocument }: Documen
     setIsLoading(true)
     setError(null)
 
-    fetch(`/api/documents/${documentId}/timeline`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          setTimelineEvents(data.data)
+    getDocumentTimeline(documentId)
+      .then((result) => {
+        if (result.success && Array.isArray(result.data)) {
+          setTimelineEvents(result.data)
         } else {
-          setError(data.error || "Failed to load timeline")
+          setError(result.error || "Failed to load timeline")
         }
       })
       .catch((err) => {
