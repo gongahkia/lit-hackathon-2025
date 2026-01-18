@@ -8,7 +8,7 @@ import { Search, Clock, Bot, Folder, FileText, ArrowRight, X } from "lucide-reac
 
 const STEPS = [
   {
-    title: "Welcome to Pofact",
+    title: "Welcome to POfact",
     description: "Your AI-powered platform for searching, verifying, and analyzing parliamentary data and government communications.",
     icon: <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary text-3xl">⚖</div>,
     content: (

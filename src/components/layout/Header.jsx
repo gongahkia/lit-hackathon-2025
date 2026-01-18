@@ -17,8 +17,6 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
 
   const getViewTitle = (view) => {
     switch (view) {
-      case "search":
-        return "Parliamentary Search"
       case "document":
         return "Document Viewer"
       case "timeline":
@@ -30,7 +28,7 @@ export default function Header({ activeView, setSidebarOpen, searchRef, onSearch
       case "admin":
         return "Admin Dashboard"
       default:
-        return "Pofact"
+        return "POfact"
     }
   }
 

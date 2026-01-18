@@ -33,7 +33,7 @@ const geistSans = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Pofact",
+  title: "POfact",
   description:
     "Fast, verifiable access to parliamentary statements, ministerial releases, and government communications",
   generator: "v0.app",

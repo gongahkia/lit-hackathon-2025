@@ -107,7 +107,7 @@ export default function Sidebar({
                 <div className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
                   <img src="/P.png" alt="Pofact Logo" className="h-8 w-8 object-contain" />
                 </div>
-                <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "Pofact"}</div>
+                <div className="text-sm font-semibold tracking-tight"> {!sidebarCollapsed && "POfact"}</div>
               </div>
               <div className="ml-auto flex items-center gap-1">
               <button
@@ -159,21 +159,44 @@ export default function Sidebar({
               <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-2">
                 {!sidebarCollapsed && "Data Sources"}
               </h3>
-              <div className="space-y-1">
-                {sources.slice(0, 4).map((source) => (
-                  <div key={source.id} className="flex items-center justify-between py-2 text-sm">
-                    <div className="flex items-center gap-2">
-                      <div
-                        className={cls(
-                          "h-2 w-2 rounded-full",
-                          source.status === "active" ? "bg-green-500" : "bg-gray-400",
-                        )}
-                      />
-                      <span className="truncate">{source.name}</span>
+              <div className="space-y-3">
+                {/* 1st Class Card */}
+                <div className="rounded-lg bg-green-100 dark:bg-green-900/40 p-2">
+                  <div className="mb-1 text-xs font-bold text-green-800 dark:text-green-200">Official Sources</div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 py-1 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="truncate text-green-900 dark:text-green-100">Hansard</span>
+                      <span className="ml-2 rounded-full bg-green-200 dark:bg-green-800 px-2 py-0.5 text-xs font-semibold text-green-800 dark:text-green-200">1st class</span>
                     </div>
-                    <span className="text-xs text-muted-foreground">{source.documentsCount}</span>
+                    <div className="flex items-center gap-2 py-1 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="truncate text-green-900 dark:text-green-100">Law Gazette</span>
+                      <span className="ml-2 rounded-full bg-green-200 dark:bg-green-800 px-2 py-0.5 text-xs font-semibold text-green-800 dark:text-green-200">1st class</span>
+                    </div>
                   </div>
-                ))}
+                </div>
+                {/* 2nd Class Card */}
+                <div className="rounded-lg bg-gray-100 dark:bg-gray-800/60 p-2">
+                  <div className="mb-1 text-xs font-bold text-gray-800 dark:text-gray-200">News Outlets</div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 py-1 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="truncate text-gray-900 dark:text-gray-100">Channel News Asia</span>
+                      <span className="ml-2 rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs font-semibold text-gray-800 dark:text-gray-200">2nd class</span>
+                    </div>
+                    <div className="flex items-center gap-2 py-1 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="truncate text-gray-900 dark:text-gray-100">Lian He Zao Bao</span>
+                      <span className="ml-2 rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs font-semibold text-gray-800 dark:text-gray-200">2nd class</span>
+                    </div>
+                    <div className="flex items-center gap-2 py-1 text-sm">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="truncate text-gray-900 dark:text-gray-100">Straits Times</span>
+                      <span className="ml-2 rounded-full bg-gray-200 dark:bg-gray-700 px-2 py-0.5 text-xs font-semibold text-gray-800 dark:text-gray-200">2nd class</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -190,8 +213,7 @@ export default function Sidebar({
                   SG
                 </div>
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-medium"> {!sidebarCollapsed && "Singapore Government"}</div>
-                  <div className="truncate text-xs text-muted-foreground"> {!sidebarCollapsed && "Parliamentary Platform"}</div>
+                  <div className="truncate text-xs text-muted-foreground"> {!sidebarCollapsed && "Brought to you by the POfact team"}</div>
                 </div>
               </div>
             </div>

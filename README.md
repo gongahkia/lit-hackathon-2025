@@ -92,9 +92,6 @@ Made for the MinLaw 2 problem statement for the [SMU LIT Hackathon 2025](https:/
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
    SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 
-   # LLM Provider (Optional - for AI Query features)
-   GOOGLE_GEN_AI_API_KEY=your_gemini_api_key
-
    # Flask API (Optional - fallback for legacy search)
    FLASK_API_BASE=http://localhost:5000
    ```
@@ -156,16 +153,15 @@ lit-hackathon-test/
 - Filter by source type, date range, speaker, language, and topics
 - View document details with confidence scores and verification status
 
-### 2. AI Deep Search (POFMan)
+### 2. Deep Search (POFMan)
 - Ask complex questions using natural language
-- Get AI-powered answers with citations from parliamentary documents
+- Get answers with citations from parliamentary documents
 - Semantic search using RAG (Retrieval-Augmented Generation)
 - Markdown-formatted responses with source attribution
 
 ### 3. Document Timeline
 - View policy development timeline for each document
 - See related parliamentary documents chronologically
-- AI-generated timelines when database has insufficient data
 - Grouped by topics with event classification (creation/amendment/dissolution)
 
 ### 4. Evidence Bundles

@@ -168,11 +168,6 @@ export default function DocumentTimeline({ documentId, onViewDocument }: Documen
                           {getEventTypeIcon(event.type)}
                           {event.type.charAt(0).toUpperCase() + event.type.slice(1)}
                         </Badge>
-                        {event.isAiGenerated && (
-                          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/20 dark:text-blue-300 dark:border-blue-800">
-                            AI Generated
-                          </Badge>
-                        )}
                         <span className="text-xs text-muted-foreground">
                           {event.date ? formatDateShort(event.date) : 'Date unknown'}
                         </span>

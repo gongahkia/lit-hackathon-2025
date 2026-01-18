@@ -138,7 +138,7 @@ export default function AIQueryPane({ onViewDocument, onViewTimeline, documents 
           <div className="text-xl font-bold text-center tracking-tight mb-1">POFMan</div>
           <div className="text-sm text-zinc-500 dark:text-zinc-400 font-medium">Semantic Deep Search Assistant</div>
           <div className="text-xs text-zinc-400 dark:text-zinc-500 mt-1 text-center max-w-md">
-            Ask complex questions and get AI-powered answers with citations from parliamentary documents
+            Answers are fully cited from parliamentary documents and other sources.
           </div>
         </div>
         {/* --- Search bar and attachment --- */}
