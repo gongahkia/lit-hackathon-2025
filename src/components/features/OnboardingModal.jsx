@@ -9,12 +9,12 @@ import { Search, Clock, Bot, Folder, FileText, ArrowRight, X } from "lucide-reac
 const STEPS = [
   {
     title: "Welcome to POfact",
-    description: "Your AI-powered platform for searching, verifying, and analyzing parliamentary data and government communications.",
+    description: "Your one-stop platform for searching, verifying, and analyzing parliamentary data and government communications.",
     icon: <div className="h-16 w-16 bg-primary/10 rounded-full flex items-center justify-center mb-4 text-primary text-3xl">⚖</div>,
     content: (
       <div className="space-y-2 text-sm text-muted-foreground text-center">
         <p>Access thousands of verified parliamentary statements, press releases, and news articles in one place.</p>
-        <p>Use AI to detect contradictions, build timelines, and verify facts instantly.</p>
+        <p>Detect contradictions, build timelines, and verify facts instantly.</p>
       </div>
     )
   },
@@ -31,7 +31,7 @@ const STEPS = [
     )
   },
   {
-    title: "POFMan AI Assistant",
+    title: "POFMan Legal Assistant",
     description: "Ask complex questions and get cited answers from the knowledge base.",
     icon: <Bot className="h-16 w-16 text-indigo-500 mb-4" />,
     content: (
