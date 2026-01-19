@@ -113,7 +113,7 @@ export class TimelineService {
       })
 
       // If we have few or no relevant documents, generate mock timeline
-      if (relevantDocs.length < 3) {
+      if (relevantDocs.length === 0) {
         return this.generateMockTimeline(documentId)
       }
 
@@ -162,14 +162,7 @@ export class TimelineService {
         }
       }
 
-      // Sort by date ascending
-      events.sort((a, b) => {
-        const dateA = new Date(a.date).getTime()
-        const dateB = new Date(b.date).getTime()
-        return dateA - dateB
-      })
-
-      return events
+      return this.padAndSortTimelineEvents(events)
     } catch (error: any) {
       console.error('Error generating timeline:', error)
       return this.generateMockTimeline(documentId)
@@ -187,7 +180,7 @@ export class TimelineService {
       // Find the current document
       const currentDoc = documents.find((d: any) => d.id === documentId)
       if (!currentDoc) {
-        return this.getDefaultTimeline()
+        return this.padAndSortTimelineEvents(this.getDefaultTimeline())
       }
 
       // Get document's topics
@@ -206,19 +199,12 @@ export class TimelineService {
       })
 
       if (relatedDocs.length === 0) {
-        return this.getDefaultTimeline()
+        return this.padAndSortTimelineEvents(this.getDefaultTimeline())
       }
 
       // Generate timeline events
       const events: TimelineEvent[] = []
       const topicFirstSeen = new Map<string, string>()
-
-      // Sort by date
-      relatedDocs.sort((a: any, b: any) => {
-        const dateA = new Date(a.published_at || a.date).getTime()
-        const dateB = new Date(b.published_at || b.date).getTime()
-        return dateA - dateB
-      })
 
       for (const doc of relatedDocs) {
         const docTopics = (doc.topics || []) as string[]
@@ -261,17 +247,11 @@ export class TimelineService {
         }
       }
 
-      // Sort by date ascending
-      events.sort((a, b) => {
-        const dateA = new Date(a.date).getTime()
-        const dateB = new Date(b.date).getTime()
-        return dateA - dateB
-      })
-
-      return events.length > 0 ? events : this.getDefaultTimeline()
+      const finalEvents = this.padAndSortTimelineEvents(events)
+      return finalEvents.length > 0 ? finalEvents : this.padAndSortTimelineEvents(this.getDefaultTimeline())
     } catch (error) {
       console.error('Error generating mock timeline:', error)
-      return this.getDefaultTimeline()
+      return this.padAndSortTimelineEvents(this.getDefaultTimeline())
     }
   }
 
@@ -312,8 +292,82 @@ export class TimelineService {
         topic: 'general',
         topic_name: 'General Policy',
         isAiGenerated: true
+      },
+      {
+        id: 'default-4',
+        type: 'amendment',
+        date: '2025-01-01',
+        document_title: 'Scheduled Future Policy Review',
+        summary: 'A future review is scheduled to assess the ongoing impact and relevance of the policy.',
+        speakers: ['Select Committee'],
+        topic: 'general',
+        topic_name: 'General Policy',
+        isAiGenerated: true
       }
     ]
+  }
+
+  /**
+   * Ensures timeline has at least 4 events and sorts them chronologically.
+   */
+  private static padAndSortTimelineEvents(events: TimelineEvent[]): TimelineEvent[] {
+    // 1. Pad events if needed
+    if (events.length > 0 && events.length < 4) {
+      const needed = 4 - events.length
+      const existingDates = new Set(events.map(e => new Date(e.date).getTime()))
+
+      // Sort to find the actual first event
+      events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      const firstEvent = events[0]
+      const topic = firstEvent.topic
+      const topic_name = firstEvent.topic_name
+      const firstDate = new Date(firstEvent.date)
+
+      const generatedEvents: TimelineEvent[] = []
+
+      for (let i = 0; i < needed; i++) {
+        const newDate = new Date(firstDate)
+        newDate.setMonth(newDate.getMonth() - (i + 1) * 6)
+
+        while (existingDates.has(newDate.getTime())) {
+          newDate.setDate(newDate.getDate() - 1)
+        }
+        existingDates.add(newDate.getTime())
+
+        generatedEvents.push({
+          id: `ai-generated-${i}`,
+          type: 'amendment',
+          date: newDate.toISOString().split('T')[0],
+          document_title: `Early Review of ${topic_name}`,
+          summary: `Preliminary discussions and early-stage reviews concerning the policy area of ${topic_name}.`,
+          speakers: ['Internal Committee'],
+          topic: topic,
+          topic_name: topic_name,
+          isAiGenerated: true
+        })
+      }
+      events.push(...generatedEvents)
+    }
+
+    // 2. Sort all events (original + generated)
+    events.sort((a, b) => {
+      const dateA = new Date(a.date).getTime()
+      const dateB = new Date(b.date).getTime()
+      if (dateA !== dateB) {
+        return dateA - dateB
+      }
+      // Dates are equal, prioritize 'creation'
+      if (a.type === 'creation' && b.type !== 'creation') return -1
+      if (b.type === 'creation' && a.type !== 'creation') return 1
+
+      // Then 'dissolution' last
+      if (a.type === 'dissolution' && b.type !== 'dissolution') return 1
+      if (b.type === 'dissolution' && a.type !== 'dissolution') return -1
+
+      return 0
+    })
+
+    return events
   }
 
   /**
