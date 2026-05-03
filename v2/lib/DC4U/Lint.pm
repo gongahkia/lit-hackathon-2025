@@ -179,7 +179,31 @@ sub _lint_block {
         }
     }
 
+    # Future-dated charges are almost always a typo (year off by one is
+    # the classic). Officer dates further than 1 day in the future are
+    # likewise suspicious. Today's date is computed in epoch-units so it
+    # compares apples-to-apples with _date_epoch.
+    my $today_e = _today_epoch();
+    for my $pair ([charge => $cd], [officer => $od]) {
+        my ($which, $val) = @$pair;
+        next unless defined $val;
+        my $e = _date_epoch($val);
+        next unless $e && $today_e && $e > $today_e;
+        push @issues, {
+            severity => 'warn', charge => $n,
+            location => "charge $n / $which / date",
+            message  => "$which date ($val) is in the future",
+        };
+    }
+
     return @issues;
+}
+
+# Today in the same encoding as _date_epoch so we can compare directly.
+sub _today_epoch {
+    my @t = localtime;
+    my ($y, $m, $d) = ($t[5] + 1900, $t[4] + 1, $t[3]);
+    return $y * 400 + $m * 32 + $d;
 }
 
 # Singapore NRIC checksum: prefix S/T/F/G/M, 7 digits, suffix letter.

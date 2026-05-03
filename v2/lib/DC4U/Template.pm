@@ -304,7 +304,7 @@ HTML
 
 =head2 _uk_header
 
-UK charge header template (for future use).
+UK charge header template.
 
 =cut
 
@@ -319,7 +319,7 @@ HTML
 
 =head2 _uk_suspect
 
-UK suspect information template (for future use).
+UK suspect information template.
 
 =cut
 
@@ -336,7 +336,7 @@ HTML
 
 =head2 _uk_charge
 
-UK charge information template (for future use).
+UK charge information template.
 
 =cut
 
@@ -350,7 +350,7 @@ HTML
 
 =head2 _uk_officer
 
-UK officer information template (for future use).
+UK officer information template.
 
 =cut
 

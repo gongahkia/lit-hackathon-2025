@@ -107,7 +107,7 @@ sub record {
 
 =head2 tail
 
-Read the last $n lines. Used by the future CLI 'audit' subcommand or by
+Read the last $n lines. Backs the C<dc4u audit --tail N> subcommand and
 the TUI's LogViewer.
 
 =cut

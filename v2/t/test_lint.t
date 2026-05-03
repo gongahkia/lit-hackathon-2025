@@ -57,4 +57,11 @@ ok(scalar(grep { $_->{message} =~ /after officer/ } @$issues),
 my $report = DC4U::Lint->format_text($issues);
 like($report, qr/error|warn|OK/i, 'format_text produces a report');
 
+# Future-dated charge -> warn (use a year clearly in the future)
+my $future = $good_sg;
+$future =~ s|01/01/2024;|01/01/2099;|;
+$issues = $lint->lint_string($future);
+ok(scalar(grep { $_->{message} =~ /future/i } @$issues),
+    'future-dated charge warned');
+
 done_testing();
