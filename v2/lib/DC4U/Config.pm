@@ -32,6 +32,7 @@ sub new {
             default_format => 'PDF',
             date_format => 'DD/MM/YYYY',
             timezone => 'Asia/Singapore',
+            theme => 'classic',
             
             # Singapore-specific settings
             singapore => {

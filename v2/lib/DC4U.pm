@@ -12,6 +12,7 @@ use DC4U::Generator;
 use DC4U::Template;
 use DC4U::Config;
 use DC4U::Logger;
+use DC4U::Preprocessor;
 
 use Exporter 'import';
 our @EXPORT_OK = qw(process_dc_file process_dc_string);
@@ -53,18 +54,27 @@ Process a .dc file and generate output in specified format.
 
 sub process_dc_file {
     my ($input_file, $output_format, $options) = @_;
-    
+
     # Initialize logger
     my $logger = DC4U::Logger->new($options->{log_level} || 'INFO');
-    
+
     # Load configuration
     my $config = DC4U::Config->new($options->{config_file});
-    
+
     # Read input file
     open my $fh, '<', $input_file or die "Cannot open $input_file: $!";
     my $content = do { local $/; <$fh> };
     close $fh;
-    
+
+    # Preprocess (@include / @def / ${var} / YAML front-matter) unless
+    # disabled. Tracking source_path so relative includes resolve.
+    unless ($options->{no_preprocess}) {
+        my $pp = DC4U::Preprocessor->new();
+        my ($expanded, $meta) = $pp->process($content, source_path => $input_file);
+        $content = $expanded;
+        $options->{front_matter} = $meta if $meta && %$meta;
+    }
+
     return process_dc_string($content, $output_format, $options);
 }
 
@@ -89,6 +99,20 @@ sub process_dc_string {
     my $jurisdiction = $options->{jurisdiction} // $config->get('jurisdiction') // 'singapore';
     $options->{jurisdiction} = $jurisdiction;
     $config->set('jurisdiction', $jurisdiction);
+
+    # Theme precedence (highest first):
+    #   1. explicit --theme / $options->{theme}
+    #   2. <jurisdiction>.theme nested config (e.g. uk.theme: solarized-light)
+    #   3. top-level config theme
+    #   4. DC4U::Theme default (classic)
+    if (defined $options->{theme}) {
+        $config->set('theme', $options->{theme});
+    } else {
+        my $jur_theme = $config->get("$jurisdiction.theme");
+        if (defined $jur_theme) {
+            $config->set('theme', $jur_theme);
+        }
+    }
     my @results;
 
     for my $i (0 .. $#charge_blocks) {

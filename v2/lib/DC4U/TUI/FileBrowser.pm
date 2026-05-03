@@ -104,6 +104,8 @@ sub run {
             return undef;
         } elsif ($ch eq 'l' || $ch eq 'L') {
             return '__VIEW_LOGS__';
+        } elsif ($ch eq 't' || $ch eq 'T') {
+            return '__SELECT_THEME__';
         }
         my $code = (length($ch) == 1) ? ord($ch) : $ch;
         if ($code == KEY_UP || $ch eq 'k') {
@@ -192,7 +194,7 @@ sub _draw {
     }
 
     # help bar
-    my $help = ' Up/Down=navigate  Enter=open/select  Bksp=parent dir  l=logs  q=quit';
+    my $help = ' Up/Down=navigate  Enter=open/select  Bksp=parent  t=theme  l=logs  q=quit';
     attron(COLOR_PAIR(1));
     move($h - 2, 0); addstr(' ' x $w);
     move($h - 1, 0); addstr(' ' x $w);

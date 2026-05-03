@@ -34,6 +34,17 @@ jobs:
           perl -Ilib -c lib/DC4U/Template.pm
           perl -Ilib -c lib/DC4U/Config.pm
           perl -Ilib -c lib/DC4U/Logger.pm
+          perl -Ilib -c lib/DC4U/Theme.pm
+          perl -Ilib -c lib/DC4U/Lint.pm
+          perl -Ilib -c lib/DC4U/Watch.pm
+          perl -Ilib -c lib/DC4U/Scaffold.pm
+          perl -Ilib -c lib/DC4U/Anonymize.pm
+          perl -Ilib -c lib/DC4U/Preprocessor.pm
+          perl -Ilib -c lib/DC4U/Diff.pm
+          perl -Ilib -c lib/DC4U/Watermark.pm
+          perl -Ilib -c lib/DC4U/Bundle.pm
+          perl -Ilib -c lib/DC4U/BatchCSV.pm
+          perl -Ilib -c lib/DC4U/Audit.pm
           perl -Ilib -c bin/dc4u
 
       - name: Run tests

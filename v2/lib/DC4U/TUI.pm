@@ -11,15 +11,30 @@ use lib "$FindBin::Bin/../lib";
 use DC4U;
 use DC4U::Config;
 use DC4U::Logger;
+use DC4U::Theme;
 use DC4U::TUI::FileBrowser;
 use DC4U::TUI::FormatSelector;
 use DC4U::TUI::JurisdictionSelector;
+use DC4U::TUI::ThemeSelector;
 use DC4U::TUI::Progress;
 use DC4U::TUI::Preview;
 use DC4U::TUI::ErrorDisplay;
 use DC4U::TUI::ChargeNav;
 use DC4U::TUI::LogViewer;
 use DC4U::TUI::DirBrowser;
+
+# Map color name -> curses COLOR_* constant. Keep in sync with
+# DC4U::Theme::CURSES_OK.
+my %CURSES_COLOR = (
+    black   => COLOR_BLACK,
+    red     => COLOR_RED,
+    green   => COLOR_GREEN,
+    yellow  => COLOR_YELLOW,
+    blue    => COLOR_BLUE,
+    magenta => COLOR_MAGENTA,
+    cyan    => COLOR_CYAN,
+    white   => COLOR_WHITE,
+);
 
 =head1 NAME
 
@@ -70,16 +85,105 @@ sub _init_curses {
     my $self = shift;
     initscr();
     start_color() if has_colors();
-    init_pair(1, COLOR_WHITE, COLOR_BLUE);   # header/status
-    init_pair(2, COLOR_BLACK, COLOR_WHITE);  # content
-    init_pair(3, COLOR_RED,   COLOR_BLACK);  # error
-    init_pair(4, COLOR_GREEN, COLOR_BLACK);  # success
-    init_pair(5, COLOR_YELLOW, COLOR_BLACK); # highlight
+    $self->_apply_theme($self->{config}->get('theme'));
     noecho();
     cbreak();
     curs_set(0);
     keypad(stdscr, 1);
     $self->{screen} = stdscr;
+}
+
+# Re-applies color pairs from the named theme. Safe to call mid-session
+# (the ThemeSelector screen calls it after the user picks a new theme).
+#
+# Two paths:
+#   1. true-color: terminal supports init_color() AND the user hasn't
+#      opted out via $DC4U_NO_TRUECOLOR. We reprogram color slots
+#      16..25 with the theme's exact hex RGB and pair them.
+#   2. fallback: 8 baseline colors via $CURSES_COLOR. The 8-color names
+#      in DC4U::Theme are picked to be the closest match for each slot
+#      so the TUI still feels themed even without true-color.
+sub _apply_theme {
+    my ($self, $theme_name) = @_;
+    return unless has_colors();
+
+    my $theme = DC4U::Theme->get($theme_name);
+    my $pairs = DC4U::Theme->curses_pairs($theme_name);
+
+    if (!$ENV{DC4U_NO_TRUECOLOR} && _can_truecolor()) {
+        _apply_theme_truecolor($theme);
+    } else {
+        for my $slot (sort { $a <=> $b } keys %$pairs) {
+            my ($fg, $bg) = @{ $pairs->{$slot} };
+            my $fg_c = $CURSES_COLOR{$fg} // COLOR_WHITE;
+            my $bg_c = $CURSES_COLOR{$bg} // COLOR_BLACK;
+            init_pair($slot, $fg_c, $bg_c);
+        }
+    }
+    $self->{theme} = $theme_name;
+}
+
+# True-color path:
+#   - Reprograms color indices 16..25 with theme hex RGB on the 0..1000
+#     scale curses uses
+#   - Indices intentionally above 16 so we don't clobber the standard
+#     8 + 8-bright colors other terminal apps may rely on
+sub _apply_theme_truecolor {
+    my ($theme) = @_;
+    my $css = $theme->{css};
+
+    # Slot N: { fg_idx, bg_idx, fg_hex, bg_hex }
+    # Mapping mirrors the semantic intent of pairs 1..5 in the fallback path.
+    my @SLOTS = (
+        # slot, fg_hex,             bg_hex
+        [ 1,  $css->{header_fg}, $css->{header_bg} ],   # header / status
+        [ 2,  $css->{fg},        $css->{bg} ],          # content
+        [ 3,  $css->{error},     $css->{bg} ],          # error
+        [ 4,  $css->{success},   $css->{bg} ],          # success
+        [ 5,  $css->{highlight}, $css->{bg} ],          # highlight
+    );
+
+    # Allocate one curses color slot per unique hex value in the theme,
+    # starting at 16 (above the bright-color range).
+    my %hex_to_slot;
+    my $next = 16;
+    for my $entry (@SLOTS) {
+        for my $hex (@$entry[1, 2]) {
+            next if exists $hex_to_slot{$hex};
+            my ($r, $g, $b) = _hex_to_curses_rgb($hex);
+            init_color($next, $r, $g, $b);
+            $hex_to_slot{$hex} = $next;
+            $next++;
+        }
+    }
+
+    for my $entry (@SLOTS) {
+        my ($pair, $fg_hex, $bg_hex) = @$entry;
+        init_pair($pair, $hex_to_slot{$fg_hex}, $hex_to_slot{$bg_hex});
+    }
+}
+
+# Curses init_color expects RGB on a 0..1000 scale, not 0..255.
+sub _hex_to_curses_rgb {
+    my $hex = shift;
+    $hex =~ s/^#//;
+    my ($r, $g, $b) = map { hex } unpack 'A2A2A2', $hex;
+    return (
+        int($r * 1000 / 255),
+        int($g * 1000 / 255),
+        int($b * 1000 / 255),
+    );
+}
+
+# True-color requires both can_change_color() (terminal lets us reprogram
+# palette entries) AND COLORS >= 16 (we have somewhere to put them).
+# init_color and can_change_color may not exist on all Curses builds, so
+# wrap their probing in eval.
+sub _can_truecolor {
+    return 0 unless eval { can_change_color() };
+    return 0 unless eval { COLORS() >= 16 };
+    return 0 unless eval { defined &init_color };
+    return 1;
 }
 
 sub _end_curses {
@@ -164,6 +268,24 @@ sub _main_flow {
                 log_file => $self->{logger}->{log_file} // 'dc4u_tui.log',
             );
             $lv->run($self->{screen});
+            next; # loop back to file browser
+        }
+        if ($file eq '__SELECT_THEME__') {
+            $log->info('User opened ThemeSelector');
+            erase();
+            $self->_draw_header('DC4U - Select Color Theme');
+            $self->_draw_status('Up/Down=navigate  Enter=apply  q=cancel');
+            refresh();
+            my $ts = DC4U::TUI::ThemeSelector->new(
+                top => $top, bottom => $bot, width => $w,
+                current => $self->{config}->get('theme'),
+            );
+            my $picked = $ts->run($self->{screen});
+            if ($picked) {
+                $log->info("Theme selected: $picked");
+                $self->{config}->set('theme', $picked);
+                $self->_apply_theme($picked);
+            }
             next; # loop back to file browser
         }
         last; # valid file selected

@@ -46,6 +46,17 @@ ci-local:
 	@cd v2 && perl -Ilib -c lib/DC4U/Template.pm
 	@cd v2 && perl -Ilib -c lib/DC4U/Config.pm
 	@cd v2 && perl -Ilib -c lib/DC4U/Logger.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Theme.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Lint.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Watch.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Scaffold.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Anonymize.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Preprocessor.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Diff.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Watermark.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Bundle.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/BatchCSV.pm
+	@cd v2 && perl -Ilib -c lib/DC4U/Audit.pm
 	@cd v2 && perl -Ilib -c bin/dc4u
 	@echo "=== Unit tests ==="
 	@cd v2 && prove -Ilib t/

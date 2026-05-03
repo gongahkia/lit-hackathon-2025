@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use v5.32;
 
+use DC4U::Theme;
+
 =head1 NAME
 
 DC4U::Generator - Generates documents in various formats
@@ -61,7 +63,8 @@ Generates PDF document.
 sub _generate_pdf {
     my ($data, $config) = @_;
     my $html_content = _build_charge_content($data, $config);
-    my $full_html = "<html><body>\n$html_content\n</body></html>";
+    my $theme_css    = _theme_css($config);
+    my $full_html = "<html><head><style>\n$theme_css</style></head><body>\n$html_content\n</body></html>";
     # pandoc HTML->PDF
     my $pandoc_path = `which pandoc` || '/opt/homebrew/bin/pandoc';
     chomp $pandoc_path;
@@ -96,9 +99,10 @@ Generates HTML document.
 
 sub _generate_html {
     my ($data, $config) = @_;
-    
-    my $content = _build_charge_content($data, $config);
-    
+
+    my $content   = _build_charge_content($data, $config);
+    my $theme_css = _theme_css($config);
+
     # use external CSS from config or default path
     my $css_ref = 'charge.css';
     if ($config && $config->can('get')) {
@@ -108,6 +112,8 @@ sub _generate_html {
             open my $fh, '<', $css_file;
             my $css = do { local $/; <$fh> };
             close $fh;
+            # Theme block goes AFTER the stylesheet so its :root vars win
+            # over the defaults baked into charge.css.
             return <<"HTML";
 <!DOCTYPE html>
 <html lang="en">
@@ -117,7 +123,7 @@ sub _generate_html {
     <title>Draft Charge</title>
     <style>
 $css
-    </style>
+$theme_css    </style>
 </head>
 <body>
     $content
@@ -134,12 +140,28 @@ HTML
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Draft Charge</title>
     <link rel="stylesheet" href="$css_ref">
+    <style>
+$theme_css    </style>
 </head>
 <body>
     $content
 </body>
 </html>
 HTML
+}
+
+# Resolve the active theme from config (falling back to the default) and
+# return its :root { --dc4u-*: ... } CSS block. Returns an empty string if
+# the configured theme name is unknown - charge.css's own :root defaults
+# then apply.
+sub _theme_css {
+    my ($config) = @_;
+    my $name;
+    if ($config && $config->can('get')) {
+        $name = $config->get('theme');
+    }
+    $name //= DC4U::Theme->default_name;
+    return DC4U::Theme->css_block($name);
 }
 
 =head2 _generate_txt

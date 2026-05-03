@@ -74,6 +74,109 @@ $ make tui
 $ dc4u -f PDF samples/v2/singapore_assault.dc
 ```
 
+4. Pick a color theme for the TUI and HTML/PDF output:
+
+```console
+$ dc4u --list-themes
+$ dc4u -f HTML --theme gruvbox-dark samples/v2/singapore_assault.dc
+```
+
+In the TUI, press `t` from the file browser to open the live theme picker.
+The chosen theme persists via the YAML config (`theme:` key).
+
+## Color themes
+
+| Theme            | Style                                        |
+| :--------------- | :------------------------------------------- |
+| `classic`        | Default DC4U palette (black ink, light)      |
+| `gruvbox-dark`   | Warm retro brown background, amber accents   |
+| `gruvbox-light`  | Cream background variant of Gruvbox          |
+| `solarized-dark` | Solarized base03 (Schoonover)                |
+| `solarized-light`| Solarized base3                              |
+| `nord`           | Arctic blue palette                          |
+| `dracula`        | High-contrast purple/pink                    |
+| `monokai`        | Vivid green/pink classic                     |
+| `tokyo-night`    | Cool blue-purple                             |
+| `catppuccin`     | Pastel Mocha (darkest) flavour               |
+
+Themes drive both the curses TUI color pairs and the HTML/PDF output via
+`--dc4u-*` CSS custom properties — see `v2/lib/DC4U/Theme.pm`.
+
+### User-defined themes
+
+Drop a YAML file into `~/.config/dc4u/themes/<name>.yaml` (or
+`$DC4U_THEME_DIR`). Scaffold one based on a built-in:
+
+```console
+$ dc4u theme create solarized-warm --base solarized-light
+$ vim ~/.config/dc4u/themes/solarized-warm.yaml
+$ dc4u --theme solarized-warm -f HTML case.dc
+```
+
+User themes can't shadow a built-in name. Malformed YAML is silently
+skipped (run `dc4u theme list` to confirm yours loaded).
+
+### Per-jurisdiction default theme
+
+Pin a theme per jurisdiction in `dc4u.yaml`:
+
+```yaml
+uk:
+  theme: solarized-light
+singapore:
+  theme: classic
+```
+
+`--theme` on the CLI always wins over the jurisdiction default.
+
+### True-color TUI
+
+If the terminal supports `init_color()` (most modern ones do), DC4U
+reprograms color palette slots so the TUI matches the HTML output's exact
+hex values. Set `DC4U_NO_TRUECOLOR=1` to force the 8-color fallback.
+
+## Subcommands
+
+```
+dc4u init   <jurisdiction> <out.dc>           Scaffold a starter .dc
+dc4u lint   [-j J] <file.dc> ...              Validate fields, NRIC, dates
+dc4u anonymize [--strategy redact|hash|fake]  Strip PII (in-place or -o)
+dc4u diff   [-j J] <a.dc> <b.dc>              Field-level semantic diff
+dc4u bundle [--zip f.zip] [--formats ...]     Multi-format render + manifest
+dc4u batch  --csv f.csv --template t.dc       CSV-driven batch rendering
+dc4u theme  list | create <name> | dir        Manage color themes
+dc4u audit  [--tail N]                        Show ~/.dc4u/audit.log
+```
+
+## Generator flags (file mode)
+
+| Flag                 | Effect                                                  |
+| :------------------- | :------------------------------------------------------ |
+| `--watermark TEXT`   | Diagonal `DRAFT`-style overlay (HTML/PDF) or banner (TXT/MD) |
+| `--watch`            | Recompile on file save until Ctrl-C                     |
+| `--lint`             | Run lint first; abort on errors                         |
+| `--audit-log`        | Record this generation in `~/.dc4u/audit.log`           |
+| `--no-preprocess`    | Skip `@include`/`@def`/`${var}`/YAML front-matter       |
+
+## `.dc` preprocessor directives
+
+```
+---                              # Optional YAML front-matter
+case_no: A-2025-001
+hearing: 12 March 2025
+---
+
+@include common/defendant.dc     # Inline another .dc file
+@def $io "Sgt Lim; IO, CID; 02/01/2025"
+@def $statute "s379 Penal Code"
+
+`HTML`
+<...>
+[...]
+@${statute}@
+{${io}}
+```
+
 ## Output formats
 
 | Format | Purpose | Implementation status |

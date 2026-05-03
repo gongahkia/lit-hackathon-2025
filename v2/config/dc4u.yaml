@@ -10,6 +10,12 @@ default_format: "PDF"
 date_format: "DD/MM/YYYY"
 timezone: "Asia/Singapore"
 
+# Color theme used by both the TUI and HTML/PDF output. Available:
+#   classic, gruvbox-dark, gruvbox-light, solarized-dark, solarized-light,
+#   nord, dracula, monokai, tokyo-night, catppuccin
+# See: lib/DC4U/Theme.pm
+theme: "classic"
+
 # Singapore-specific settings
 singapore:
   court_name: "State Courts of Singapore"

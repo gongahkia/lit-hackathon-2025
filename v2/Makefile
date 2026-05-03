@@ -61,6 +61,17 @@ test-syntax:
 	$(PERL) -Ilib -c lib/DC4U/Template.pm
 	$(PERL) -Ilib -c lib/DC4U/Config.pm
 	$(PERL) -Ilib -c lib/DC4U/Logger.pm
+	$(PERL) -Ilib -c lib/DC4U/Theme.pm
+	$(PERL) -Ilib -c lib/DC4U/Lint.pm
+	$(PERL) -Ilib -c lib/DC4U/Watch.pm
+	$(PERL) -Ilib -c lib/DC4U/Scaffold.pm
+	$(PERL) -Ilib -c lib/DC4U/Anonymize.pm
+	$(PERL) -Ilib -c lib/DC4U/Preprocessor.pm
+	$(PERL) -Ilib -c lib/DC4U/Diff.pm
+	$(PERL) -Ilib -c lib/DC4U/Watermark.pm
+	$(PERL) -Ilib -c lib/DC4U/Bundle.pm
+	$(PERL) -Ilib -c lib/DC4U/BatchCSV.pm
+	$(PERL) -Ilib -c lib/DC4U/Audit.pm
 	$(PERL) -Ilib -c bin/dc4u
 
 test-basic:
