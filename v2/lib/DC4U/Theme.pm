@@ -401,6 +401,11 @@ sub _load_user_themes {
 
 # Validate + normalize a user theme hashref. Returns the canonical form
 # (with label/desc/css/tui keys) or undef if structurally invalid.
+#
+# Tolerant of YAML::Tiny's quirk: flow-style arrays like `[a, b]` are
+# parsed as the literal string "[a, b]" rather than an arrayref. We
+# handle both shapes so users aren't punished for writing valid YAML
+# that just happens to be the flow form.
 sub _normalize_user_theme {
     my $raw = shift;
     return undef unless ref $raw eq 'HASH';
@@ -413,20 +418,37 @@ sub _normalize_user_theme {
 
     my $tui = $raw->{tui};
     return undef unless ref $tui eq 'HASH';
+    my %normalized_tui;
     for my $slot (1..5) {
-        my $pair = $tui->{$slot};
-        return undef unless ref $pair eq 'ARRAY' && @$pair == 2;
+        my $pair = _coerce_pair($tui->{$slot});
+        return undef unless $pair;
         for my $c (@$pair) {
             return undef unless defined $c && exists $CURSES_OK{$c};
         }
+        $normalized_tui{$slot} = $pair;
     }
 
     return {
         label => $raw->{label} // 'User theme',
         desc  => $raw->{desc}  // '',
         css   => { %$css },
-        tui   => { map { $_ => [ @{ $tui->{$_} } ] } keys %$tui },
+        tui   => \%normalized_tui,
     };
+}
+
+# Accept either an arrayref [fg, bg] or YAML::Tiny's flow-string fallback
+# "[fg, bg]" / "[fg,bg]". Returns an arrayref of two color names, or undef
+# if neither shape parses.
+sub _coerce_pair {
+    my $v = shift;
+    return undef unless defined $v;
+    if (ref $v eq 'ARRAY') {
+        return @$v == 2 ? [@$v] : undef;
+    }
+    if (!ref $v && $v =~ /^\s*\[\s*([^\s,\]]+)\s*,\s*([^\s\]]+)\s*\]\s*$/) {
+        return [ $1, $2 ];
+    }
+    return undef;
 }
 
 =head2 scaffold_user_theme
@@ -459,10 +481,12 @@ sub scaffold_user_theme {
     }
     $body   .= "\n# TUI color pairs. Each slot is [foreground, background].\n";
     $body   .= "# Allowed names: black red green yellow blue magenta cyan white\n";
+    $body   .= "# Block-style arrays so YAML::Tiny parses them as arrayrefs\n";
+    $body   .= "# (its flow-style support is incomplete).\n";
     $body   .= "tui:\n";
     for my $slot (1..5) {
         my ($fg, $bg) = @{ $tui->{$slot} };
-        $body .= sprintf("  %d: [%s, %s]\n", $slot, $fg, $bg);
+        $body .= sprintf("  %d:\n    - %s\n    - %s\n", $slot, $fg, $bg);
     }
 
     open my $fh, '>:encoding(UTF-8)', $path or die "Cannot write $path: $!";
@@ -473,13 +497,17 @@ sub scaffold_user_theme {
 
 =head2 exists
 
-Returns true iff the given name is a registered theme.
+Returns true iff the given name is a registered theme. Triggers the
+user-theme lazy load on first call so user themes are reachable through
+the same lookup as built-ins (e.g. for CLI --theme validation).
 
 =cut
 
 sub exists {
     my (undef, $name) = @_;
-    return defined $name && exists $THEMES{$name};
+    return 0 unless defined $name;
+    _load_user_themes() unless $USER_LOADED;
+    return exists $THEMES{$name};
 }
 
 =head2 default_name
@@ -500,6 +528,7 @@ is unknown so callers don't need to guard against typos.
 
 sub get {
     my (undef, $name) = @_;
+    _load_user_themes() unless $USER_LOADED;
     return $THEMES{$name} if defined $name && exists $THEMES{$name};
     return $THEMES{ default_name() };
 }

@@ -136,7 +136,15 @@ sub _docx {
     close $in_fh;
 
     my $zip = Archive::Zip->new();
-    return $bytes unless $zip->read($in_path) == 0;  # AZ_OK
+    # Suppress Archive::Zip's stderr complaints when the input isn't
+    # actually a zip - we already handle that case by returning $bytes.
+    my $rc;
+    {
+        local $SIG{__WARN__} = sub {};
+        local $Archive::Zip::ErrorHandler = sub {};
+        $rc = $zip->read($in_path);
+    }
+    return $bytes unless $rc == 0;  # AZ_OK
 
     my $doc = $zip->contents('word/document.xml');
     return $bytes unless defined $doc && length $doc;
