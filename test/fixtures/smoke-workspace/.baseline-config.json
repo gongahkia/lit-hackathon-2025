@@ -1,0 +1,17 @@
+{
+  "browserSupport": [
+    "chrome 79",
+    "firefox 73",
+    "safari 13",
+    "edge 79"
+  ],
+  "warningLevel": "warning",
+  "targetMode": "custom-browser-support",
+  "excludePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "out/**",
+    ".git/**"
+  ]
+}

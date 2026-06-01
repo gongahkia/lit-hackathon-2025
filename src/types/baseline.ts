@@ -1,0 +1,23 @@
+export type {
+    BaselineData,
+    BaselineFeature,
+    BaselineFinding,
+    BaselineOpportunity,
+    BaselineReport,
+    BaselineReportSummary,
+    BaselineStatus,
+    CacheEntry,
+    CompatibilityIssue,
+    FeatureInventoryEntry,
+    FileAnalysisReport,
+    FeatureUsage,
+    ProjectConfiguration,
+    ResolvedBrowserTarget,
+    ResolvedTargets,
+    SourceDocument,
+    SourceLanguage,
+    SourceRange,
+    SupportedBrowser,
+    TargetMode,
+    WarningLevel
+} from '../core/types';

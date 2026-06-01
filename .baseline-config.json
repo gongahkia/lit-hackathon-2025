@@ -1,0 +1,31 @@
+{
+  "browserSupport": [
+    "chrome 90",
+    "firefox 88", 
+    "safari 14",
+    "edge 90"
+  ],
+  "warningLevel": "warning",
+  "autoCheck": true,
+  "cacheDuration": 3600,
+  "targetMode": "custom-browser-support",
+  "baselineYear": 2023,
+  "widelyAvailableOnDate": null,
+  "includeDownstreamBrowsers": false,
+  "excludePatterns": [
+    "node_modules/**",
+    "dist/**",
+    "build/**",
+    "out/**",
+    "build-tools/**",
+    ".git/**",
+    "**/*.min.js",
+    "**/*.min.css"
+  ],
+  "customFeatures": [],
+  "teamSettings": {
+    "notifyOnNewFeatures": true,
+    "requireApprovalForLimited": true,
+    "autoUpdateBaseline": true
+  }
+}
