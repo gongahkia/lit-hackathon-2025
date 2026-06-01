@@ -1,223 +1,226 @@
-![Vercel Deploy](https://deploy-badge.vercel.app/vercel/lit-hackathon-2025)
+[![](https://img.shields.io/badge/DC4U_1.0.0-passing-%23004D00)](https://github.com/gongahkia/dc4u/releases/tag/1.0.0)
+[![](https://img.shields.io/badge/DC4U_2.0.0-passing-%23228B22)](https://github.com/gongahkia/dc4u/releases/tag/2.0.0)
+[![](https://img.shields.io/badge/DC4U_3.0.0-passing-%2332CD32)](https://github.com/gongahkia/dc4u/releases/tag/3.0.0)
+![](https://github.com/gongahkia/dc4u/actions/workflows/ci.yml/badge.svg)
 
-> [!IMPORTANT]
-> The site is now live [***here***](https://lit-hackathon-2025.vercel.app)!
+# `Draft Charges 4 U`
 
-# `POFact` - Rule-based Certainty
+A Legal Draft Charge Creator.
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](https://github.com/gongahkia/lit-hackathon-2025)
-[![Next.js](https://img.shields.io/badge/Next.js-15.5.3-black.svg)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+## Motivation
 
-Providing fast, verifiable access to parliamentary statements, ministerial releases, and government communications with timeline views, cross-verification, and source-attributed answers.
+[Draft charges](https://mustsharenews.com/wp-content/uploads/2018/12/TOC-Charge-Sheet.jpg) are inane to format. `DC4U` simplifies the entire process of creating Draft Charges, by transpiling a human-readable markup format (`.dc`) to [multiple targets outputs](#output-formats) for viewing and distribution.
 
-Made for the MinLaw 2 problem statement for the [SMU LIT Hackathon 2025](https://www.smulit.org/lit-hackathon-2025).
+## Purpose
 
-## Team members
+* Speed up formatting of draft charges
+* Simplify inane legal admin work for lawyers
+* Quick integration with existing programmatic workflows via pipes
+* Small source code binary and compilation target, faster compilation times
 
-<table>
-	<tbody>
-        <tr>
-            <td align="center">
-                <a href="https://github.com/gongahkia">
-                    <img src="https://avatars.githubusercontent.com/u/117062305?v=4" width="100;" alt="gongahkia"/>
-                    <br />
-                    <sub><b>Gabriel Ong</b></sub>
-                </a>
-                <br />
-            </td>
-            <td align="center">
-                <a href="https://github.com/le-xuan-2">
-                    <img src="https://avatars.githubusercontent.com/u/206502697?v=4" width="100;" alt=""/>
-                    <br />
-                    <sub><b>Tan Le Xuan</b></sub>
-                </a>
-                <br />
-            </td>
-            <td align="center">
-                <a href="https://github.com/a-stint">
-                    <img src="https://avatars.githubusercontent.com/u/149822619?v=4" width="100;" alt="Astin"/>
-                    <br />
-                    <sub><b>Astin Tay</b></sub>
-                </a>
-                <br />
-            </td>
-            <td align="center">
-                <a href="https://github.com/richardleii58">
-                    <img src="https://avatars.githubusercontent.com/u/174111738?v=4" width="100;" alt=""/>
-                    <br />
-                    <sub><b>Richard Lei</b></sub>
-                </a>
-            </td>
-            <td align="center">
-                <a href="https://github.com/kevanwee">
-                    <img src="https://avatars.githubusercontent.com/u/16420323?v=4" width="100;" alt="Kevan Wee"/>
-                    <br />
-                    <sub><b>Kevan Wee</b></sub>
-                </a>
-                <br />
-            </td>
-        </tr>
-	</tbody>
-</table>
+## Stack
 
-## Quick Start
+* *Language*: [Python 3.8+](https://www.python.org/), [Perl 5.32+](https://www.perl.org/)
+* *Package Manager*: [pip](https://pip.pypa.io/), [CPAN](https://www.cpan.org/)
+* *Document Processing*: [R Markdown](https://rmarkdown.rstudio.com/), [Pandoc](https://pandoc.org/), [LaTeX](https://www.latex-project.org/)
+* *PDF Generation*: [PDF::API2](https://metacpan.org/pod/PDF::API2), [TinyTeX](https://yihui.org/tinytex/)
+* *Office Integration*: [officedown](https://davidgohel.github.io/officedown/), [RTF::Writer](https://metacpan.org/pod/RTF::Writer)
+* *Configuration*: [YAML](https://yaml.org/)
+* *Build System*: [Make](https://www.gnu.org/software/make/)
+* *Testing*: [Perl Test Framework](https://perldoc.perl.org/perlunitut)
 
-### Prerequisites
+## Screenshots
 
-- Node.js 18+ and npm
-- Python 3.8+ (for optional backend services)
-- Supabase account (database is already hosted - no setup needed)
+### `DC4U` TUI
 
-### Installation
+<div align="center">
+    <img src="./asset/reference/1.png" width="45%">
+    <img src="./asset/reference/2.png" width="45%">
+</div>
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/gongahkia/lit-hackathon-2025.git
-   cd lit-hackathon-test
-   ```
+<div align="center">
+    <img src="./asset/reference/3.png" width="45%">
+    <img src="./asset/reference/4.png" width="45%">
+</div>
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+<div align="center">
+    <img src="./asset/reference/5.png" width="45%">
+    <img src="./asset/reference/6.png" width="45%">
+</div>
 
-3. **Set up environment variables:**
-   
-   Create a `.env.local` file in the project root:
-   ```bash
-   # Supabase Configuration (Required)
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+### Eg. Draft Charge created with `DC4U`
 
-   # Flask API (Optional - fallback for legacy search)
-   FLASK_API_BASE=http://localhost:5000
-   ```
+<img src="asset/reference/draft-charge-eg.png" width="60%">
 
-   **Note:** Supabase is already hosted and configured. You only need to add your credentials to `.env.local`. The database schema is already set up and data is populated - no need to reseed.
+## Usage
 
-4. **Start the development server:**
-   ```bash
-   npm run dev
-   ```
+The below instructions are for using `DC4U` on your client machine.
 
-   The application will be available at `http://localhost:3000`
+1. First run the below commands to install `DC4U` locally.
 
-### Optional: Backend Services
-
-If you need to run the Flask backend (for legacy search fallback):
-
-```bash
-# Create virtual environment
-python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Start Flask server
-cd backend
-python app.py
+```console
+$ make v2-install
 ```
 
-## Project Structure
+2. Alternatively, you can use the interactive TUI for a guided experience:
 
-```
-lit-hackathon-test/
-├── src/
-│   ├── app/              # Next.js app router pages and API routes
-│   ├── components/       # React components
-│   │   ├── features/     # Feature components (Search, AI Query, Document Viewer)
-│   │   └── ui/           # Reusable UI components
-│   └── lib/              # Utilities and services
-│       ├── database.ts   # Supabase database service
-│       ├── rag/          # RAG (Retrieval-Augmented Generation) services
-│       └── llm/          # LLM provider integrations
-├── lib/                  # Shared libraries
-│   ├── timeline-service.ts
-│   └── llm/              # LLM router and providers
-├── database/             # Database schema and migrations
-│   └── schema.sql        # Main database schema
-├── scripts/              # Data ingestion scripts
-│   └── ingest-golden-dataset.ts
-├── scrapers/             # Web scrapers for data sources
-└── docs/                 # Documentation
+```console
+$ make tui
 ```
 
-## Key Features
+3. For command-line usage, specify the input file and desired format:
 
-### 1. Trending Search
-- Browse popular topics and search through verified parliamentary documents
-- Filter by source type, date range, speaker, language, and topics
-- View document details with confidence scores and verification status
-
-### 2. Deep Search (POFMan)
-- Ask complex questions using natural language
-- Get answers with citations from parliamentary documents
-- Semantic search using RAG (Retrieval-Augmented Generation)
-- Markdown-formatted responses with source attribution
-
-### 3. Document Timeline
-- View policy development timeline for each document
-- See related parliamentary documents chronologically
-- Grouped by topics with event classification (creation/amendment/dissolution)
-
-### 4. Evidence Bundles
-- Create matters and collect evidence items
-- Add quotes from documents with citations
-- Organize evidence for legal research
-
-## Available Scripts
-
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
-- `npm run clean` - Clean build artifacts
-- `npm run ingest-data` - Ingest golden dataset into Supabase (not needed - data already populated)
-
-## Troubleshooting
-
-### Webpack Cache Error
-
-If you encounter webpack cache errors, clear the Next.js cache:
-
-```bash
-npm run clean
-rm -rf .next
-npm run dev
+```console
+$ dc4u -f PDF samples/v2/singapore_assault.dc
 ```
 
-### TypeScript Errors
+4. Pick a color theme for the TUI and HTML/PDF output:
 
-Run type checking to identify issues:
-
-```bash
-npm run type-check
+```console
+$ dc4u --list-themes
+$ dc4u -f HTML --theme gruvbox-dark samples/v2/singapore_assault.dc
 ```
 
-### Environment Variables
+In the TUI, press `t` from the file browser to open the live theme picker.
+The chosen theme persists via the YAML config (`theme:` key).
 
-Make sure all required environment variables are set in `.env.local`. Check that:
-- Supabase credentials are correct
-- API keys are valid (if using AI features)
+## Color themes
 
-## Documentation
+| Theme            | Style                                        |
+| :--------------- | :------------------------------------------- |
+| `classic`        | Default DC4U palette (black ink, light)      |
+| `gruvbox-dark`   | Warm retro brown background, amber accents   |
+| `gruvbox-light`  | Cream background variant of Gruvbox          |
+| `solarized-dark` | Solarized base03 (Schoonover)                |
+| `solarized-light`| Solarized base3                              |
+| `nord`           | Arctic blue palette                          |
+| `dracula`        | High-contrast purple/pink                    |
+| `monokai`        | Vivid green/pink classic                     |
+| `tokyo-night`    | Cool blue-purple                             |
+| `catppuccin`     | Pastel Mocha (darkest) flavour               |
 
-- [FINAL_PRD.md](docs/FINAL_PRD.md) - Product requirements document
-- [P2_IMPLEMENTATION_STATUS.md](docs/P2_IMPLEMENTATION_STATUS.md) - RAG implementation status
-- [database/README.md](database/README.md) - Database setup guide
+Themes drive both the curses TUI color pairs and the HTML/PDF output via
+`--dc4u-*` CSS custom properties — see `v2/lib/DC4U/Theme.pm`.
 
-## Contributing
+### User-defined themes
 
-1. Create a feature branch from `main`
-2. Make your changes
-3. Run `npm run type-check` and `npm run lint` before committing
-4. Submit a pull request
+Drop a YAML file into `~/.config/dc4u/themes/<name>.yaml` (or
+`$DC4U_THEME_DIR`). Scaffold one based on a built-in:
 
-## License
+```console
+$ dc4u theme create solarized-warm --base solarized-light
+$ vim ~/.config/dc4u/themes/solarized-warm.yaml
+$ dc4u --theme solarized-warm -f HTML case.dc
+```
 
-MIT License - see [LICENSE](LICENSE) file for details
+User themes can't shadow a built-in name. Malformed YAML is silently
+skipped (run `dc4u theme list` to confirm yours loaded).
+
+### Per-jurisdiction default theme
+
+Pin a theme per jurisdiction in `dc4u.yaml`:
+
+```yaml
+uk:
+  theme: solarized-light
+singapore:
+  theme: classic
+```
+
+`--theme` on the CLI always wins over the jurisdiction default.
+
+### True-color TUI
+
+If the terminal supports `init_color()` (most modern ones do), DC4U
+reprograms color palette slots so the TUI matches the HTML output's exact
+hex values. Set `DC4U_NO_TRUECOLOR=1` to force the 8-color fallback.
+
+## Subcommands
+
+```
+dc4u init   <jurisdiction> <out.dc>           Scaffold a starter .dc
+dc4u lint   [-j J] <file.dc> ...              Validate fields, NRIC, dates
+dc4u anonymize [--strategy redact|hash|fake]  Strip PII (in-place or -o)
+dc4u diff   [-j J] <a.dc> <b.dc>              Field-level semantic diff
+dc4u bundle [--zip f.zip] [--formats ...]     Multi-format render + manifest
+dc4u batch  --csv f.csv --template t.dc       CSV-driven batch rendering
+dc4u theme  list | create <name> | dir        Manage color themes
+dc4u audit  [--tail N]                        Show ~/.dc4u/audit.log
+```
+
+## Generator flags (file mode)
+
+| Flag                 | Effect                                                  |
+| :------------------- | :------------------------------------------------------ |
+| `--watermark TEXT`   | Diagonal `DRAFT`-style overlay (HTML/PDF) or banner (TXT/MD) |
+| `--watch`            | Recompile on file save until Ctrl-C                     |
+| `--lint`             | Run lint first; abort on errors                         |
+| `--audit-log`        | Record this generation in `~/.dc4u/audit.log`           |
+| `--no-preprocess`    | Skip `@include`/`@def`/`${var}`/YAML front-matter       |
+
+## `.dc` preprocessor directives
+
+```
+---                              # Optional YAML front-matter
+case_no: A-2025-001
+hearing: 12 March 2025
+---
+
+@include common/defendant.dc     # Inline another .dc file
+@def $io "Sgt Lim; IO, CID; 02/01/2025"
+@def $statute "s379 Penal Code"
+
+`HTML`
+<...>
+[...]
+@${statute}@
+{${io}}
+```
+
+## Output formats
+
+| Format | Purpose | Implementation status |
+| :---: | :---: | :---: |
+| `.txt` | Universal viewing and plain text output | ![](https://img.shields.io/badge/build-up-darkgreen) |
+| `.md` | Markdown formatted viewing with HTML styling | ![](https://img.shields.io/badge/build-up-darkgreen)|
+| `.html` | Web-ready documents with CSS styling | ![](https://img.shields.io/badge/build-up-darkgreen) |
+| `.rmd` | R Markdown for data visualization and analysis | ![](https://img.shields.io/badge/build-up-darkgreen) |
+| `.pdf` | Professional documents via PDF::API2 (v2.0) or R/Pandoc (v1.0) | ![](https://img.shields.io/badge/build-up-darkgreen) |
+| `.docx` | Microsoft Word documents via RTF::Writer (v2.0) or R/officedown (v1.0) | ![](https://img.shields.io/badge/build-up-darkgreen)|
+
+## Architecture
+
+```mermaid
+graph TD
+    A[.dc Source File] --> B[Lexer]
+    B -->|Tokens| C[Parser]
+    C -->|Structured Data| D[Generator]
+    D -->|Data| E[Template Engine]
+    E -->|Applied Styles| F[Final Output]
+    
+    subgraph "DC4U Core (v2.0 Perl)"
+        B
+        C
+        D
+        E
+    end
+    
+    F --> G[PDF]
+    F --> H[HTML]
+    F --> I[TXT]
+    F --> J[DOCX]
+    
+    K[Config YAML] --> D
+    K --> E
+    L[Logger] --> B
+    L --> C
+    L --> D
+```
+
+## Reference
+
+The name `dc4u` is in reference to [Funny Valentine](https://jojo.fandom.com/wiki/Funny_Valentine)'s (ファニー・ヴァレンタイン) [Stand](https://jojo.fandom.com/wiki/Stand) of the same name, [Dirty Deeds Done Dirt Cheap](https://jojo.fandom.com/wiki/Dirty_Deeds_Done_Dirt_Cheap) *(often shortened to D4C)* in [Part 7: Steel Ball Run](https://jojo.fandom.com/wiki/Steel_Ball_Run) of the ongoing manga series [JoJo's Bizarre Adventure](https://jojowiki.com/JoJo_Wiki).
+
+<div align="center">
+    <img src="./asset/logo/dc4u.png" width="50%">
+</div>

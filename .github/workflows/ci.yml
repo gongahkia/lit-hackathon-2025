@@ -1,0 +1,52 @@
+name: DC4U CI/CD on push
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Perl
+        uses: shogo82148/actions-setup-perl@v1
+        with:
+          perl-version: '5.32'
+
+      - name: Install dependencies
+        run: |
+          cpanm --notest YAML::Tiny Archive::Zip Test::More
+
+      - name: Syntax check
+        working-directory: v2
+        run: |
+          perl -Ilib -c lib/DC4U.pm
+          perl -Ilib -c lib/DC4U/Lexer.pm
+          perl -Ilib -c lib/DC4U/Parser.pm
+          perl -Ilib -c lib/DC4U/Generator.pm
+          perl -Ilib -c lib/DC4U/Template.pm
+          perl -Ilib -c lib/DC4U/Config.pm
+          perl -Ilib -c lib/DC4U/Logger.pm
+          perl -Ilib -c lib/DC4U/Theme.pm
+          perl -Ilib -c lib/DC4U/Lint.pm
+          perl -Ilib -c lib/DC4U/Watch.pm
+          perl -Ilib -c lib/DC4U/Scaffold.pm
+          perl -Ilib -c lib/DC4U/Anonymize.pm
+          perl -Ilib -c lib/DC4U/Preprocessor.pm
+          perl -Ilib -c lib/DC4U/Diff.pm
+          perl -Ilib -c lib/DC4U/Watermark.pm
+          perl -Ilib -c lib/DC4U/Bundle.pm
+          perl -Ilib -c lib/DC4U/BatchCSV.pm
+          perl -Ilib -c lib/DC4U/Audit.pm
+          perl -Ilib -c bin/dc4u
+
+      - name: Run tests
+        working-directory: v2
+        run: prove -Ilib t/

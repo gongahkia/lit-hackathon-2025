@@ -1,0 +1,9 @@
+# DC4U v1.0 Python Dependencies
+# Legal document generator
+
+# Core dependencies
+# Note: v1.0 uses R and Pandoc for PDF/DOCX generation
+# These are system dependencies, not Python packages
+
+# Python packages (if any)
+# No additional Python packages required for v1.0

@@ -1,0 +1,8 @@
+# Minimal test fixture used by t/test_integration.t.
+# Hand-built so the integration test exercises the full pipeline against
+# fixed, predictable strings (suspect name, statute, officer name).
+`HTML`
+<John Doe; S0000001I; Chinese; 30; M; Singaporean>
+[Theft; 01/01/2024; took the wallet without consent at MRT station]
+@s379 Penal Code@
+{Officer Smith; IO, CID; 02/01/2024}
