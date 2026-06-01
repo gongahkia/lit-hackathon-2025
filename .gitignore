@@ -1,33 +1,62 @@
-out
-node_modules
-.vscode-test/
-*.vsix
+# DC4U - Draft Charges 4 U
+# Git ignore file for multi-version repository
+
+# General ignores
+*.tmp
+*.temp
 .DS_Store
+Thumbs.db
+
+# Python (v1.0)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Perl (v2.0)
+*.pm.bak
+*.pl.bak
+blib/
+_build/
+Build/
+Build.bat
+
+# Test outputs
+test_output/
+*.html
+*.pdf
+*.md
+*.docx
+*.rtf
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-lerna-debug.log*
-.pnpm-debug.log*
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
-dist
-build
-coverage
-.nyc_output
-*.tgz
-*.tar.gz
-.cache
-.parcel-cache
-.next
-.nuxt
-.vuepress/dist
-.serverless
-.fusebox
-.dynamodb
-.tern-port
-.vscode-test
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
-.pnp.*
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
