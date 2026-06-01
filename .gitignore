@@ -1,48 +1,104 @@
-# DC4U - Draft Charges 4 U
-# Git ignore file for multi-version repository
+# Pofact Platform - Git Ignore File
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# General ignores
-*.tmp
-*.temp
-.DS_Store
-Thumbs.db
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
 
-# Python (v1.0)
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
+# Testing
+coverage/
+.nyc_output
+*.lcov
 
-# Perl (v2.0)
-*.pm.bak
-*.pl.bak
-blib/
-_build/
-Build/
-Build.bat
+# Next.js
+.next/
+out/
+build/
+dist/
 
-# Test outputs
-test_output/
-*.html
-*.pdf
-*.md
-*.docx
-*.rtf
+# Webpack cache (can cause issues on Windows)
+.next/cache/
 
-# IDE files
+# Production builds
+*.tgz
+*.tar.gz
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env*.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE and Editor files
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.DS_Store
+Thumbs.db
 
-# OS files
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Parcel-bundler cache
+.cache/
+.parcel-cache/
+
+# Storybook build outputs
+.out/
+.storybook-out/
+
+# Temporary folders
+tmp/
+temp/
+.tmp/
+
+# OS generated files
 .DS_Store
 .DS_Store?
 ._*
@@ -51,12 +107,166 @@ test_output/
 ehthumbs.db
 Thumbs.db
 
-# Logs
-*.log
-logs/
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
 
-# Temporary files
-*.tmp
-*.temp
+# Linux
+*~
+
+# Database files (if using local SQLite)
+*.db
+*.sqlite
+*.sqlite3
+
+# Backup files
 *.bak
 *.backup
+*.old
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# Local development files
+.local
+.cache/
+
+# Font files (if not using local fonts)
+# Uncomment if you want to ignore font files
+# *.woff
+# *.woff2
+# *.ttf
+# *.otf
+
+# Documentation build
+docs/build/
+site/
+
+# Coverage reports
+coverage/
+.nyc_output/
+
+# Test results
+test-results/
+playwright-report/
+test-results.xml
+
+# Cypress
+cypress/videos/
+cypress/screenshots/
+
+# Playwright
+test-results/
+playwright/.cache/
+
+# Sentry
+.sentryclirc
+
+# Local Netlify folder
+.netlify
+
+# Local development certificates
+*.pem
+*.key
+*.crt
+
+# Local configuration files
+config.local.js
+config.local.json
+
+# IDE specific files
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# MacOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# Pofact specific ignores
+# Add any project-specific files to ignore here
+
+package-lock.json
+
+venv
+myenv
+.env
+.env.local
+
+__pycache__
+
+.vemv
