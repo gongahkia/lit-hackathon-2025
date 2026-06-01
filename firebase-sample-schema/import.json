@@ -1,0 +1,27 @@
+{
+  "uid": "A1B2C3D4E5...",
+  "email": "student@example.com",
+  "emailVerified": false,
+  "displayName": null,
+  "photoURL": null,
+  "isAnonymous": false,
+  "providerData": [
+    {
+      "providerId": "password",
+      "uid": "student@example.com",
+      "displayName": null,
+      "email": "student@example.com",
+      "photoURL": null,
+      "phoneNumber": null
+    }
+  ],
+  "stsTokenManager": {
+    "refreshToken": "...",
+    "accessToken": "...",
+    "expirationTime": 1700000000000
+  },
+  "createdAt": "1700000000000",
+  "lastLoginAt": "1700001000000",
+  "apiKey": "...",
+  "appName": "[DEFAULT]"
+}

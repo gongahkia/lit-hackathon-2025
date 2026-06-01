@@ -1,0 +1,60 @@
+{
+    "type": "ARRAY",
+    "minItems": 1,
+    "items": {
+        "type": "OBJECT",
+        "properties": {
+            "question": {
+                "type": "STRING",
+                "description": "The quiz question"
+            },
+            "options": {
+                "type": "OBJECT",
+                "properties": {
+                    "a": {
+                        "type": "STRING",
+                        "description": "Option A"
+                    },
+                    "b": {
+                        "type": "STRING",
+                        "description": "Option B"
+                    },
+                    "c": {
+                        "type": "STRING",
+                        "description": "Option C"
+                    },
+                    "d": {
+                        "type": "STRING",
+                        "description": "Option D"
+                    }
+                },
+                "required": [
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                ]
+            },
+            "correct": {
+                "type": "STRING",
+                "enum": [
+                    "a",
+                    "b",
+                    "c",
+                    "d"
+                ],
+                "description": "The correct option"
+            },
+            "explanation": {
+                "type": "STRING",
+                "description": "Explanation for the correct answer"
+            }
+        },
+        "required": [
+            "question",
+            "options",
+            "correct",
+            "explanation"
+        ]
+    }
+}

@@ -1,62 +1,9 @@
-# DC4U - Draft Charges 4 U
-# Git ignore file for multi-version repository
-
-# General ignores
-*.tmp
-*.temp
+.env
+.env.local
+myenv
+venv
+__pycache__
+node_modules
+.next
+quiz_response.json
 .DS_Store
-Thumbs.db
-
-# Python (v1.0)
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Perl (v2.0)
-*.pm.bak
-*.pl.bak
-blib/
-_build/
-Build/
-Build.bat
-
-# Test outputs
-test_output/
-*.html
-*.pdf
-*.md
-*.docx
-*.rtf
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# OS files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# Logs
-*.log
-logs/
-
-# Temporary files
-*.tmp
-*.temp
-*.bak
-*.backup
